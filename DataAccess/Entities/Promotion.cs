@@ -12,8 +12,5 @@ namespace DataAccess.Entities
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
         public decimal Percentage { get; set; }
-        public int ClassId { get; set; }
-        [Required]
-        public virtual Class Class { get; set; }
     }
 }

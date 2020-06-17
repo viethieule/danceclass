@@ -60,7 +60,7 @@
     <Compile Include="DanceClassDbContext.cs" />
     <Compile Include="Entities\ApplicationUser.cs" />
     <Compile Include="Entities\Class.cs" />
-    <Compile Include="Entities\ClassMember.cs" />
+    <Compile Include="Entities\ScheduleMember.cs" />
     <Compile Include="Entities\Package.cs" />
     <Compile Include="Entities\Promotion.cs" />
     <Compile Include="Entities\Schedule.cs" />
@@ -72,6 +72,10 @@
     <Compile Include="Migrations\202006151528428_AddSessionPackage.cs" />
     <Compile Include="Migrations\202006151528428_AddSessionPackage.designer.cs">
       <DependentUpon>202006151528428_AddSessionPackage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006170836257_UpdateScheduleStructure.cs" />
+    <Compile Include="Migrations\202006170836257_UpdateScheduleStructure.designer.cs">
+      <DependentUpon>202006170836257_UpdateScheduleStructure.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -86,6 +90,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202006151528428_AddSessionPackage.resx">
       <DependentUpon>202006151528428_AddSessionPackage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006170836257_UpdateScheduleStructure.resx">
+      <DependentUpon>202006170836257_UpdateScheduleStructure.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

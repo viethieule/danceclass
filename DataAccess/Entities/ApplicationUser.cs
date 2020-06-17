@@ -53,6 +53,8 @@ namespace DataAccess.Entities
         [ForeignKey("PackageId")]
         public Package Package { get; set; }
 
+        public virtual IEnumerable<ScheduleMember> ScheduleMembers { get; set; }
+
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser, int> manager)
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType

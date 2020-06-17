@@ -18,7 +18,7 @@ namespace DataAccess
 
         public DbSet<Class> Classes { get; set; }
         public DbSet<Schedule> Schedules { get; set; }
-        public DbSet<ClassMember> ClassMembers { get; set; }
+        public DbSet<ScheduleMember> ScheduleMembers { get; set; }
         public DbSet<Trainer> Trainers { get; set; }
         public DbSet<Promotion> Promotions { get; set; }
     }
