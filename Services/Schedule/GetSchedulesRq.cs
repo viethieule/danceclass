@@ -8,5 +8,6 @@ namespace Services.Schedule
 {
     public class GetSchedulesRq
     {
+        public DateTime Start { get; set; }
     }
 }

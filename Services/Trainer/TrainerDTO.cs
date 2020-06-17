@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Services.Schedule
+namespace Services.Trainer
 {
-    public class GetSchedulesRs
+    public class TrainerDTO
     {
-        public List<ScheduleDTO> Schedules { get; set; }
     }
 }

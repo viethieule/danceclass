@@ -79,15 +79,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Class\ClassDTO.cs" />
     <Compile Include="Members\CreateMemberRq.cs" />
     <Compile Include="Members\CreateMemberRs.cs" />
     <Compile Include="Members\MemberDTO.cs" />
     <Compile Include="Members\MemberService.cs" />
     <Compile Include="Members\UserService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScheduleMember\ScheduleMemberDTO.cs" />
     <Compile Include="Schedule\GetSchedulesRq.cs" />
     <Compile Include="Schedule\GetSchedulesRs.cs" />
+    <Compile Include="Schedule\ScheduleDTO.cs" />
     <Compile Include="Schedule\ScheduleService.cs" />
+    <Compile Include="Trainer\TrainerDTO.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DataAccess\DataAccess.csproj">
