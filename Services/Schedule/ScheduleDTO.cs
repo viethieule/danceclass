@@ -17,7 +17,7 @@ namespace Services.Schedule
         public int SessionsPerWeek { get; set; }
         public string DaysPerWeek { get; set; }
         public string Branch { get; set; }
-
+        
         public int ClassId { get; set; }
         public virtual ClassDTO Class { get; set; }
 
