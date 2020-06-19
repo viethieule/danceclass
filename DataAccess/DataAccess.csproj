@@ -77,6 +77,10 @@
     <Compile Include="Migrations\202006170836257_UpdateScheduleStructure.designer.cs">
       <DependentUpon>202006170836257_UpdateScheduleStructure.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202006191713564_AddedEndingTimeSchedule.cs" />
+    <Compile Include="Migrations\202006191713564_AddedEndingTimeSchedule.designer.cs">
+      <DependentUpon>202006191713564_AddedEndingTimeSchedule.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -93,6 +97,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202006170836257_UpdateScheduleStructure.resx">
       <DependentUpon>202006170836257_UpdateScheduleStructure.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006191713564_AddedEndingTimeSchedule.resx">
+      <DependentUpon>202006191713564_AddedEndingTimeSchedule.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
