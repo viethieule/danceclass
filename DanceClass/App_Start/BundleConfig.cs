@@ -9,7 +9,8 @@ namespace DanceClass
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
-                        "~/Scripts/jquery-{version}.js"));
+                        "~/Scripts/jquery-{version}.js",
+                        "~/Scripts/jquery-ui.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*"));
@@ -21,10 +22,26 @@ namespace DanceClass
 
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                       "~/Scripts/bootstrap.js"));
+            
+            bundles.Add(new ScriptBundle("~/bundles/misc").Include(
+                      "~/Scripts/jquery.slimscroll.js",
+                      "~/Scripts/fastclick.js"));
+            
+            bundles.Add(new ScriptBundle("~/bundles/adminlte").Include(
+                      "~/Scripts/adminlte.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/moment").Include(
+                      "~/Scripts/moment.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/calendar").Include(
+                      "~/Scripts/fullcalendar.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
-                      "~/Content/site.css"));
+                      "~/Content/font-awesome.css",
+                      "~/Content/ionicons.css",
+                      "~/Content/AdminLTE.css",
+                      "~/Content/skin-black.css"));
         }
     }
 }

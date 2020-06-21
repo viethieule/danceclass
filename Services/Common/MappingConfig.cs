@@ -1,5 +1,8 @@
 ﻿using AutoMapper;
+using Services.Class;
 using Services.Schedule;
+using Services.ScheduleMember;
+using Services.Trainer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,23 +13,19 @@ namespace Services.Common
 {
     public class MappingConfig
     {
-        private static IMapper _mapper;
-        public static IMapper Mapper
-        {
-            get
-            {
-                return _mapper;
-            }
-        }
+        public static IMapper Mapper { get; private set; }
 
         public static void RegisterMappings()
         {
             var mapperConfig = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<DataAccess.Entities.Schedule, ScheduleDTO>();
+                cfg.CreateMap<DataAccess.Entities.Trainer, TrainerDTO>();
+                cfg.CreateMap<DataAccess.Entities.Class, ClassDTO>();
+                cfg.CreateMap<DataAccess.Entities.ScheduleMember, ScheduleMemberDTO>();
             });
 
-            _mapper = mapperConfig.CreateMapper();
+            Mapper = mapperConfig.CreateMapper();
         }
     }
 }
