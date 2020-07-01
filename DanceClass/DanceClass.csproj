@@ -218,6 +218,8 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App\Schedule\schedule.css" />
+    <Content Include="App\Schedule\schedule.js" />
     <Content Include="Content\AdminLTE.css" />
     <Content Include="Content\AdminLTE.min.css" />
     <Content Include="Content\bootstrap-theme.css" />
@@ -246,10 +248,6 @@
     <Content Include="fonts\fontawesome-webfont.woff2" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\fastclick.js" />
-    <Content Include="Content\fullcalendar.css" />
-    <Content Include="Content\fullcalendar.min.css" />
-    <Content Include="Content\fullcalendar.print.css" />
-    <Content Include="Content\fullcalendar.print.min.css" />
     <Content Include="Scripts\fullcalendar.js" />
     <Content Include="Scripts\fullcalendar.min.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
@@ -266,6 +264,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\moment-with-locales.min.js" />
     <Content Include="Scripts\moment.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
