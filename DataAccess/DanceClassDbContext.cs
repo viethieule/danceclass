@@ -21,5 +21,6 @@ namespace DataAccess
         public DbSet<ScheduleMember> ScheduleMembers { get; set; }
         public DbSet<Trainer> Trainers { get; set; }
         public DbSet<Promotion> Promotions { get; set; }
+        public DbSet<Package> Packages { get; set; }
     }
 }

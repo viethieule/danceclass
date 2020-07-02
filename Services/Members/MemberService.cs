@@ -3,6 +3,7 @@ using DataAccess.Entities;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,8 +33,9 @@ namespace Services.Members
                 if (result.Succeeded)
                 {
                     CreateMemberRs rs = new CreateMemberRs();
-                    member.DefaultPassword = DEFAULT_PASSWORD;
+                    ApplicationUser user = await dbContext.Users.FirstOrDefaultAsync(x => x.Email == member.Email);
                     member.Username = appUser.Email;
+                    member.Id = user.Id;
                     rs.Member = member;
                     return rs;
                 }
@@ -44,13 +46,14 @@ namespace Services.Members
 
         public ApplicationUser MapFromDTO(MemberDTO member)
         {
-            ApplicationUser appUser = new ApplicationUser();
-            appUser.FirstName = member.FirstName;
-            appUser.LastName = member.LastName;
-            appUser.Email = member.Email;
-            appUser.UserName = member.Email;
-            appUser.Birthdate = member.Birthdate;
-            appUser.PackageId = member.PackageId;
+            ApplicationUser appUser = new ApplicationUser
+            {
+                FullName = member.FullName,
+                Email = member.Email,
+                UserName = member.Email,
+                Birthdate = member.Birthdate,
+                PackageId = member.PackageId
+            };
 
             return appUser;
         }

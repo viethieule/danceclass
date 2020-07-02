@@ -13,31 +13,27 @@
     <div class="row">
         <div class="col-md-9">
             <div class="box box-primary">
-                <form>
+                <form id="createMember">
                     <div class="box-body">
                         <div class="form-group">
                             <label for="name">Tên</label>
-                            <input type="email" class="form-control" id="name">
+                            <input type="text" class="form-control" id="name" name="name">
                         </div>
                         <div class="form-group">
                             <label for="email">Email</label>
-                            <input type="email" class="form-control" id="email" placeholder="email@example.com">
+                            <input type="email" class="form-control" id="email" name="email" placeholder="email@example.com">
                         </div>
                         <div class="form-group">
                             <label for="identity">Chứng minh nhân dân</label>
-                            <input type="number" class="form-control" id="identity">
+                            <input type="number" class="form-control" name="identity" id="identity">
                         </div>
                         <div class="form-group">
                             <label for="phone">Điện thoại</label>
-                            <input type="number" class="form-control" id="phone">
+                            <input type="number" class="form-control" name="phone" id="phone">
                         </div>
                         <div class="form-group">
                             <label for="package">Gói tập</label>
-                            <select class="form-control" id="package">
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
+                            <select class="form-control" id="package" name="package">
                             </select>
                         </div>
                     </div>
@@ -49,4 +45,8 @@
         </div>
     </div>
 </section>
+
+@section Scripts {
+    <script src="~/App/Member/Create/create.js"></script>
+}
 

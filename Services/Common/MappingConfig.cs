@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Services.Class;
+using Services.Package;
 using Services.Schedule;
 using Services.ScheduleMember;
 using Services.Trainer;
@@ -23,6 +24,7 @@ namespace Services.Common
                 cfg.CreateMap<DataAccess.Entities.Trainer, TrainerDTO>();
                 cfg.CreateMap<DataAccess.Entities.Class, ClassDTO>();
                 cfg.CreateMap<DataAccess.Entities.ScheduleMember, ScheduleMemberDTO>();
+                cfg.CreateMap<DataAccess.Entities.Package, PackageDTO>();
             });
 
             Mapper = mapperConfig.CreateMapper();

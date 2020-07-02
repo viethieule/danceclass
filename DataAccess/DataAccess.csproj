@@ -81,6 +81,14 @@
     <Compile Include="Migrations\202006191713564_AddedEndingTimeSchedule.designer.cs">
       <DependentUpon>202006191713564_AddedEndingTimeSchedule.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202007021546184_UpdatePackageTable.cs" />
+    <Compile Include="Migrations\202007021546184_UpdatePackageTable.designer.cs">
+      <DependentUpon>202007021546184_UpdatePackageTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202007021553005_AddIdentityNumberColumn.cs" />
+    <Compile Include="Migrations\202007021553005_AddIdentityNumberColumn.designer.cs">
+      <DependentUpon>202007021553005_AddIdentityNumberColumn.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -100,6 +108,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202006191713564_AddedEndingTimeSchedule.resx">
       <DependentUpon>202006191713564_AddedEndingTimeSchedule.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202007021546184_UpdatePackageTable.resx">
+      <DependentUpon>202007021546184_UpdatePackageTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202007021553005_AddIdentityNumberColumn.resx">
+      <DependentUpon>202007021553005_AddIdentityNumberColumn.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

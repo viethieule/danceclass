@@ -45,13 +45,13 @@ namespace DataAccess.Entities
 
     public class ApplicationUser : IdentityUser<int, UserLogin, UserRole, UserClaim>
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public DateTime Birthdate { get; set; }
+        public string FullName { get; set; }
+        public DateTime? Birthdate { get; set; }
         public int? PackageId { get; set; }
 
         [ForeignKey("PackageId")]
         public Package Package { get; set; }
+        public int IdentityNo { get; set; }
 
         public virtual IEnumerable<ScheduleMember> ScheduleMembers { get; set; }
 

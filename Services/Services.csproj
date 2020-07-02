@@ -89,6 +89,8 @@
     <Compile Include="Members\MemberDTO.cs" />
     <Compile Include="Members\MemberService.cs" />
     <Compile Include="Members\UserService.cs" />
+    <Compile Include="Package\PackageDTO.cs" />
+    <Compile Include="Package\PackageService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScheduleMember\ScheduleMemberDTO.cs" />
     <Compile Include="Schedule\GetSchedulesRq.cs" />
