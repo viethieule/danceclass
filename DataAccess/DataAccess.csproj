@@ -60,6 +60,7 @@
     <Compile Include="DanceClassDbContext.cs" />
     <Compile Include="Entities\ApplicationUser.cs" />
     <Compile Include="Entities\Class.cs" />
+    <Compile Include="Entities\MemberPackage.cs" />
     <Compile Include="Entities\ScheduleMember.cs" />
     <Compile Include="Entities\Package.cs" />
     <Compile Include="Entities\Promotion.cs" />
@@ -89,6 +90,10 @@
     <Compile Include="Migrations\202007021553005_AddIdentityNumberColumn.designer.cs">
       <DependentUpon>202007021553005_AddIdentityNumberColumn.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202007050254386_AddMemberPackageRelation.cs" />
+    <Compile Include="Migrations\202007050254386_AddMemberPackageRelation.designer.cs">
+      <DependentUpon>202007050254386_AddMemberPackageRelation.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -114,6 +119,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202007021553005_AddIdentityNumberColumn.resx">
       <DependentUpon>202007021553005_AddIdentityNumberColumn.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202007050254386_AddMemberPackageRelation.resx">
+      <DependentUpon>202007050254386_AddMemberPackageRelation.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

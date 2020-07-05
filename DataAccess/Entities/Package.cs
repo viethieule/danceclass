@@ -15,7 +15,8 @@ namespace DataAccess.Entities
         public int Id { get; set; }
         public int NumberOfSessions { get; set; }
         public double Price { get; set; }
-        public int Month { get; set; }
-        public virtual IEnumerable<ApplicationUser> Members { get; set; }
+        public int Months { get; set; }
+        public bool IsDefault { get; set; }
+        public virtual IEnumerable<ApplicationUser> MemberPackages { get; set; }
     }
 }

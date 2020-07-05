@@ -22,5 +22,6 @@ namespace DataAccess
         public DbSet<Trainer> Trainers { get; set; }
         public DbSet<Promotion> Promotions { get; set; }
         public DbSet<Package> Packages { get; set; }
+        public DbSet<MemberPackage> MemberPackages { get; set; }
     }
 }

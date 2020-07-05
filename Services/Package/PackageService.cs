@@ -15,7 +15,7 @@ namespace Services.Package
         {
             using (DanceClassDbContext db = new DanceClassDbContext())
             {
-                List<DataAccess.Entities.Package> packages = await db.Packages.ToListAsync();
+                List<DataAccess.Entities.Package> packages = await db.Packages.Where(p => p.IsDefault).ToListAsync();
                 return MappingConfig.Mapper.Map<List<PackageDTO>>(packages);
             }
         }

@@ -68,10 +68,10 @@
             {
                 context.Packages.AddRange(new List<Package>
                 {
-                    new Package { NumberOfSessions = 8, Price = 600000, Month = 2 },
-                    new Package { NumberOfSessions = 16, Price = 1000000, Month = 3 },
-                    new Package { NumberOfSessions = 24, Price = 1450000, Month = 5 },
-                    new Package { NumberOfSessions = 50, Price = 3000000, Month = 8 },
+                    new Package { NumberOfSessions = 8, Price = 600000, Months = 2 },
+                    new Package { NumberOfSessions = 16, Price = 1000000, Months = 3 },
+                    new Package { NumberOfSessions = 24, Price = 1450000, Months = 5 },
+                    new Package { NumberOfSessions = 50, Price = 3000000, Months = 8 },
                 });
             }
 
