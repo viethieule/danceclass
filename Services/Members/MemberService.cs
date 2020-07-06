@@ -15,7 +15,12 @@ using System.Web;
 
 namespace Services.Members
 {
-    public class MemberService
+    public interface IMemberService
+    {
+        Task<CreateMemberRs> Create(CreateMemberRq rq);
+    }
+
+    public class MemberService : IMemberService
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
