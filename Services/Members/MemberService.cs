@@ -75,19 +75,6 @@ namespace Services.Members
             }
         }
 
-        public ApplicationUser MapFromDTO(MemberDTO member)
-        {
-            ApplicationUser appUser = new ApplicationUser
-            {
-                FullName = member.FullName,
-                Email = member.Email,
-                UserName = member.UserName,
-                Birthdate = member.Birthdate
-            };
-
-            return appUser;
-        }
-
         private async Task<string> GenerateUserName(string fullName, DanceClassDbContext dbContext)
         {
             if (string.IsNullOrWhiteSpace(fullName))
