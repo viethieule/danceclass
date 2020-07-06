@@ -12,14 +12,16 @@ namespace DanceClass.Areas.Services.Controllers
 {
     public class MembersController : Controller
     {
+        private readonly IMemberService _memberService;
+        public MembersController(IMemberService memberService)
+        {
+            _memberService = memberService;
+        }
+
         [HttpPost]
         public async Task<ActionResult> Create(CreateMemberRq rq)
         {
-            MemberService service = new MemberService(
-                HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>(),
-                HttpContext.GetOwinContext().GetUserManager<ApplicationSignInManager>());
-
-            CreateMemberRs rs = await service.Create(rq);
+            CreateMemberRs rs = await _memberService.Create(rq);
             return Json(rs);
         }
     }

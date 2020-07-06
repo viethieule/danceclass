@@ -41,7 +41,7 @@ namespace Services.Members
 
         public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context)
         {
-            var manager = new ApplicationUserManager(new UserStore(context.Get<DanceClassDbContext>()));
+            var manager = new ApplicationUserManager(new ApplicationUserStore(context.Get<DanceClassDbContext>()));
             // Configure validation logic for usernames
             manager.UserValidator = new UserValidator<ApplicationUser, int>(manager)
             {

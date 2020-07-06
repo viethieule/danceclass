@@ -24,21 +24,25 @@ namespace Services.Members
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private DanceClassDbContext _dbContext;
         private const string DEFAULT_PASSWORD = "P@ssw0rd";
 
-        public MemberService(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
+        public MemberService(
+            ApplicationUserManager userManager,
+            ApplicationSignInManager signInManager,
+            DanceClassDbContext dbContext)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _dbContext = dbContext;
         }
 
         public async Task<CreateMemberRs> Create(CreateMemberRq rq)
         {
             using (TransactionScope scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
-            using (DanceClassDbContext dbContext = new DanceClassDbContext())
             {
                 MemberDTO member = rq.Member;
-                member.UserName = await GenerateUserName(member.FullName, dbContext);
+                member.UserName = await GenerateUserName(member.FullName, _dbContext);
 
                 ApplicationUser appUser = MappingConfig.Mapper.Map<ApplicationUser>(member);
                 var result = await _userManager.CreateAsync(appUser, DEFAULT_PASSWORD);
@@ -50,19 +54,19 @@ namespace Services.Members
                 DataAccess.Entities.Package package = MappingConfig.Mapper.Map<DataAccess.Entities.Package>(rq.Package);
                 if (rq.Package.Id != null)
                 {
-                    if (!dbContext.Packages.Any(p => p.Id == rq.Package.Id && p.IsDefault))
+                    if (!_dbContext.Packages.Any(p => p.Id == rq.Package.Id && p.IsDefault))
                     {
                         throw new Exception("Selected package not exist");
                     }
                 }
                 else
                 {
-                    dbContext.Packages.Add(package);
-                    await dbContext.SaveChangesAsync();
+                    _dbContext.Packages.Add(package);
+                    await _dbContext.SaveChangesAsync();
                 }
 
-                ApplicationUser user = await dbContext.Users.FirstOrDefaultAsync(x => x.UserName == member.UserName);
-                dbContext.MemberPackages.Add(new MemberPackage
+                ApplicationUser user = await _dbContext.Users.FirstOrDefaultAsync(x => x.UserName == member.UserName);
+                _dbContext.MemberPackages.Add(new MemberPackage
                 {
                     UserId = user.Id,
                     PackageId = package.Id,
@@ -70,7 +74,7 @@ namespace Services.Members
                     RemainingSessions = package.NumberOfSessions
                 });
 
-                await dbContext.SaveChangesAsync();
+                await _dbContext.SaveChangesAsync();
                 scope.Complete();
 
                 CreateMemberRs rs = new CreateMemberRs();
