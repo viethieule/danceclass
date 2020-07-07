@@ -19,13 +19,14 @@ namespace DanceClass
         public void Configuration(IAppBuilder app)
         {
             ConfigureAuth(app);
+            ConfigureAutofac(app);
         }
 
         public void ConfigureAutofac(IAppBuilder app)
         {
             var builder = new ContainerBuilder();
 
-            builder.RegisterControllers(Assembly.GetExecutingAssembly());
+            builder.RegisterControllers(typeof(MvcApplication).Assembly);
 
             builder.RegisterType<DanceClassDbContext>().AsSelf().InstancePerRequest();
 

@@ -10,16 +10,16 @@ namespace DanceClass.Areas.Services.Controllers
 {
     public class PackageController : Controller
     {
-        private readonly PackageService _packageService;
-        public PackageController()
+        private readonly IPackageService _packageService;
+        public PackageController(IPackageService packageService)
         {
-            _packageService = new PackageService();
+            _packageService = packageService;
         }
 
         [HttpGet]
         public async Task<ActionResult> GetAll()
         {
-            var packages = await _packageService.GetAll();
+            var packages = await _packageService.GetAll(true);
             return Json(packages, JsonRequestBehavior.AllowGet);
         }
     }
