@@ -106,7 +106,7 @@ function registerEvent() {
                 try {
                     var package = m_packages.find(p => p.Id.toString() === formData['package']);
 
-                    await createMember({
+                    const data = await createMember({
                         Member: {
                             FullName: formData['name'],
                             Birthdate: formData['dob'],
@@ -119,7 +119,9 @@ function registerEvent() {
                             Price: formData['price'],
                         }
                     });
-                    alert('Create member successfully');
+                    if (data && data.Member) {
+                        window.location.replace(window.location.origin + `/member/${data.Member.UserName}`);
+                    }
                 } catch (err) {
                     alert('Failed to create member');
                     console.log(err);

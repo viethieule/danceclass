@@ -9,7 +9,7 @@ namespace DanceClass.Controllers
     public class MembersController : Controller
     {
         // GET: Members
-        public ActionResult Index()
+        public ActionResult Index(string username)
         {
             return View();
         }

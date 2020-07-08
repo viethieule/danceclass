@@ -26,6 +26,7 @@ namespace Services.Common
                 cfg.CreateMap<DataAccess.Entities.Class, ClassDTO>();
                 cfg.CreateMap<DataAccess.Entities.ScheduleMember, ScheduleMemberDTO>();
                 cfg.CreateMap<DataAccess.Entities.Package, PackageDTO>();
+                cfg.CreateMap<DataAccess.Entities.ApplicationUser, MemberDTO>();
 
                 cfg.CreateMap<PackageDTO, DataAccess.Entities.Package>();
                 cfg.CreateMap<MemberDTO, DataAccess.Entities.ApplicationUser>();

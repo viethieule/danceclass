@@ -14,6 +14,13 @@ namespace DanceClass
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
+                name: "Member",
+                url: "member/{username}",
+                defaults: new { controller = "Members", action = "Index", username = "" },
+                new string[] { "DanceClass.Controllers" }
+            );
+
+            routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Schedule", action = "Index", id = UrlParameter.Optional },

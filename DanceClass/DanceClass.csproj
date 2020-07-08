@@ -236,6 +236,7 @@
     <Content Include="App\Common\css\form.css" />
     <Content Include="App\Common\js\utils.js" />
     <Content Include="App\Member\Create\create.js" />
+    <Content Include="App\Member\Index\index.js" />
     <Content Include="App\Schedule\schedule.css" />
     <Content Include="App\Schedule\schedule.js" />
     <Content Include="Content\AdminLTE.css" />

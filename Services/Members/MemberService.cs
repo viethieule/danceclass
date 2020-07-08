@@ -2,6 +2,7 @@
 using DataAccess.Entities;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Services.Common;
+using Services.Members.Get;
 using Services.Utils;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ namespace Services.Members
     public interface IMemberService
     {
         Task<CreateMemberRs> Create(CreateMemberRq rq);
+        Task<GetMemberRs> GetById(GetMemberRq rq);
     }
 
     public class MemberService : IMemberService
@@ -82,6 +84,15 @@ namespace Services.Members
                 rs.Member = member;
                 return rs;
             }
+        }
+
+        public async Task<GetMemberRs> GetById(GetMemberRq rq)
+        {
+            var member = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserName == rq.UserName);
+
+            GetMemberRs rs = new GetMemberRs();
+            rs.Member = MappingConfig.Mapper.Map<MemberDTO>(member);
+            return rs;
         }
 
         private async Task<string> GenerateUserName(string fullName, DanceClassDbContext dbContext)

@@ -84,9 +84,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class\ClassDTO.cs" />
+    <Compile Include="Common\GetEntityRequestBase.cs" />
     <Compile Include="Common\MappingConfig.cs" />
     <Compile Include="Members\CreateMemberRq.cs" />
     <Compile Include="Members\CreateMemberRs.cs" />
+    <Compile Include="Members\Get\GetMemberRq.cs" />
+    <Compile Include="Members\Get\GetMemberRs.cs" />
     <Compile Include="Members\MemberDTO.cs" />
     <Compile Include="Members\MemberService.cs" />
     <Compile Include="Members\UserService.cs" />
