@@ -9,5 +9,6 @@ namespace Services.Members.Get
     public class GetMemberRs
     {
         public MemberDTO Member { get; set; }
+        public bool? IsAuthenticated { get; set; }
     }
 }

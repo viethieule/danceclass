@@ -4,6 +4,8 @@ $(async function () {
     initWeek();
     await renderCalendar();
     registerEvent();
+    const user = await getCurrentUser();
+    console.log(user);
 });
 
 function initWeek(currentDate) {

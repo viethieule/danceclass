@@ -1,5 +1,6 @@
 ﻿using DataAccess;
 using DataAccess.Entities;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Services.Common;
 using Services.Members.Get;
@@ -20,6 +21,7 @@ namespace Services.Members
     {
         Task<CreateMemberRs> Create(CreateMemberRq rq);
         Task<GetMemberRs> GetById(GetMemberRq rq);
+        Task<GetMemberRs> GetCurrentUser();
     }
 
     public class MemberService : IMemberService
@@ -133,6 +135,26 @@ namespace Services.Members
                     return userName + "." + numberOfExistingUsernames;
                 }
             }
+        }
+
+        public async Task<GetMemberRs> GetCurrentUser()
+        {
+            GetMemberRs rs = new GetMemberRs();
+            if (!HttpContext.Current.User.Identity.IsAuthenticated)
+            {
+                rs.IsAuthenticated = false;
+                rs.Member = null;
+            }
+            else
+            {
+                string userId = HttpContext.Current.User.Identity.GetUserId();
+
+                ApplicationUser user = await _userManager.FindByIdAsync(int.Parse(userId));
+                rs.Member = MappingConfig.Mapper.Map<MemberDTO>(user);
+                rs.IsAuthenticated = true;
+            }
+
+            return rs;
         }
     }
 }

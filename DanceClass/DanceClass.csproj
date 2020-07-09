@@ -239,6 +239,7 @@
     <Content Include="App\Member\Index\index.js" />
     <Content Include="App\Schedule\schedule.css" />
     <Content Include="App\Schedule\schedule.js" />
+    <Content Include="App\User\user.js" />
     <Content Include="Content\AdminLTE.css" />
     <Content Include="Content\AdminLTE.min.css" />
     <Content Include="Content\bootstrap-theme.css" />

@@ -92,7 +92,8 @@
     <Compile Include="Members\Get\GetMemberRs.cs" />
     <Compile Include="Members\MemberDTO.cs" />
     <Compile Include="Members\MemberService.cs" />
-    <Compile Include="Members\UserService.cs" />
+    <Compile Include="Members\IdentityService.cs" />
+    <Compile Include="Members\RoleDTO.cs" />
     <Compile Include="Package\PackageDTO.cs" />
     <Compile Include="Package\PackageService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

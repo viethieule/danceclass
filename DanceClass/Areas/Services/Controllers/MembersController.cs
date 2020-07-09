@@ -32,5 +32,12 @@ namespace DanceClass.Areas.Services.Controllers
             GetMemberRs rs = await _memberService.GetById(rq);
             return Json(rs);
         }
+
+        [HttpPost]
+        public async Task<ActionResult> GetCurrentUser()
+        {
+            GetMemberRs rs = await _memberService.GetCurrentUser();
+            return Json(rs);
+        }
     }
 }
