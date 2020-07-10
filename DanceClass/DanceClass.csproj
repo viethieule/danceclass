@@ -242,6 +242,8 @@
     <Content Include="App\User\user.js" />
     <Content Include="Content\AdminLTE.css" />
     <Content Include="Content\AdminLTE.min.css" />
+    <Content Include="Content\blue.css" />
+    <Content Include="Content\blue.png" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -270,6 +272,7 @@
     <Content Include="Scripts\fastclick.js" />
     <Content Include="Scripts\fullcalendar.js" />
     <Content Include="Scripts\fullcalendar.min.js" />
+    <Content Include="Scripts\icheck.min.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.js" />

@@ -33,6 +33,9 @@ namespace DanceClass
             bundles.Add(new ScriptBundle("~/bundles/moment").Include(
                       "~/Scripts/moment.js",
                       "~/Scripts/moment-with-locales.min.js"));
+            
+            bundles.Add(new ScriptBundle("~/bundles/iCheck").Include(
+                      "~/Scripts/icheck.min.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
