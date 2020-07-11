@@ -65,7 +65,7 @@ async function renderSchedule() {
         let tr = $('<tr></tr>');
         let tdTime = $('<td></td>')
             .html(
-                `${formatHhMm(eventGroup.hours, eventGroup.minutes)} <br />- ${formatHhMm(eventGroup.hours, eventGroup.minutes)}`
+                `${formatHhMm(eventGroup.hours, eventGroup.minutes)} <br />- ${formatHhMm(eventGroup.hours + 1, eventGroup.minutes)}`
             )
             .appendTo(tr);
 

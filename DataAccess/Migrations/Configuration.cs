@@ -75,6 +75,17 @@
                 });
             }
 
+            if (!context.Roles.Any())
+            {
+                context.Roles.Add(new Role { Name = "Admin" });
+                context.Roles.Add(new Role { Name = "Member" });
+            }
+
+            if (!context.Users.Any(x => x.UserName == "admin"))
+            {
+                var userStore = new ApplicationUserStore(context);
+            }
+
             context.SaveChanges();
         }
     }
