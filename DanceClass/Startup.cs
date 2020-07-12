@@ -7,6 +7,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.DataProtection;
 using Owin;
+using Services.Common.AutoMapper;
 using Services.Members;
 using System.Reflection;
 using System.Web;
@@ -27,6 +28,7 @@ namespace DanceClass
         {
             var builder = new ContainerBuilder();
 
+            builder.RegisterModule(new AutoMapperModule(typeof(AutoMapperModule).Assembly));
             builder.RegisterControllers(typeof(MvcApplication).Assembly);
 
             builder.RegisterType<DanceClassDbContext>().AsSelf().InstancePerRequest();

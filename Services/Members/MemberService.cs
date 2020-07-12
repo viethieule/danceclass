@@ -1,4 +1,5 @@
-﻿using DataAccess;
+﻿using AutoMapper;
+using DataAccess;
 using DataAccess.Entities;
 using DataAccess.IdentityAccessor;
 using Microsoft.AspNet.Identity;
@@ -30,16 +31,19 @@ namespace Services.Members
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
         private DanceClassDbContext _dbContext;
+        private IMapper _mapper;
         private const string DEFAULT_PASSWORD = "P@ssw0rd";
 
         public MemberService(
             ApplicationUserManager userManager,
             ApplicationSignInManager signInManager,
-            DanceClassDbContext dbContext)
+            DanceClassDbContext dbContext,
+            IMapper mapper)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _dbContext = dbContext;
+            _mapper = mapper;
         }
 
         public async Task<CreateMemberRs> Create(CreateMemberRq rq)
@@ -153,9 +157,7 @@ namespace Services.Members
                 ApplicationUser user = await _userManager.FindByIdAsync(int.Parse(userId));
                 if (user != null)
                 {
-                    List<string> roleNames = (await _userManager.GetRolesAsync(user.Id)).ToList();
-                    MemberDTO member = MappingConfig.Mapper.Map<MemberDTO>(user);
-                    member.RoleNames = roleNames;
+                    MemberDTO member = _mapper.Map<MemberDTO>(user);
                     rs.Member = member;
 
                     rs.IsAuthenticated = true;
