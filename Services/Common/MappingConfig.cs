@@ -27,12 +27,13 @@ namespace Services.Common
                 cfg.CreateMap<DataAccess.Entities.ScheduleMember, ScheduleMemberDTO>();
                 cfg.CreateMap<DataAccess.Entities.Package, PackageDTO>();
                 cfg.CreateMap<DataAccess.Entities.ApplicationUser, MemberDTO>();
+                cfg.CreateMap<DataAccess.Entities.UserRole, UserRoleDTO>();
                 cfg.CreateMap<DataAccess.Entities.Role, RoleDTO>();
-
+                    
                 cfg.CreateMap<PackageDTO, DataAccess.Entities.Package>();
                 cfg.CreateMap<MemberDTO, DataAccess.Entities.ApplicationUser>();
             });
-
+            
             Mapper = mapperConfig.CreateMapper();
         }
     }

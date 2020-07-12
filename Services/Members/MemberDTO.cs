@@ -14,6 +14,7 @@ namespace Services.Members
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
         public string UserName { get; set; }
-        public ICollection<RoleDTO> Roles { get; set; }
+        public ICollection<UserRoleDTO> Roles { get; set; }
+        public List<string> RoleNames { get; set; }
     }
 }

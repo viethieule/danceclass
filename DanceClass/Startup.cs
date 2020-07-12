@@ -2,6 +2,7 @@
 using Autofac.Integration.Mvc;
 using DataAccess;
 using DataAccess.Entities;
+using DataAccess.IdentityAccessor;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.DataProtection;

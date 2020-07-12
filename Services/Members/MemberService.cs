@@ -1,5 +1,6 @@
 ﻿using DataAccess;
 using DataAccess.Entities;
+using DataAccess.IdentityAccessor;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Services.Common;
@@ -150,8 +151,19 @@ namespace Services.Members
                 string userId = HttpContext.Current.User.Identity.GetUserId();
 
                 ApplicationUser user = await _userManager.FindByIdAsync(int.Parse(userId));
-                rs.Member = MappingConfig.Mapper.Map<MemberDTO>(user);
-                rs.IsAuthenticated = true;
+                if (user != null)
+                {
+                    List<string> roleNames = (await _userManager.GetRolesAsync(user.Id)).ToList();
+                    MemberDTO member = MappingConfig.Mapper.Map<MemberDTO>(user);
+                    member.RoleNames = roleNames;
+                    rs.Member = member;
+
+                    rs.IsAuthenticated = true;
+                }
+                else
+                {
+                    rs.IsAuthenticated = false;
+                }
             }
 
             return rs;

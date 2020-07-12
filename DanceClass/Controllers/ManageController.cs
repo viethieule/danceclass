@@ -8,6 +8,7 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using DanceClass.Models;
 using Services.Members;
+using DataAccess.IdentityAccessor;
 
 namespace DanceClass.Controllers
 {

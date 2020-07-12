@@ -1,36 +1,12 @@
-﻿using DataAccess;
-using DataAccess.Entities;
+﻿using DataAccess.Entities;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
-using Microsoft.Owin.Security;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace Services.Members
+namespace DataAccess.IdentityAccessor
 {
-    public class EmailService : IIdentityMessageService
-    {
-        public Task SendAsync(IdentityMessage message)
-        {
-            // Plug in your email service here to send an email.
-            return Task.FromResult(0);
-        }
-    }
-
-    public class SmsService : IIdentityMessageService
-    {
-        public Task SendAsync(IdentityMessage message)
-        {
-            // Plug in your SMS service here to send a text message.
-            return Task.FromResult(0);
-        }
-    }
-
     // Configure the application user manager used in this application. UserManager is defined in ASP.NET Identity and is used by the application.
     public class ApplicationUserManager : UserManager<ApplicationUser, int>
     {
@@ -87,22 +63,21 @@ namespace Services.Members
         }
     }
 
-    // Configure the application sign-in manager which is used in this application.
-    public class ApplicationSignInManager : SignInManager<ApplicationUser, int>
+    public class EmailService : IIdentityMessageService
     {
-        public ApplicationSignInManager(ApplicationUserManager userManager, IAuthenticationManager authenticationManager)
-            : base(userManager, authenticationManager)
+        public Task SendAsync(IdentityMessage message)
         {
+            // Plug in your email service here to send an email.
+            return Task.FromResult(0);
         }
+    }
 
-        public override Task<ClaimsIdentity> CreateUserIdentityAsync(ApplicationUser user)
+    public class SmsService : IIdentityMessageService
+    {
+        public Task SendAsync(IdentityMessage message)
         {
-            return user.GenerateUserIdentityAsync((ApplicationUserManager)UserManager);
-        }
-
-        public static ApplicationSignInManager Create(IdentityFactoryOptions<ApplicationSignInManager> options, IOwinContext context)
-        {
-            return new ApplicationSignInManager(context.GetUserManager<ApplicationUserManager>(), context.Authentication);
+            // Plug in your SMS service here to send a text message.
+            return Task.FromResult(0);
         }
     }
 }

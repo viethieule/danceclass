@@ -9,6 +9,7 @@ using DanceClass.Models;
 using DataAccess;
 using DataAccess.Entities;
 using Services.Members;
+using DataAccess.IdentityAccessor;
 
 namespace DanceClass
 {

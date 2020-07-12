@@ -28,21 +28,6 @@ namespace DataAccess.Entities
         public Role(string name) { Name = name; }
     }
 
-    public class ApplicationUserStore : UserStore<ApplicationUser, Role, int,
-        UserLogin, UserRole, UserClaim>
-    {
-        public ApplicationUserStore(DanceClassDbContext context) : base(context)
-        {
-        }
-    }
-
-    public class RoleStore : RoleStore<Role, int, UserRole>
-    {
-        public RoleStore(DanceClassDbContext context) : base(context)
-        {
-        }
-    }
-
     public class ApplicationUser : IdentityUser<int, UserLogin, UserRole, UserClaim>
     {
         public string FullName { get; set; }

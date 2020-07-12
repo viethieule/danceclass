@@ -1,6 +1,8 @@
 ﻿namespace DataAccess.Migrations
 {
     using DataAccess.Entities;
+    using DataAccess.IdentityAccessor;
+    using Microsoft.AspNet.Identity;
     using System;
     using System.Collections.Generic;
     using System.Data.Entity;
@@ -81,9 +83,19 @@
                 context.Roles.Add(new Role { Name = "Member" });
             }
 
+            context.SaveChanges();
+
             if (!context.Users.Any(x => x.UserName == "admin"))
             {
                 var userStore = new ApplicationUserStore(context);
+                var userManager = new ApplicationUserManager(userStore);
+                var admin = new ApplicationUser { UserName = "admin", Birthdate = DateTime.Now };
+
+                var result = userManager.CreateAsync(admin, "P@ssw0rd").Result;
+                if (result.Succeeded)
+                {
+                    userManager.AddToRole(admin.Id, "Admin");
+                }
             }
 
             context.SaveChanges();
