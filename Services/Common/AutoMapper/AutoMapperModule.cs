@@ -42,10 +42,7 @@ namespace Services.Common.AutoMapper
                 builder.RegisterType(type.AsType()).InstancePerDependency();
             }
 
-            builder.Register<IConfigurationProvider>(ctx => new MapperConfiguration(cfg => {
-                cfg.ConstructServicesUsing(ctx.Resolve);
-                cfg.AddMaps(assembliesToScan);
-            }));
+            builder.Register<IConfigurationProvider>(ctx => new MapperConfiguration(cfg => cfg.AddMaps(assembliesToScan)));
 
             builder.Register<IMapper>(ctx => new Mapper(ctx.Resolve<IConfigurationProvider>(), ctx.Resolve<IComponentContext>().Resolve)).InstancePerDependency();
         }

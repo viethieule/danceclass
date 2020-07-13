@@ -26,24 +26,17 @@ namespace Services.Members
         Task<GetMemberRs> GetCurrentUser();
     }
 
-    public class MemberService : IMemberService
+    public class MemberService : BaseService, IMemberService
     {
-        private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
-        private DanceClassDbContext _dbContext;
-        private IMapper _mapper;
         private const string DEFAULT_PASSWORD = "P@ssw0rd";
 
         public MemberService(
             ApplicationUserManager userManager,
-            ApplicationSignInManager signInManager,
             DanceClassDbContext dbContext,
-            IMapper mapper)
+            IMapper mapper) : base(dbContext, mapper)
         {
             _userManager = userManager;
-            _signInManager = signInManager;
-            _dbContext = dbContext;
-            _mapper = mapper;
         }
 
         public async Task<CreateMemberRs> Create(CreateMemberRq rq)
@@ -53,14 +46,14 @@ namespace Services.Members
                 MemberDTO member = rq.Member;
                 member.UserName = await GenerateUserName(member.FullName, _dbContext);
 
-                ApplicationUser appUser = MappingConfig.Mapper.Map<ApplicationUser>(member);
+                ApplicationUser appUser = _mapper.Map<ApplicationUser>(member);
                 var result = await _userManager.CreateAsync(appUser, DEFAULT_PASSWORD);
                 if (!result.Succeeded)
                 {
                     throw new Exception("Cannot create new member. " + string.Join(" ", result.Errors));
                 }
 
-                DataAccess.Entities.Package package = MappingConfig.Mapper.Map<DataAccess.Entities.Package>(rq.Package);
+                DataAccess.Entities.Package package = _mapper.Map<DataAccess.Entities.Package>(rq.Package);
                 if (rq.Package.Id != null)
                 {
                     if (!_dbContext.Packages.Any(p => p.Id == rq.Package.Id && p.IsDefault))
@@ -98,7 +91,7 @@ namespace Services.Members
             var member = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserName == rq.UserName);
 
             GetMemberRs rs = new GetMemberRs();
-            rs.Member = MappingConfig.Mapper.Map<MemberDTO>(member);
+            rs.Member = _mapper.Map<MemberDTO>(member);
             return rs;
         }
 

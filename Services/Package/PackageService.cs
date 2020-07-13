@@ -1,4 +1,5 @@
-﻿using DataAccess;
+﻿using AutoMapper;
+using DataAccess;
 using Services.Common;
 using System;
 using System.Collections.Generic;
@@ -14,15 +15,16 @@ namespace Services.Package
         Task<List<PackageDTO>> GetAll(bool isDefault);
     }
 
-    public class PackageService : IPackageService
+    public class PackageService : BaseService, IPackageService
     {
+        public PackageService(DanceClassDbContext dbContext, IMapper mapper) : base(dbContext, mapper)
+        {
+        }
+
         public async Task<List<PackageDTO>> GetAll(bool isDefault)
         {
-            using (DanceClassDbContext db = new DanceClassDbContext())
-            {
-                List<DataAccess.Entities.Package> packages = await db.Packages.Where(p => p.IsDefault == isDefault).ToListAsync();
-                return MappingConfig.Mapper.Map<List<PackageDTO>>(packages);
-            }
+            List<DataAccess.Entities.Package> packages = await _dbContext.Packages.Where(p => p.IsDefault == isDefault).ToListAsync();
+            return _mapper.Map<List<PackageDTO>>(packages);
         }
     }
 }

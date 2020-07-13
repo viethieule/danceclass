@@ -10,10 +10,10 @@ namespace DanceClass.Areas.Services.Controllers
 {
     public class ScheduleController : Controller
     {
-        private readonly ScheduleService _scheduleService;
-        public ScheduleController()
+        private readonly IScheduleService _scheduleService;
+        public ScheduleController(IScheduleService scheduleService)
         {
-            _scheduleService = new ScheduleService();
+            _scheduleService = scheduleService;
         }
 
         [HttpPost]

@@ -1,4 +1,5 @@
-﻿using DataAccess;
+﻿using AutoMapper;
+using DataAccess;
 using Services.Common;
 using System;
 using System.Collections.Generic;
@@ -8,28 +9,30 @@ using System.Threading.Tasks;
 
 namespace Services.Schedule
 {
-    public class ScheduleService
+    public interface IScheduleService
     {
-        public ScheduleService()
+        Task<GetSchedulesRs> Get(GetSchedulesRq rq);
+    }
+
+    public class ScheduleService : BaseService, IScheduleService
+    {
+        public ScheduleService(DanceClassDbContext dbContext, IMapper mapper) : base(dbContext, mapper)
         {
         }
-            
+
         public async Task<GetSchedulesRs> Get(GetSchedulesRq rq)
         {
-            using (DanceClassDbContext db = new DanceClassDbContext())
-            {
-                DateTime start = rq.Start.Date;
-                DateTime end = rq.Start.AddDays(6).Date;
+            DateTime start = rq.Start.Date;
+            DateTime end = rq.Start.AddDays(6).Date;
 
-                var schedule = await db.Schedules
-                    .Where(s => !(DbFunctions.TruncateTime(s.OpeningDate) > end || DbFunctions.TruncateTime(s.EndingDate) < start))
-                    .ToListAsync();
+            var schedule = await _dbContext.Schedules
+                .Where(s => !(DbFunctions.TruncateTime(s.OpeningDate) > end || DbFunctions.TruncateTime(s.EndingDate) < start))
+                .ToListAsync();
 
-                GetSchedulesRs rs = new GetSchedulesRs();
-                rs.Schedules = MappingConfig.Mapper.Map<List<ScheduleDTO>>(schedule);
+            GetSchedulesRs rs = new GetSchedulesRs();
+            rs.Schedules = _mapper.Map<List<ScheduleDTO>>(schedule);
 
-                return rs;
-            }
+            return rs;
         }
     }
 }

@@ -101,8 +101,8 @@
     <Compile Include="Common\AutoMapper\AutoMapperModule.cs" />
     <Compile Include="Common\AutoMapper\DtoToEntityMappingProfile.cs" />
     <Compile Include="Common\AutoMapper\EntityToDtoMappingProfile.cs" />
+    <Compile Include="Common\BaseService.cs" />
     <Compile Include="Common\GetEntityRequestBase.cs" />
-    <Compile Include="Common\MappingConfig.cs" />
     <Compile Include="Members\CreateMemberRq.cs" />
     <Compile Include="Members\CreateMemberRs.cs" />
     <Compile Include="Members\Get\GetMemberRq.cs" />
