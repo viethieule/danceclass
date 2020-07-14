@@ -1,20 +1,17 @@
 ﻿using Services.Members;
 using Services.Schedule;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Services.ScheduleMember
+namespace Services.Registration
 {
-    public class ScheduleMemberDTO
+    public class RegistrationDTO
     {
+        public int Id { get; set; }
         public int ScheduleId { get; set; }
         public virtual ScheduleDTO Schedule { get; set; }
         public int UserId { get; set; }
         public virtual MemberDTO User { get; set; }
         public DateTime DateRegistered { get; set; }
-        public int RemainingSessions { get; set; }
+        public DateTime DateAttending { get; set; }
     }
 }

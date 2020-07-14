@@ -28,6 +28,6 @@ namespace DataAccess.Entities
         [ForeignKey("TrainerId")]
         public virtual Trainer Trainer { get; set; }
 
-        public virtual IEnumerable<ScheduleMember> ScheduleMembers { get; set; }
+        public virtual IEnumerable<Registration> Registrations { get; set; }
     }
 }

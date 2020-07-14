@@ -20,5 +20,7 @@ namespace DataAccess.Entities
 
         public int RemainingSessions { get; set; }
         public DateTime? ExpiryDate { get; set; }
+
+        public bool IsActive { get; set; }
     }
 }

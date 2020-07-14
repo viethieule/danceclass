@@ -114,7 +114,7 @@
     <Compile Include="Package\PackageDTO.cs" />
     <Compile Include="Package\PackageService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ScheduleMember\ScheduleMemberDTO.cs" />
+    <Compile Include="Registration\ScheduleMemberDTO.cs" />
     <Compile Include="Schedule\GetSchedulesRq.cs" />
     <Compile Include="Schedule\GetSchedulesRs.cs" />
     <Compile Include="Schedule\ScheduleDTO.cs" />

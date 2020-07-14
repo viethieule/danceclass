@@ -82,7 +82,7 @@
     <Compile Include="Entities\ApplicationUser.cs" />
     <Compile Include="Entities\Class.cs" />
     <Compile Include="Entities\MemberPackage.cs" />
-    <Compile Include="Entities\ScheduleMember.cs" />
+    <Compile Include="Entities\Registration.cs" />
     <Compile Include="Entities\Package.cs" />
     <Compile Include="Entities\Promotion.cs" />
     <Compile Include="Entities\Schedule.cs" />

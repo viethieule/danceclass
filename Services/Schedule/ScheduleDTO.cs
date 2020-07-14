@@ -1,5 +1,6 @@
-﻿using Services.Class;
-using Services.ScheduleMember;
+﻿using DataAccess.Entities;
+using Services.Class;
+using Services.Registration;
 using Services.Trainer;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,6 @@ namespace Services.Schedule
         public int TrainerId { get; set; }
         public virtual TrainerDTO Trainer { get; set; }
 
-        public virtual IEnumerable<ScheduleMemberDTO> ScheduleMembers { get; set; }
+        public virtual IEnumerable<RegistrationDTO> Registrations { get; set; }
     }
 }

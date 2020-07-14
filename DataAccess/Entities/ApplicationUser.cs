@@ -33,7 +33,7 @@ namespace DataAccess.Entities
         public string FullName { get; set; }
         public DateTime Birthdate { get; set; }
 
-        public virtual IEnumerable<ScheduleMember> ScheduleMembers { get; set; }
+        public virtual IEnumerable<Registration> Registrations { get; set; }
         public virtual IEnumerable<MemberPackage> MemberPackages { get; set; }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser, int> manager)
