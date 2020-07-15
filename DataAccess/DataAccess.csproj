@@ -119,6 +119,10 @@
     <Compile Include="Migrations\202007050254386_AddMemberPackageRelation.designer.cs">
       <DependentUpon>202007050254386_AddMemberPackageRelation.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202007141441419_AddRegistration.cs" />
+    <Compile Include="Migrations\202007141441419_AddRegistration.designer.cs">
+      <DependentUpon>202007141441419_AddRegistration.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -147,6 +151,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202007050254386_AddMemberPackageRelation.resx">
       <DependentUpon>202007050254386_AddMemberPackageRelation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202007141441419_AddRegistration.resx">
+      <DependentUpon>202007141441419_AddRegistration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
