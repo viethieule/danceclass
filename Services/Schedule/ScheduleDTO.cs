@@ -26,6 +26,6 @@ namespace Services.Schedule
         public int TrainerId { get; set; }
         public virtual TrainerDTO Trainer { get; set; }
 
-        public virtual IEnumerable<RegistrationDTO> Registrations { get; set; }
+        public virtual IEnumerable<ScheduleDetailDTO> ScheduleDetails { get; set; }
     }
 }

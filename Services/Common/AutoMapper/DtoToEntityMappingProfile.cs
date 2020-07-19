@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Services.Members;
 using Services.Package;
+using Services.Registration;
 
 namespace Services.Common.AutoMapper
 {
@@ -10,6 +11,7 @@ namespace Services.Common.AutoMapper
         {
             CreateMap<PackageDTO, DataAccess.Entities.Package>();
             CreateMap<MemberDTO, DataAccess.Entities.ApplicationUser>();
+            CreateMap<RegistrationDTO, DataAccess.Entities.Registration>();
         }
     }
 }

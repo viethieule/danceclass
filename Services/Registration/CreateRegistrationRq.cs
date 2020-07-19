@@ -1,6 +1,6 @@
 ﻿namespace Services.Registration
 {
-    public class CreateRegistrationRs
+    public class CreateRegistrationRq
     {
         public RegistrationDTO Registration { get; set; }
     }

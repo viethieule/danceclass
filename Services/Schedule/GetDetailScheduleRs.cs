@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Services.Schedule
 {
-    public class GetSchedulesRs
+    public class GetDetailedScheduleRs
     {
-        public List<ScheduleDTO> Schedules { get; set; }
+        public List<ScheduleDetailDTO> ScheduleDetails { get; set; }
     }
 }

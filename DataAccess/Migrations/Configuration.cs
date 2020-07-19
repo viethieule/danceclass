@@ -30,6 +30,8 @@
                     new Class { Name = "Urban Choreography" },
                     new Class { Name = "Dance Cover" },
                 });
+
+                context.SaveChanges();
             }
 
             if (!context.Trainers.Any())
@@ -39,9 +41,9 @@
                     new Trainer { Name = "Linh" },
                     new Trainer { Name = "Thảo" }
                 });
-            }
 
-            context.SaveChanges();
+                context.SaveChanges();
+            }
 
             if (!context.Schedules.Any())
             {
@@ -64,6 +66,13 @@
                     new Schedule { Song = "We don't talk anymore", OpeningDate = new DateTime(2020, 6, 6), EndingDate = new DateTime(2020, 6, 27) , StartTime = new TimeSpan(18, 0, 0), Sessions = 4, SessionsPerWeek = 1, DaysPerWeek = "6", Branch = "Q3", ClassId = danceCover.Id, TrainerId = linh.Id },
                     new Schedule { Song = "Lạnh lẽo", OpeningDate = new DateTime(2020, 6, 7), EndingDate = new DateTime(2020, 6, 21) , StartTime = new TimeSpan(19, 35, 0), Sessions = 5, SessionsPerWeek = 2, DaysPerWeek = "05", Branch = "PN", ClassId = muaDuongDai.Id, TrainerId = thao.Id },
                 });
+
+                context.SaveChanges();
+            }
+
+            if (!context.ScheduleDetails.Any())
+            {
+                
             }
 
             if (!context.Packages.Any())
@@ -75,15 +84,17 @@
                     new Package { NumberOfSessions = 24, Price = 1450000, Months = 5, IsDefault = true },
                     new Package { NumberOfSessions = 50, Price = 3000000, Months = 8, IsDefault = true },
                 });
+
+                context.SaveChanges();
             }
 
             if (!context.Roles.Any())
             {
                 context.Roles.Add(new Role { Name = "Admin" });
                 context.Roles.Add(new Role { Name = "Member" });
-            }
 
-            context.SaveChanges();
+                context.SaveChanges();
+            }
 
             if (!context.Users.Any(x => x.UserName == "admin"))
             {
@@ -96,9 +107,9 @@
                 {
                     userManager.AddToRole(admin.Id, "Admin");
                 }
-            }
 
-            context.SaveChanges();
+                context.SaveChanges();
+            }
         }
     }
 }

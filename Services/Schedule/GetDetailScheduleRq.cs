@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Services.Schedule
 {
-    public class GetSchedulesRq
+    public class GetDetailedScheduleRq
     {
         public DateTime Start { get; set; }
     }

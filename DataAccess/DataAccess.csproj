@@ -86,6 +86,7 @@
     <Compile Include="Entities\Package.cs" />
     <Compile Include="Entities\Promotion.cs" />
     <Compile Include="Entities\Schedule.cs" />
+    <Compile Include="Entities\ScheduleDetail.cs" />
     <Compile Include="Entities\Trainer.cs" />
     <Compile Include="IdentityAccessor\ApplicationRoleStore.cs" />
     <Compile Include="IdentityAccessor\ApplicationSignInManager.cs" />

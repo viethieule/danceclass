@@ -219,6 +219,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Areas\Services\Controllers\MembersController.cs" />
     <Compile Include="Areas\Services\Controllers\PackageController.cs" />
+    <Compile Include="Areas\Services\Controllers\RegistrationController.cs" />
     <Compile Include="Areas\Services\Controllers\ScheduleController.cs" />
     <Compile Include="Areas\Services\ServicesAreaRegistration.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -340,6 +341,7 @@
     <Folder Include="Areas\Services\Models\" />
     <Folder Include="Areas\Services\Views\Members\" />
     <Folder Include="Areas\Services\Views\Package\" />
+    <Folder Include="Areas\Services\Views\Registration\" />
     <Folder Include="Areas\Services\Views\Schedule\" />
     <Folder Include="Areas\Services\Views\Shared\" />
     <Folder Include="Views\Users\" />

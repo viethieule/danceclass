@@ -17,9 +17,9 @@ namespace DanceClass.Areas.Services.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Get(GetSchedulesRq rq)
+        public async Task<ActionResult> Get(GetDetailedScheduleRq rq)
         {
-            GetSchedulesRs rs = await _scheduleService.Get(rq);
+            GetDetailedScheduleRs rs = await _scheduleService.GetDetail(rq);
             return Json(rs);
         }
     }
