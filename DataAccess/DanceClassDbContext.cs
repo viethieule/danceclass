@@ -9,6 +9,7 @@ namespace DataAccess
         public DanceClassDbContext()
             : base("DefaultConnection")
         {
+            //this.Configuration.LazyLoadingEnabled = false;
         }
 
         public static DanceClassDbContext Create()

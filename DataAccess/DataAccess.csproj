@@ -124,6 +124,10 @@
     <Compile Include="Migrations\202007141441419_AddRegistration.designer.cs">
       <DependentUpon>202007141441419_AddRegistration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202007191425069_AddScheduleDetail.cs" />
+    <Compile Include="Migrations\202007191425069_AddScheduleDetail.designer.cs">
+      <DependentUpon>202007191425069_AddScheduleDetail.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -155,6 +159,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202007141441419_AddRegistration.resx">
       <DependentUpon>202007141441419_AddRegistration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202007191425069_AddScheduleDetail.resx">
+      <DependentUpon>202007191425069_AddScheduleDetail.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

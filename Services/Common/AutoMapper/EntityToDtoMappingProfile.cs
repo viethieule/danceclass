@@ -16,12 +16,18 @@ namespace Services.Common.AutoMapper
     {
         public EntityToDtoMappingProfile()
         {
-            CreateMap<DataAccess.Entities.Schedule, ScheduleDTO>();
+            CreateMap<DataAccess.Entities.Schedule, ScheduleDTO>()
+                .ForMember(x => x.ScheduleDetails, opt => opt.ExplicitExpansion())
+                .ForMember(x => x.Class, opt => opt.ExplicitExpansion());
             CreateMap<DataAccess.Entities.ScheduleDetail, ScheduleDetailDTO>()
-                .ForMember(x => x.TotalRegistered, opt => opt.MapFrom(m => m.Registrations.Count));
+                .ForMember(x => x.TotalRegistered, opt => opt.MapFrom(m => m.Registrations.Count()))
+                .ForMember(x => x.Registrations, opt => opt.ExplicitExpansion())
+                .ForMember(x => x.Schedule, opt => opt.ExplicitExpansion());
             CreateMap<DataAccess.Entities.Trainer, TrainerDTO>();
             CreateMap<DataAccess.Entities.Class, ClassDTO>();
-            CreateMap<DataAccess.Entities.Registration, RegistrationDTO>();
+            CreateMap<DataAccess.Entities.Registration, RegistrationDTO>()
+                .ForMember(x => x.ScheduleDetail, opt => opt.ExplicitExpansion())
+                .ForMember(x => x.User, opt => opt.ExplicitExpansion());
             CreateMap<DataAccess.Entities.Package, PackageDTO>();
             CreateMap<DataAccess.Entities.ApplicationUser, MemberDTO>()
                 .ForMember(x => x.RoleNames, opt => opt.MapFrom<ApplicationUserRolesNameResolver>());

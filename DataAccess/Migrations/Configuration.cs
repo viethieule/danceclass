@@ -19,6 +19,44 @@
 
         protected override void Seed(DataAccess.DanceClassDbContext context)
         {
+            if (!context.Users.Any(x => x.UserName == "admin"))
+            {
+                var userStore = new ApplicationUserStore(context);
+                var userManager = new ApplicationUserManager(userStore);
+                var admin = new ApplicationUser { UserName = "admin", Birthdate = DateTime.Now };
+
+                var result = userManager.CreateAsync(admin, "P@ssw0rd").Result;
+                if (result.Succeeded)
+                {
+                    userManager.AddToRole(admin.Id, "Admin");
+                }
+
+                context.SaveChanges();
+            }
+
+            if (!context.Users.Any(x => x.UserName == "member.test"))
+            {
+                var userStore = new ApplicationUserStore(context);
+                var userManager = new ApplicationUserManager(userStore);
+                var member = new ApplicationUser { UserName = "member.test", Birthdate = DateTime.Now };
+
+                var result = userManager.CreateAsync(member, "123456").Result;
+                if (result.Succeeded)
+                {
+                    userManager.AddToRole(member.Id, "Member");
+                }
+
+                context.SaveChanges();
+            }
+
+            if (!context.Roles.Any())
+            {
+                context.Roles.Add(new Role { Name = "Admin" });
+                context.Roles.Add(new Role { Name = "Member" });
+
+                context.SaveChanges();
+            }
+
             if (!context.Classes.Any())
             {
                 context.Classes.AddRange(new List<Class>
@@ -72,7 +110,75 @@
 
             if (!context.ScheduleDetails.Any())
             {
-                
+                var tayTraiChiTrang = context.Schedules.FirstOrDefault(s => s.Song == "Tay trái chỉ trăng");
+                if (tayTraiChiTrang != null)
+                {
+                    context.ScheduleDetails.AddRange(new List<ScheduleDetail>
+                    {
+                        new ScheduleDetail { Date = new DateTime(2020, 6, 16), ScheduleId = tayTraiChiTrang.Id, SessionNo = 1 },
+                        new ScheduleDetail { Date = new DateTime(2020, 6, 18), ScheduleId = tayTraiChiTrang.Id, SessionNo = 2 },
+                        new ScheduleDetail { Date = new DateTime(2020, 6, 23), ScheduleId = tayTraiChiTrang.Id, SessionNo = 3 },
+                        new ScheduleDetail { Date = new DateTime(2020, 6, 25), ScheduleId = tayTraiChiTrang.Id, SessionNo = 4 },
+                    });
+                }
+
+                var motDoiDoiNguoi = context.Schedules.FirstOrDefault(s => s.Song == "Một đời đợi người");
+                if (motDoiDoiNguoi != null)
+                {
+                    context.ScheduleDetails.AddRange(new List<ScheduleDetail>
+                    {
+                        new ScheduleDetail { Date = new DateTime(2020, 6, 8), ScheduleId = motDoiDoiNguoi.Id, SessionNo = 1 },
+                        new ScheduleDetail { Date = new DateTime(2020, 6, 12), ScheduleId = motDoiDoiNguoi.Id, SessionNo = 2 },
+                        new ScheduleDetail { Date = new DateTime(2020, 6, 15), ScheduleId = motDoiDoiNguoi.Id, SessionNo = 3 },
+                        new ScheduleDetail { Date = new DateTime(2020, 6, 19), ScheduleId = motDoiDoiNguoi.Id, SessionNo = 4 },
+                        new ScheduleDetail { Date = new DateTime(2020, 6, 22), ScheduleId = motDoiDoiNguoi.Id, SessionNo = 5 },
+                        new ScheduleDetail { Date = new DateTime(2020, 6, 26), ScheduleId = motDoiDoiNguoi.Id, SessionNo = 6 },
+                    });
+                }
+
+                var weDontTalkAnymore = context.Schedules.FirstOrDefault(s => s.Song == "We don't talk anymore");
+                if (weDontTalkAnymore != null)
+                {
+                    context.ScheduleDetails.AddRange(new List<ScheduleDetail>
+                    {
+                        new ScheduleDetail { Date = new DateTime(2020, 6, 6), ScheduleId = weDontTalkAnymore.Id, SessionNo = 1 },
+                        new ScheduleDetail { Date = new DateTime(2020, 6, 13), ScheduleId = weDontTalkAnymore.Id, SessionNo = 2 },
+                        new ScheduleDetail { Date = new DateTime(2020, 6, 20), ScheduleId = weDontTalkAnymore.Id, SessionNo = 3 },
+                        new ScheduleDetail { Date = new DateTime(2020, 6, 27), ScheduleId = weDontTalkAnymore.Id, SessionNo = 4 },
+                    });
+                }
+
+                var lanhLeo = context.Schedules.FirstOrDefault(s => s.Song == "Lạnh lẽo");
+                if (lanhLeo != null)
+                {
+                    context.ScheduleDetails.AddRange(new List<ScheduleDetail>
+                    {
+                        new ScheduleDetail { Date = new DateTime(2020, 6, 7), ScheduleId = lanhLeo.Id, SessionNo = 1 },
+                        new ScheduleDetail { Date = new DateTime(2020, 6, 12), ScheduleId = lanhLeo.Id, SessionNo = 2 },
+                        new ScheduleDetail { Date = new DateTime(2020, 6, 14), ScheduleId = lanhLeo.Id, SessionNo = 3 },
+                        new ScheduleDetail { Date = new DateTime(2020, 6, 19), ScheduleId = lanhLeo.Id, SessionNo = 4 },
+                        new ScheduleDetail { Date = new DateTime(2020, 6, 21), ScheduleId = lanhLeo.Id, SessionNo = 5 },
+                    });
+                }
+
+                context.SaveChanges();
+            }
+
+            if (!context.Registrations.Any())
+            {
+                var tayTraiChiTrangBuoi2 = context.ScheduleDetails.FirstOrDefault(x => x.Schedule.Song == "Tay trái chỉ trăng" && x.SessionNo == 2);
+                var memberTest = context.Users.FirstOrDefault(x => x.UserName == "member.test");
+                if (tayTraiChiTrangBuoi2 != null)
+                {
+                    context.Registrations.Add(new Registration
+                    {
+                        DateRegistered = DateTime.Now,
+                        ScheduleDetailId = tayTraiChiTrangBuoi2.Id,
+                        UserId = memberTest.Id
+                    });
+
+                    context.SaveChanges();
+                }
             }
 
             if (!context.Packages.Any())
@@ -84,29 +190,6 @@
                     new Package { NumberOfSessions = 24, Price = 1450000, Months = 5, IsDefault = true },
                     new Package { NumberOfSessions = 50, Price = 3000000, Months = 8, IsDefault = true },
                 });
-
-                context.SaveChanges();
-            }
-
-            if (!context.Roles.Any())
-            {
-                context.Roles.Add(new Role { Name = "Admin" });
-                context.Roles.Add(new Role { Name = "Member" });
-
-                context.SaveChanges();
-            }
-
-            if (!context.Users.Any(x => x.UserName == "admin"))
-            {
-                var userStore = new ApplicationUserStore(context);
-                var userManager = new ApplicationUserManager(userStore);
-                var admin = new ApplicationUser { UserName = "admin", Birthdate = DateTime.Now };
-
-                var result = userManager.CreateAsync(admin, "P@ssw0rd").Result;
-                if (result.Succeeded)
-                {
-                    userManager.AddToRole(admin.Id, "Admin");
-                }
 
                 context.SaveChanges();
             }

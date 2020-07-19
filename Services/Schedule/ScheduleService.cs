@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using DataAccess;
 using Microsoft.AspNet.Identity;
 using Services.Common;
@@ -18,8 +19,11 @@ namespace Services.Schedule
 
     public class ScheduleService : BaseService, IScheduleService
     {
-        public ScheduleService(DanceClassDbContext dbContext, IMapper mapper) : base(dbContext, mapper)
+        private readonly IConfigurationProvider _mappingConfig;
+
+        public ScheduleService(DanceClassDbContext dbContext, IMapper mapper, IConfigurationProvider mappingConfig) : base(dbContext, mapper)
         {
+            _mappingConfig = mappingConfig;
         }
 
         public async Task<GetDetailedScheduleRs> GetDetail(GetDetailedScheduleRq rq)
@@ -27,20 +31,13 @@ namespace Services.Schedule
             DateTime start = rq.Start.Date;
             DateTime end = rq.Start.AddDays(6).Date;
 
-            var schedule = await _dbContext.Schedules
-                .Where(x => !(DbFunctions.TruncateTime(x.OpeningDate) > end || DbFunctions.TruncateTime(x.EndingDate) < start))
+            var scheduleDetailDtos = await _dbContext.ScheduleDetails
+                .Where(x => !(DbFunctions.TruncateTime(x.Date) > end || DbFunctions.TruncateTime(x.Date) < start))
+                .ProjectTo<ScheduleDetailDTO>(_mappingConfig, dest => dest.Registrations, dest => dest.Schedule)
                 .ToListAsync();
-
-            var scheduleIds = schedule.Select(x => x.Id);
-            var scheduleDetails = await _dbContext.ScheduleDetails
-                .Where(x => scheduleIds.Contains(x.ScheduleId))
-                .ToListAsync();
-
-            GetDetailedScheduleRs rs = new GetDetailedScheduleRs();
-            var scheduleDetailDtos = _mapper.Map<List<ScheduleDetailDTO>>(scheduleDetails);
 
             var isMember = HttpContext.Current.User.Identity.IsAuthenticated && HttpContext.Current.User.IsInRole("Member");
-
+            `
             if (isMember)
             {
                 int userId = int.Parse(HttpContext.Current.User.Identity.GetUserId());
@@ -55,7 +52,10 @@ namespace Services.Schedule
                 });
             }
 
-            rs.ScheduleDetails = scheduleDetailDtos;
+            GetDetailedScheduleRs rs = new GetDetailedScheduleRs
+            {
+                ScheduleDetails = scheduleDetailDtos
+            };
 
             return rs;
         }
