@@ -13,7 +13,7 @@ namespace Services.Schedule
         public int ScheduleId { get; set; }
         public ScheduleDTO Schedule { get; set; }
 
-        public virtual IEnumerable<RegistrationDTO> Registrations { get; set; }
+        public List<RegistrationDTO> Registrations { get; set; }
         public int TotalRegistered { get; set; }
         public int SessionNo { get; set; }
         public bool IsCurrentUserRegistered { get; set; }

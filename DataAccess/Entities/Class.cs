@@ -10,6 +10,6 @@ namespace DataAccess.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string Name { get; set; }
-        public virtual IEnumerable<Schedule> Schedules { get; set; }
+        public virtual ICollection<Schedule> Schedules { get; set; }
     }
 }

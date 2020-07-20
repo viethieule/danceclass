@@ -37,7 +37,7 @@ namespace Services.Schedule
                 .ToListAsync();
 
             var isMember = HttpContext.Current.User.Identity.IsAuthenticated && HttpContext.Current.User.IsInRole("Member");
-            `
+            
             if (isMember)
             {
                 int userId = int.Parse(HttpContext.Current.User.Identity.GetUserId());

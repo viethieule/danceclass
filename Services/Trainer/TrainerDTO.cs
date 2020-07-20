@@ -11,6 +11,6 @@ namespace Services.Trainer
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public virtual List<ScheduleDTO> Schedules { get; set; }
+        public List<ScheduleDTO> Schedules { get; set; }
     }
 }

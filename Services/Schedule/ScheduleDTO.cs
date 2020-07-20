@@ -21,11 +21,11 @@ namespace Services.Schedule
         public string Branch { get; set; }
         
         public int ClassId { get; set; }
-        public virtual ClassDTO Class { get; set; }
+        public ClassDTO Class { get; set; }
 
         public int TrainerId { get; set; }
-        public virtual TrainerDTO Trainer { get; set; }
+        public TrainerDTO Trainer { get; set; }
 
-        public virtual IEnumerable<ScheduleDetailDTO> ScheduleDetails { get; set; }
+        public List<ScheduleDetailDTO> ScheduleDetails { get; set; }
     }
 }

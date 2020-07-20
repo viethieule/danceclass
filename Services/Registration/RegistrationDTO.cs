@@ -7,7 +7,7 @@ namespace Services.Registration
     public class RegistrationDTO
     {
         public int Id { get; set; }
-        public int ScheduleId { get; set; }
+        public int ScheduleDetailId { get; set; }
         public ScheduleDetailDTO ScheduleDetail { get; set; }
         public int UserId { get; set; }
         public MemberDTO User { get; set; }
