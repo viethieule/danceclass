@@ -13,6 +13,8 @@ namespace DanceClass
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
+            
+
             routes.MapRoute(
                 name: "Member",
                 url: "member/{username}",

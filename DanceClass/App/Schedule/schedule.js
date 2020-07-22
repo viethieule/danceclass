@@ -46,10 +46,8 @@ async function renderCalendar() {
 
 function renderDaysOfWeek() {
     var weekTableData = m_currentDaysOfWeek
-        .map((day) => {
-            var dayLocale = capitalizeFirstLetter(
-                day.locale('vi').format('dddd D/M')
-            );
+        .map(day => {
+            var dayLocale = capitalizeFirstLetter(day.locale('vi').format('dddd D/M'));
             return `<th>${dayLocale}</th>`;
         })
         .join('');
@@ -69,11 +67,19 @@ async function renderSchedule() {
             )
             .appendTo(tr);
 
-        m_currentDaysOfWeek.forEach((date) => {
+        m_currentDaysOfWeek.forEach(date => {
             let tdEvents = $('<td></td>');
+            let events = eventGroup.filter(e => dateRevive(e.Date).getDay() === date.day())
+            if (events && events.length > 0) {
+                events
+                    .reduce((jObject, event) => {
+                        jObject = jObject.add(renderEventTag(event));
+                    }, $())
+                    .appendTo(tdEvents);
+            }
             let divEvents = eventGroup.events
                 .reduce((jObject, event) => {
-                    if (date.isBefore(moment(dateRevive(event.OpeningDate)), 'day')) {
+                    if (date.isBefore(moment(dateRevive(event.Schedule.OpeningDate)), 'day')) {
                         return jObject;
                     }
                     if (event.DaysPerWeek.indexOf(date.day().toString()) !== -1) {
@@ -91,14 +97,16 @@ async function renderSchedule() {
 }
 
 function renderEventTag(event, dateToRender) {
+    const { Schedule: schedule, Registration: registration } = event;
+
     var div = $('<div></div>', {
-        class: 'mistake-event mistake-event-' + event.Branch.toLowerCase(),
+        class: 'mistake-event mistake-event-' + schedule.Branch.toLowerCase(),
     });
 
     $('<p></p>', {
         class: 'mistake-event-class',
     })
-        .text(event.Class.Name)
+        .text(schedule.Class.Name)
         .appendTo(div);
 
     $('<p></p>', {
@@ -143,9 +151,9 @@ async function getSchedule() {
         const data = await ajaxSchedule(m_currentDaysOfWeek[0].toDate());
         console.log(data);
 
-        if (data && data.Schedules) {
-            const eventsByTime = data.Schedules.reduce((result, ele) => {
-                const { Hours: hours, Minutes: minutes } = ele.StartTime;
+        if (data && data.ScheduleDetails) {
+            const eventsByTime = data.ScheduleDetails.reduce((result, ele) => {
+                const { Hours: hours, Minutes: minutes } = ele.Schedule.StartTime;
 
                 var eventGroup = result.find(
                     (r) => r.hours === hours && r.minutes === minutes
@@ -212,11 +220,10 @@ function capitalizeFirstLetter(string) {
 }
 
 async function ajaxSchedule(weekStart) {
-    debugger;
     return $.ajax({
         method: 'POST',
         data: { start: weekStart.toISOString() },
         async: true,
-        url: '/Services/Schedule/Get',
+        url: '/Services/Schedule/GetDetail',
     });
 }

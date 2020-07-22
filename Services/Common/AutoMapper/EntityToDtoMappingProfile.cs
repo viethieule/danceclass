@@ -25,7 +25,8 @@ namespace Services.Common.AutoMapper
                 .ForMember(x => x.Registrations, opt => opt.ExplicitExpansion())
                 .ForMember(x => x.Schedule, opt => opt.ExplicitExpansion());
             CreateMap<DataAccess.Entities.Trainer, TrainerDTO>();
-            CreateMap<DataAccess.Entities.Class, ClassDTO>();
+            CreateMap<DataAccess.Entities.Class, ClassDTO>()
+                .ForMember(x => x.Schedules, opt => opt.ExplicitExpansion());
             CreateMap<DataAccess.Entities.Registration, RegistrationDTO>()
                 .ForMember(x => x.ScheduleDetail, opt => opt.ExplicitExpansion())
                 .ForMember(x => x.User, opt => opt.ExplicitExpansion());

@@ -17,6 +17,6 @@ namespace DataAccess.Entities
         public double Price { get; set; }
         public int Months { get; set; }
         public bool IsDefault { get; set; }
-        public virtual IEnumerable<ApplicationUser> MemberPackages { get; set; }
+        public IEnumerable<ApplicationUser> MemberPackages { get; set; }
     }
 }

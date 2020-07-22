@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Autofac.Integration.Mvc;
+using Autofac.Integration.WebApi;
 using DataAccess;
 using DataAccess.Entities;
 using DataAccess.IdentityAccessor;
@@ -11,6 +12,7 @@ using Services.Common.AutoMapper;
 using Services.Members;
 using System.Reflection;
 using System.Web;
+using System.Web.Http;
 using System.Web.Mvc;
 
 [assembly: OwinStartupAttribute(typeof(DanceClass.Startup))]
@@ -30,6 +32,7 @@ namespace DanceClass
 
             builder.RegisterModule(new AutoMapperModule(typeof(AutoMapperModule).Assembly));
             builder.RegisterControllers(typeof(MvcApplication).Assembly);
+            builder.RegisterApiControllers(typeof(MvcApplication).Assembly);
 
             builder.RegisterType<DanceClassDbContext>().AsSelf().InstancePerRequest();
 
@@ -48,6 +51,8 @@ namespace DanceClass
             IContainer container = builder.Build();
 
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
+
+            GlobalConfiguration.Configuration.DependencyResolver = new AutofacWebApiDependencyResolver(container);
         }
     }
 }
