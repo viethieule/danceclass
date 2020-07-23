@@ -128,6 +128,10 @@
     <Compile Include="Migrations\202007191425069_AddScheduleDetail.designer.cs">
       <DependentUpon>202007191425069_AddScheduleDetail.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202007231504220_ChangeToICollection.cs" />
+    <Compile Include="Migrations\202007231504220_ChangeToICollection.designer.cs">
+      <DependentUpon>202007231504220_ChangeToICollection.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -162,6 +166,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202007191425069_AddScheduleDetail.resx">
       <DependentUpon>202007191425069_AddScheduleDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202007231504220_ChangeToICollection.resx">
+      <DependentUpon>202007231504220_ChangeToICollection.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

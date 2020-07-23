@@ -15,9 +15,9 @@ namespace DataAccess.Entities
 
         public int ScheduleId { get; set; }
         [ForeignKey("ScheduleId")]
-        public Schedule Schedule { get; set; }
+        public virtual Schedule Schedule { get; set; }
 
-        public ICollection<Registration> Registrations { get; set; }
+        public virtual ICollection<Registration> Registrations { get; set; }
 
         public int SessionNo { get; set; }
     }

@@ -24,7 +24,8 @@ namespace Services.Common.AutoMapper
                 .ForMember(x => x.TotalRegistered, opt => opt.MapFrom(m => m.Registrations.Count()))
                 .ForMember(x => x.Registrations, opt => opt.ExplicitExpansion())
                 .ForMember(x => x.Schedule, opt => opt.ExplicitExpansion());
-            CreateMap<DataAccess.Entities.Trainer, TrainerDTO>();
+            CreateMap<DataAccess.Entities.Trainer, TrainerDTO>()
+                .ForMember(x => x.Schedules, opt => opt.ExplicitExpansion());
             CreateMap<DataAccess.Entities.Class, ClassDTO>()
                 .ForMember(x => x.Schedules, opt => opt.ExplicitExpansion());
             CreateMap<DataAccess.Entities.Registration, RegistrationDTO>()

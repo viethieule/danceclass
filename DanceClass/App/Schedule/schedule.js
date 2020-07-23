@@ -69,25 +69,15 @@ async function renderSchedule() {
 
         m_currentDaysOfWeek.forEach(date => {
             let tdEvents = $('<td></td>');
-            let events = eventGroup.filter(e => dateRevive(e.Date).getDay() === date.day())
+            let events = eventGroup.events.filter(e => (new Date(e.Date)).getDay() === date.day())
             if (events && events.length > 0) {
                 events
                     .reduce((jObject, event) => {
                         jObject = jObject.add(renderEventTag(event));
+                        return jObject;
                     }, $())
                     .appendTo(tdEvents);
             }
-            let divEvents = eventGroup.events
-                .reduce((jObject, event) => {
-                    if (date.isBefore(moment(dateRevive(event.Schedule.OpeningDate)), 'day')) {
-                        return jObject;
-                    }
-                    if (event.DaysPerWeek.indexOf(date.day().toString()) !== -1) {
-                        jObject = jObject.add(renderEventTag(event, date.toDate()));
-                    }
-                    return jObject;
-                }, $())
-                .appendTo(tdEvents);
 
             tdEvents.appendTo(tr);
         });
@@ -96,8 +86,8 @@ async function renderSchedule() {
     });
 }
 
-function renderEventTag(event, dateToRender) {
-    const { Schedule: schedule, Registration: registration } = event;
+function renderEventTag(event) {
+    const { Schedule: schedule, Registrations: registrations } = event;
 
     var div = $('<div></div>', {
         class: 'mistake-event mistake-event-' + schedule.Branch.toLowerCase(),
@@ -112,34 +102,29 @@ function renderEventTag(event, dateToRender) {
     $('<p></p>', {
         class: 'mistake-event-song',
     })
-        .text(event.Song)
+        .text(schedule.Song)
         .appendTo(div);
 
     var infoDiv = $('<div></div>', {
         class: 'mistake-event-info-container'
     });
 
-    var session = getCurrentRecurrenceNumber(
-        dateRevive(event.OpeningDate),
-        dateToRender,
-        event.DaysPerWeek
-    );
     $('<span></span>', {
         class: 'mistake-event-info',
     })
-        .text(`${session}/${event.Sessions}`)
+        .text(`${event.SessionNo}/${schedule.Sessions}`)
         .appendTo(infoDiv);
 
     $('<span></span>', {
         class: 'mistake-event-info',
     })
-        .text('14/20')
+        .text(`${registrations.length}/20`)
         .appendTo(infoDiv);
 
     $('<span></span>', {
         class: 'mistake-event-info',
     })
-        .text(event.Branch)
+        .text(schedule.Branch)
         .appendTo(infoDiv);
 
     infoDiv.appendTo(div);
@@ -153,7 +138,10 @@ async function getSchedule() {
 
         if (data && data.ScheduleDetails) {
             const eventsByTime = data.ScheduleDetails.reduce((result, ele) => {
-                const { Hours: hours, Minutes: minutes } = ele.Schedule.StartTime;
+                let [hours, minutes, ...rest] = ele.Schedule.StartTime.split(":");
+
+                hours = parseInt(hours);
+                minutes = parseInt(minutes);
 
                 var eventGroup = result.find(
                     (r) => r.hours === hours && r.minutes === minutes
@@ -224,6 +212,6 @@ async function ajaxSchedule(weekStart) {
         method: 'POST',
         data: { start: weekStart.toISOString() },
         async: true,
-        url: '/Services/Schedule/GetDetail',
+        url: '/api/schedule/getdetail',
     });
 }

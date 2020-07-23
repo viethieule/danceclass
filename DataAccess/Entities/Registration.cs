@@ -12,11 +12,11 @@ namespace DataAccess.Entities
 
         public int ScheduleDetailId { get; set; }
         [ForeignKey("ScheduleDetailId")]
-        public ScheduleDetail ScheduleDetail { get; set; }
+        public virtual ScheduleDetail ScheduleDetail { get; set; }
 
         public int UserId { get; set; }
         [ForeignKey("UserId")]
-        public ApplicationUser User { get; set; }
+        public virtual ApplicationUser User { get; set; }
 
         public DateTime DateRegistered { get; set; }
     }

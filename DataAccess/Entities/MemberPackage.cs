@@ -10,13 +10,13 @@ namespace DataAccess.Entities
         public int UserId { get; set; }
 
         [ForeignKey("UserId")]
-        public ApplicationUser User { get; set; }
+        public virtual ApplicationUser User { get; set; }
 
         [Key, Column(Order = 2)]
         public int PackageId { get; set; }
         
         [ForeignKey("PackageId")]
-        public Package Package { get; set; }
+        public virtual Package Package { get; set; }
 
         public int RemainingSessions { get; set; }
         public DateTime? ExpiryDate { get; set; }
