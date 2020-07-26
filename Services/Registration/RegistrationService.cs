@@ -35,7 +35,7 @@ namespace Services.Registration
             var currentUserId = HttpContext.Current.User.Identity.GetUserId();
             if (registration.UserId.ToString() != currentUserId && !HttpContext.Current.User.IsInRole("Admin"))
             {
-                throw new Exception("Không đủ quyền hủy đăng ký");
+                throw new Exception("Không đủ quyền hủy đăng ký!");
             }
 
             var scheduleDetail = registration.ScheduleDetail;
@@ -57,20 +57,24 @@ namespace Services.Registration
         public async Task<CreateRegistrationRs> Create(CreateRegistrationRq rq)
         {
             DataAccess.Entities.Registration registration = _mapper.Map<DataAccess.Entities.Registration>(rq.Registration);
+            var userId = HttpContext.Current.User.Identity.GetUserId();
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new Exception("Vui lòng đăng nhập để đăng ký lớp học");
+            }
+
+            registration.UserId = int.Parse(userId);
             registration.DateRegistered = DateTime.Now;
 
             _dbContext.Registrations.Add(registration);
-            if (await _dbContext.SaveChangesAsync() > 0)
+            await _dbContext.SaveChangesAsync();
+
+            CreateRegistrationRs rs = new CreateRegistrationRs()
             {
-                CreateRegistrationRs rs = new CreateRegistrationRs()
-                {
-                    Registration = _mapper.Map<RegistrationDTO>(registration)
-                };
+                Registration = _mapper.Map<RegistrationDTO>(registration)
+            };
 
-                return rs;
-            }
-
-            throw new Exception("Đã có lỗi xảy ra khi đăng ký lớp");
+            return rs;
         }
     }
 }

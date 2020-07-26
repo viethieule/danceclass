@@ -225,6 +225,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api\RegistrationController.cs" />
     <Compile Include="Api\ScheduleController.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
@@ -257,7 +258,7 @@
     <Content Include="App\Member\Index\index.js" />
     <Content Include="App\Schedule\schedule.css" />
     <Content Include="App\Schedule\schedule.js" />
-    <Content Include="App\User\user.js" />
+    <Content Include="App\User\userService.js" />
     <Content Include="Content\AdminLTE.css" />
     <Content Include="Content\AdminLTE.min.css" />
     <Content Include="Content\blue.css" />

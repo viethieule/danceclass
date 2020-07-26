@@ -1,11 +1,12 @@
-﻿var m_currentDaysOfWeek = [];
+﻿let m_currentDaysOfWeek = [];
+let m_scheduleDetails = [];
+const m_isAdmin = (async () => { return (await userService.isAdmin()) })();
+const m_isMember = (async () => { return (await userService.isMember()) })();
 
 $(async function () {
     initWeek();
     await renderCalendar();
     registerEvent();
-    const user = await getCurrentUser();
-    console.log(user);
 });
 
 function initWeek(currentDate) {
@@ -28,16 +29,80 @@ function registerEvent() {
         }
         renderCalendar();
     })
+
+    $('#modal-default').on('show.bs.modal', function (event) {
+        let div = $(event.relatedTarget);
+        const id = div.data('id') // Extract info from data-* attributes
+        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+
+        let modal = $(this);
+        let modalTitle = modal.find('.modal-title');
+        let modalBody = modal.find('.modal-body');
+        let btnAction = modal.find('#btn-action');
+
+        modalBody.empty();
+        btnAction.off('click');
+
+        const scheduleDetail = m_scheduleDetails.find(x => x.Id === parseInt(id));
+        if (scheduleDetail.IsCurrentUserRegistered) {
+            modalTitle.text('Hủy đăng ký');
+            modalBody.text('Bạn có chắc muốn hủy đăng ký?');
+            btnAction.html('Hủy');
+            btnAction.on('click', async function (e) {
+                handleUnregisterScheduleClick(scheduleDetail.CurrentUserRegistration.Id, modal)
+            });
+        } else {
+            modalTitle.text('Bạn có chắc chắn muốn đăng ký?');
+
+            $('<p>').text('Lớp: ' + scheduleDetail.Schedule.Class.Name).appendTo(modalBody);
+            $('<p>').text('Bài: ' + scheduleDetail.Schedule.Song).appendTo(modalBody).appendTo(modalBody);
+            $('<p>').text('Thời gian: ' + capitalizeFirstLetter(moment(scheduleDetail.Date).locale('vi').format('dddd D/M'))).appendTo(modalBody);
+            $('<p>').text('Địa điểm: ' + scheduleDetail.Schedule.Branch).appendTo(modalBody);
+
+            btnAction.html('Đăng ký');
+            btnAction.on('click', async function (e) {
+                await handleRegisterScheduleClick(scheduleDetail, modal)
+            });
+        }
+    })
+}
+
+async function handleUnregisterScheduleClick(registrationId, $modal) {
+    let modalBody = $modal.find('.modal-body');
+    try {
+        await unregisterSchedule(registrationId);
+        $('<p>').css({ 'color': 'green', 'font-weight': 'bold' }).text('Hủy thành công').appendTo(modalBody);
+        setTimeout(async function () {
+            $modal.modal('hide');
+            await renderSchedule();
+        }, 1000);
+    } catch (ex) {
+        console.log(ex);
+        $('<p>').css({ 'color': 'red', 'font-weight': 'bold' }).text(ex.responseJSON.ExceptionMessage).appendTo(modalBody);
+    }
+}
+
+async function handleRegisterScheduleClick(scheduleDetail, $modal) {
+    let modalBody = $modal.find('.modal-body');
+    try {
+        const rs = await registerSchedule(scheduleDetail.Id);
+        if (rs && rs.Registration) {
+            // TODO: decrease available session
+            // TODO: different UI for registered event tag
+            $('<p>').css({ 'color': 'green', 'font-weight': 'bold' }).text('Đăng ký thành công').appendTo(modalBody); // To be removed after TODOs
+            setTimeout(async function () {
+                $modal.modal('hide');
+                await renderSchedule();
+            }, 1000);
+        }
+    } catch (ex) {
+        console.log(ex);
+        $('<p>').css({ 'color': 'red', 'font-weight': 'bold' }).text(ex.responseJSON.ExceptionMessage).appendTo(modalBody);
+    }
 }
 
 async function renderCalendar() {
-    $('#calendarHead').empty();
-    $('#calendarBody').empty();
-
-    $('.calendar-control-current-week').html(
-        `${m_currentDaysOfWeek[0].locale('vi').format('DD/MM')} - ${m_currentDaysOfWeek[6].locale('vi').format('DD/MM')}`
-    );
-
     // render days of current week header
     renderDaysOfWeek();
     // render schedule data
@@ -45,6 +110,11 @@ async function renderCalendar() {
 }
 
 function renderDaysOfWeek() {
+    $('.calendar-control-current-week').html(
+        `${m_currentDaysOfWeek[0].locale('vi').format('DD/MM')} - ${m_currentDaysOfWeek[6].locale('vi').format('DD/MM')}`
+    );
+    $('#calendarHead').empty();
+
     var weekTableData = m_currentDaysOfWeek
         .map(day => {
             var dayLocale = capitalizeFirstLetter(day.locale('vi').format('dddd D/M'));
@@ -57,6 +127,8 @@ function renderDaysOfWeek() {
 }
 
 async function renderSchedule() {
+    $('#calendarBody').empty();
+
     const eventsByTime = await getSchedule();
 
     eventsByTime.forEach((eventGroup) => {
@@ -90,8 +162,13 @@ function renderEventTag(event) {
     const { Schedule: schedule, Registrations: registrations } = event;
 
     var div = $('<div></div>', {
-        class: 'mistake-event mistake-event-' + schedule.Branch.toLowerCase(),
+        'class': 'mistake-event mistake-event-' + schedule.Branch.toLowerCase(),
+        'data-toggle': 'modal',
+        'data-target': '#modal-default',
+        'data-id': event.Id
     });
+
+    div.hover(function () { $(this).css('cursor', 'pointer') });
 
     $('<p></p>', {
         class: 'mistake-event-class',
@@ -137,7 +214,8 @@ async function getSchedule() {
         console.log(data);
 
         if (data && data.ScheduleDetails) {
-            const eventsByTime = data.ScheduleDetails.reduce((result, ele) => {
+            m_scheduleDetails = data.ScheduleDetails;
+            const eventsByTime = m_scheduleDetails.reduce((result, ele) => {
                 let [hours, minutes, ...rest] = ele.Schedule.StartTime.split(":");
 
                 hours = parseInt(hours);
@@ -184,14 +262,6 @@ function compareTime(t1, t2) {
     return h1 > h2 ? 1 : h1 < h2 ? -1 : m1 > m2 ? 1 : m1 < m2 ? -1 : 0;
 }
 
-function dateRevive(jsonDate) {
-    var result = /\/Date\((\d*)\)\//.exec(jsonDate);
-    if (result) {
-        return new Date(+result[1]);
-    }
-    return value;
-}
-
 function getCurrentRecurrenceNumber(startRecur, currentDate, daysOfWeek) {
     var daysPerWeek = daysOfWeek.length;
     var numberOfSessionGoneBy =
@@ -205,6 +275,27 @@ function getCurrentRecurrenceNumber(startRecur, currentDate, daysOfWeek) {
 
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+async function registerSchedule(scheduleDetailId) {
+    return $.ajax({
+        method: 'POST',
+        data: {
+            registration: { scheduleDetailId }
+        },
+        async: true,
+        url: '/api/registration/create',
+    });
+}
+
+async function unregisterSchedule(id) {
+    return $.ajax({
+        method: 'POST',
+        data: id.toString(),
+        async: true,
+        url: '/api/registration/cancel',
+        contentType: 'application/json',
+    });
 }
 
 async function ajaxSchedule(weekStart) {
