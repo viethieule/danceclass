@@ -121,6 +121,8 @@
     <Compile Include="Registration\RegistrationService.cs" />
     <Compile Include="Schedule\GetDetailScheduleRq.cs" />
     <Compile Include="Schedule\GetDetailScheduleRs.cs" />
+    <Compile Include="Schedule\GetRegisteredSessionRq.cs" />
+    <Compile Include="Schedule\GetRegisteredSessionRs.cs" />
     <Compile Include="Schedule\ScheduleDetailDTO.cs" />
     <Compile Include="Schedule\ScheduleDTO.cs" />
     <Compile Include="Schedule\ScheduleService.cs" />

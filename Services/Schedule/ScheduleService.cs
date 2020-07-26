@@ -15,6 +15,7 @@ namespace Services.Schedule
     public interface IScheduleService
     {
         Task<GetDetailedScheduleRs> GetDetail(GetDetailedScheduleRq rq);
+        Task<GetRegisteredSessionRs> GetRegisteredSessions(GetRegisteredSessionRq rq);
     }
 
     public class ScheduleService : BaseService, IScheduleService
@@ -60,6 +61,19 @@ namespace Services.Schedule
             };
 
             return rs;
+        }
+
+        public async Task<GetRegisteredSessionRs> GetRegisteredSessions(GetRegisteredSessionRq rq)
+        {
+            var sessions = await _dbContext.ScheduleDetails
+                .Where(s => s.Registrations.Any(r => r.UserId == rq.UserId))
+                .ProjectTo<ScheduleDetailDTO>(_mappingConfig, s => s.Schedule.Trainer, s => s.Schedule.Class)
+                .ToListAsync();
+
+            return new GetRegisteredSessionRs
+            {
+                Sessions = sessions
+            };
         }
     }
 }
