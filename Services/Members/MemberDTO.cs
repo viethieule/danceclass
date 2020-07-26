@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Services.MemberPackage;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,5 +17,7 @@ namespace Services.Members
         public string UserName { get; set; }
         public ICollection<UserRoleDTO> Roles { get; set; }
         public List<string> RoleNames { get; set; }
+        public List<MemberPackageDTO> MemberPackages { get; set; }
+        public MemberPackageDTO ActivePackage { get; set; }
     }
 }

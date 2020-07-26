@@ -68,7 +68,7 @@ namespace Services.Members
                 }
 
                 ApplicationUser user = await _dbContext.Users.FirstOrDefaultAsync(x => x.UserName == member.UserName);
-                _dbContext.MemberPackages.Add(new MemberPackage
+                _dbContext.MemberPackages.Add(new DataAccess.Entities.MemberPackage
                 {
                     UserId = user.Id,
                     PackageId = package.Id,

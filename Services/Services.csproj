@@ -103,6 +103,7 @@
     <Compile Include="Common\AutoMapper\EntityToDtoMappingProfile.cs" />
     <Compile Include="Common\BaseService.cs" />
     <Compile Include="Common\GetEntityRequestBase.cs" />
+    <Compile Include="MemberPackage\MemberPackageDTO.cs" />
     <Compile Include="Members\CreateMemberRq.cs" />
     <Compile Include="Members\CreateMemberRs.cs" />
     <Compile Include="Members\Get\GetMemberRq.cs" />
@@ -137,6 +138,7 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

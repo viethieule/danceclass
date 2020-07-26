@@ -33,8 +33,6 @@ namespace Services.Schedule
 
             var scheduleDetailDtos = await _dbContext.ScheduleDetails
                 .Where(x => !(DbFunctions.TruncateTime(x.Date) > end || DbFunctions.TruncateTime(x.Date) < start))
-                //.Include(x => x.Schedule.Class)
-                //.Include(x => x.Registrations)
                 .ProjectTo<ScheduleDetailDTO>(_mappingConfig, dest => dest.Registrations, dest => dest.Schedule.Class)
                 .ToListAsync();
 

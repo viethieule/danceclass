@@ -1,11 +1,14 @@
 ﻿let m_currentDaysOfWeek = [];
 let m_scheduleDetails = [];
+
+const m_user = (async () => await userService.getCurrentUser() )();
 const m_isAdmin = (async () => { return (await userService.isAdmin()) })();
 const m_isMember = (async () => { return (await userService.isMember()) })();
 
 $(async function () {
     initWeek();
     await renderCalendar();
+    renderUserRemainingSessions();
     registerEvent();
 });
 
@@ -16,6 +19,13 @@ function initWeek(currentDate) {
 
     for (var i = 0; i <= 6; i++) {
         m_currentDaysOfWeek.push(moment(weekStart).add(i, 'days'));
+    }
+}
+
+function renderUserRemainingSessions() {
+    if (m_isMember && m_user.ActivePackage) {
+
+        $('.calendar-control')
     }
 }
 
