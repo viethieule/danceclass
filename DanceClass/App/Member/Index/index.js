@@ -20,6 +20,6 @@ async function ajaxMember(username) {
         method: 'POST',
         data: { username },
         async: true,
-        url: '/Services/Members/Get',
+        url: '/api/user/get',
     });
 }
