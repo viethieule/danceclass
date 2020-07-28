@@ -159,7 +159,6 @@ namespace Services.Members
                 if (user != null)
                 {
                     user.RoleNames = new List<string>(await _userManager.GetRolesAsync(userId));
-                    //user.ActivePackage = user.MemberPackages.FirstOrDefault(x => x.IsActive);
                     rs.Member = user;
 
                     rs.IsAuthenticated = true;
