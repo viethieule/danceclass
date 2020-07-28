@@ -44,21 +44,23 @@ namespace Services.Registration
                 throw new Exception("Lịch học không tồn tại!");
             }
 
-            DateTime dateAttending = scheduleDetail.Date.Add(scheduleDetail.Schedule.StartTime);
-            if (DateTime.Now >= dateAttending || (dateAttending - DateTime.Now).TotalHours < 1)
-            {
-                throw new Exception("Chỉ có thể hủy đăng ký ít nhất 1 tiếng trước khi tập!");
-            }
+            //DateTime dateAttending = scheduleDetail.Date.Add(scheduleDetail.Schedule.StartTime);
+            //if (DateTime.Now >= dateAttending || (dateAttending - DateTime.Now).TotalHours < 1)
+            //{
+            //    throw new Exception("Chỉ có thể hủy đăng ký ít nhất 1 tiếng trước khi tập!");
+            //}
             
             // Remove registration
             _dbContext.Registrations.Remove(registration);
 
             // Increase remaining sessions of the user
             var memberPackage = _dbContext.MemberPackages.FirstOrDefault(x => x.UserId.ToString() == currentUserId && x.IsActive);
-            if (memberPackage.RemainingSessions < memberPackage.Package.NumberOfSessions)
+            if (memberPackage.RemainingSessions >= memberPackage.Package.NumberOfSessions)
             {
-                memberPackage.RemainingSessions++;
+                throw new Exception("Không thể hủy. Bạn vẫn chưa đăng ký buổi học nào mà!");
             }
+
+            memberPackage.RemainingSessions++;
 
             return await _dbContext.SaveChangesAsync();
         }
@@ -82,10 +84,10 @@ namespace Services.Registration
 
             // Add registration
             DataAccess.Entities.Registration registration = _mapper.Map<DataAccess.Entities.Registration>(rq.Registration);
-            if (registration.ScheduleDetail.Date < DateTime.Now)
-            {
-                throw new Exception("Không thể đăng ký lớp học trong quá khứ");
-            }
+            //if (registration.ScheduleDetail.Date < DateTime.Now)
+            //{
+            //    throw new Exception("Không thể đăng ký lớp học trong quá khứ");
+            //}
 
             registration.UserId = int.Parse(userId);
             registration.DateRegistered = DateTime.Now;

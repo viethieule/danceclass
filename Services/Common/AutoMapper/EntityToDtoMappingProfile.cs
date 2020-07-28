@@ -40,9 +40,8 @@ namespace Services.Common.AutoMapper
             CreateMap<DataAccess.Entities.Package, PackageDTO>();
 
             CreateMap<DataAccess.Entities.ApplicationUser, MemberDTO>()
-                .ForMember(x => x.RoleNames, opt => opt.MapFrom<ApplicationUserRolesNameResolver>())
                 .ForMember(x => x.MemberPackages, opt => opt.ExplicitExpansion())
-                .ForMember(x => x.ActivePackage, opt => opt.MapFrom(s => s.MemberPackages.FirstOrDefault(x => x.IsActive)));
+                .ForMember(x => x.ActivePackage, opt => opt.MapFrom(x => x.MemberPackages.FirstOrDefault(m => m.IsActive)));
 
             CreateMap<DataAccess.Entities.MemberPackage, MemberPackageDTO>()
                 .ForMember(x => x.User, opt => opt.ExplicitExpansion())

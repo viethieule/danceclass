@@ -331,8 +331,12 @@ desired effect
     @Scripts.Render("~/bundles/bootstrap")
     @Scripts.Render("~/bundles/misc")
     @Scripts.Render("~/bundles/adminlte")
+    @Scripts.Render("~/bundles/pace")
 
     <script src="~/App/User/userService.js"></script>
+    <script>
+        $(document).ajaxStart(function() { Pace.restart(); });
+    </script>
     @RenderSection("scripts", required: false)
 
     <!-- Optionally, you can add Slimscroll and FastClick plugins.

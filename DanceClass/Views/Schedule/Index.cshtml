@@ -29,9 +29,9 @@
                                 <button id="next" type="button" class="btn btn-light btn-calendar-navigate">&gt;</button>
                             </div>
                             <div class="calendar-control-current-week"></div>
-                            <div class="calendar-remaining-sessions-area pull-right" style="display: flex; margin-left: auto;">
-                                <div style="font-size: 24px">8</div>
-                                <div style="width: 20px; font-size: 12px"><p>Số buổi<br />còn lại</p></div>
+                            <div class="calendar-remaining-sessions-area">
+                                <div class="calendar-remaining-sessions"></div>
+                                <div class="calendar-remaining-sessions-desc"><p>Số buổi<br />còn lại</p></div>
                             </div>
                         </div>
                         <table id="calendar" width="100%">
@@ -46,7 +46,7 @@
         </div>
         <!-- /.col -->
     </div>
-    <div class="modal fade" id="modal-default" style="display: none;">
+    <div class="modal fade" id="modal-register" style="display: none;">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -56,6 +56,10 @@
                     <h4 class="modal-title"></h4>
                 </div>
                 <div class="modal-body">
+                    <div class="modal-body-info">
+                    </div>
+                    <p>Số buổi còn lại <span class="modal-body-remaining-sessions"></span></p>
+                    <p class="modal-body-message"></p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Thoát</button>

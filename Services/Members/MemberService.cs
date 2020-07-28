@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using DataAccess;
 using DataAccess.Entities;
 using DataAccess.IdentityAccessor;
@@ -29,14 +30,17 @@ namespace Services.Members
     public class MemberService : BaseService, IMemberService
     {
         private ApplicationUserManager _userManager;
+        private readonly IConfigurationProvider _mappingConfig;
         private const string DEFAULT_PASSWORD = "P@ssw0rd";
 
         public MemberService(
             ApplicationUserManager userManager,
             DanceClassDbContext dbContext,
-            IMapper mapper) : base(dbContext, mapper)
+            IMapper mapper,
+            IConfigurationProvider mappingConfig) : base(dbContext, mapper)
         {
             _userManager = userManager;
+            _mappingConfig = mappingConfig;
         }
 
         public async Task<CreateMemberRs> Create(CreateMemberRq rq)
@@ -88,10 +92,10 @@ namespace Services.Members
 
         public async Task<GetMemberRs> GetById(GetMemberRq rq)
         {
-            var member = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserName == rq.UserName);
+            var member = await _dbContext.Users.ProjectTo<MemberDTO>(_mappingConfig).FirstOrDefaultAsync(u => u.UserName == rq.UserName);
 
             GetMemberRs rs = new GetMemberRs();
-            rs.Member = _mapper.Map<MemberDTO>(member);
+            rs.Member = member;
             return rs;
         }
 
@@ -145,13 +149,18 @@ namespace Services.Members
             }
             else
             {
-                string userId = HttpContext.Current.User.Identity.GetUserId();
+                int userId = int.Parse(HttpContext.Current.User.Identity.GetUserId());
 
-                ApplicationUser user = await _userManager.FindByIdAsync(int.Parse(userId));
+                var user = await _dbContext.Users
+                    .Where(x => x.Id == userId)
+                    .ProjectTo<MemberDTO>(_mappingConfig, dest => dest.MemberPackages)
+                    .FirstOrDefaultAsync();
+
                 if (user != null)
                 {
-                    MemberDTO member = _mapper.Map<MemberDTO>(user);
-                    rs.Member = member;
+                    user.RoleNames = new List<string>(await _userManager.GetRolesAsync(userId));
+                    //user.ActivePackage = user.MemberPackages.FirstOrDefault(x => x.IsActive);
+                    rs.Member = user;
 
                     rs.IsAuthenticated = true;
                 }

@@ -1,16 +1,19 @@
 ﻿let m_currentDaysOfWeek = [];
 let m_scheduleDetails = [];
 
-const m_user = (async () => await userService.getCurrentUser() )();
-const m_isAdmin = (async () => { return (await userService.isAdmin()) })();
-const m_isMember = (async () => { return (await userService.isMember()) })();
+let m_user = null;
 
 $(async function () {
+    await initData();
     initWeek();
     await renderCalendar();
     renderUserRemainingSessions();
     registerEvent();
 });
+
+async function initData() {
+    m_user = await userService.getCurrentUser();
+}
 
 function initWeek(currentDate) {
     currentDate = moment(currentDate || new Date());
@@ -23,10 +26,18 @@ function initWeek(currentDate) {
 }
 
 function renderUserRemainingSessions() {
-    if (m_isMember && m_user.ActivePackage) {
-
-        $('.calendar-control')
+    if (m_user && m_user.ActivePackage) {
+        let remainingSessions = m_user.ActivePackage.RemainingSessions;
+        $('.calendar-remaining-sessions').html(formatRemainingSessions(remainingSessions));
+    } else if (m_user && m_user.RoleNames.includes("Member")) {
+        $('.calendar-remaining-sessions').html(0);
+    } else {
+        $('.calendar-remaining-sessions-area').hide();
     }
+}
+
+function formatRemainingSessions(remainingSessions) {
+    return remainingSessions < 10 && remainingSessions !== 0 ? "0" + remainingSessions : remainingSessions;
 }
 
 function registerEvent() {
@@ -40,7 +51,7 @@ function registerEvent() {
         renderCalendar();
     })
 
-    $('#modal-default').on('show.bs.modal', function (event) {
+    $('#modal-register').on('show.bs.modal', function (event) {
         let div = $(event.relatedTarget);
         const id = div.data('id') // Extract info from data-* attributes
         // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
@@ -48,16 +59,19 @@ function registerEvent() {
 
         let modal = $(this);
         let modalTitle = modal.find('.modal-title');
-        let modalBody = modal.find('.modal-body');
+        let modalBodyInfo = modal.find('.modal-body-info');
         let btnAction = modal.find('#btn-action');
 
-        modalBody.empty();
+        modalBodyInfo.empty();
         btnAction.off('click');
+
+        $('.modal-body-message').empty();
+        $('.modal-body-remaining-sessions').html(m_user && m_user.ActivePackage ? m_user.ActivePackage.RemainingSessions : 0);
 
         const scheduleDetail = m_scheduleDetails.find(x => x.Id === parseInt(id));
         if (scheduleDetail.IsCurrentUserRegistered) {
             modalTitle.text('Hủy đăng ký');
-            modalBody.text('Bạn có chắc muốn hủy đăng ký?');
+            modalBodyInfo.text('Bạn có chắc muốn hủy đăng ký?');
             btnAction.html('Hủy');
             btnAction.on('click', async function (e) {
                 handleUnregisterScheduleClick(scheduleDetail.CurrentUserRegistration.Id, modal)
@@ -65,10 +79,10 @@ function registerEvent() {
         } else {
             modalTitle.text('Bạn có chắc chắn muốn đăng ký?');
 
-            $('<p>').text('Lớp: ' + scheduleDetail.Schedule.Class.Name).appendTo(modalBody);
-            $('<p>').text('Bài: ' + scheduleDetail.Schedule.Song).appendTo(modalBody).appendTo(modalBody);
-            $('<p>').text('Thời gian: ' + capitalizeFirstLetter(moment(scheduleDetail.Date).locale('vi').format('dddd D/M'))).appendTo(modalBody);
-            $('<p>').text('Địa điểm: ' + scheduleDetail.Schedule.Branch).appendTo(modalBody);
+            $('<p>').text('Lớp: ' + scheduleDetail.Schedule.Class.Name).appendTo(modalBodyInfo);
+            $('<p>').text('Bài: ' + scheduleDetail.Schedule.Song).appendTo(modalBodyInfo).appendTo(modalBodyInfo);
+            $('<p>').text('Thời gian: ' + capitalizeFirstLetter(moment(scheduleDetail.Date).locale('vi').format('dddd D/M'))).appendTo(modalBodyInfo);
+            $('<p>').text('Địa điểm: ' + scheduleDetail.Schedule.Branch).appendTo(modalBodyInfo);
 
             btnAction.html('Đăng ký');
             btnAction.on('click', async function (e) {
@@ -79,36 +93,46 @@ function registerEvent() {
 }
 
 async function handleUnregisterScheduleClick(registrationId, $modal) {
-    let modalBody = $modal.find('.modal-body');
     try {
         await unregisterSchedule(registrationId);
-        $('<p>').css({ 'color': 'green', 'font-weight': 'bold' }).text('Hủy thành công').appendTo(modalBody);
+        $('.modal-body-message').css('color', 'green').text('Hủy thành công');
         setTimeout(async function () {
             $modal.modal('hide');
+            updateUserRemainingSessions(false);
             await renderSchedule();
         }, 1000);
     } catch (ex) {
         console.log(ex);
-        $('<p>').css({ 'color': 'red', 'font-weight': 'bold' }).text(ex.responseJSON.ExceptionMessage).appendTo(modalBody);
+        $('.modal-body-message').css('color', 'red').text(ex.responseJSON.ExceptionMessage);
     }
 }
 
 async function handleRegisterScheduleClick(scheduleDetail, $modal) {
-    let modalBody = $modal.find('.modal-body');
     try {
         const rs = await registerSchedule(scheduleDetail.Id);
         if (rs && rs.Registration) {
-            // TODO: decrease available session
-            // TODO: different UI for registered event tag
-            $('<p>').css({ 'color': 'green', 'font-weight': 'bold' }).text('Đăng ký thành công').appendTo(modalBody); // To be removed after TODOs
+            $('.modal-body-message').css('color', 'green').text('Đăng ký thành công');
             setTimeout(async function () {
                 $modal.modal('hide');
+                updateUserRemainingSessions(true);
                 await renderSchedule();
             }, 1000);
         }
     } catch (ex) {
         console.log(ex);
-        $('<p>').css({ 'color': 'red', 'font-weight': 'bold' }).text(ex.responseJSON.ExceptionMessage).appendTo(modalBody);
+        $('.modal-body-message').css('color', 'red').text(ex.responseJSON.ExceptionMessage);
+    }
+}
+
+function updateUserRemainingSessions(isRegistration) {
+    if (m_user && m_user.ActivePackage) {
+        if (isRegistration) {
+            m_user.ActivePackage.RemainingSessions--;
+        }
+        else {
+            m_user.ActivePackage.RemainingSessions++;
+        }
+        renderUserRemainingSessions();
     }
 }
 
@@ -174,7 +198,7 @@ function renderEventTag(event) {
     var div = $('<div></div>', {
         'class': 'mistake-event mistake-event-' + schedule.Branch.toLowerCase(),
         'data-toggle': 'modal',
-        'data-target': '#modal-default',
+        'data-target': '#modal-register',
         'data-id': event.Id
     });
 
@@ -215,6 +239,15 @@ function renderEventTag(event) {
         .appendTo(infoDiv);
 
     infoDiv.appendTo(div);
+
+    if (m_user && m_user.RoleNames.includes("Member")) {
+        let action = event.IsCurrentUserRegistered ? 'Hủy đăng ký' : 'Đăng ký';
+        let btnClass = event.IsCurrentUserRegistered ? 'btn-danger' : 'btn-success';
+        $('<div>', { class: 'mistake-event-action' })
+            .append($('<button>', { class: 'btn btn-xs ' + btnClass }).html(action))
+            .appendTo(div);
+    }
+
     return div;
 }
 

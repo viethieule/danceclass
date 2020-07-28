@@ -36,13 +36,17 @@ namespace DanceClass
             
             bundles.Add(new ScriptBundle("~/bundles/iCheck").Include(
                       "~/Scripts/icheck.min.js"));
+            
+            bundles.Add(new ScriptBundle("~/bundles/pace").Include(
+                      "~/Scripts/pace.min.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/font-awesome.css",
                       "~/Content/ionicons.css",
                       "~/Content/AdminLTE.css",
-                      "~/Content/skin-black.css"));
+                      "~/Content/skin-black.css",
+                      "~/Content/pace.min.css"));
         }
     }
 }

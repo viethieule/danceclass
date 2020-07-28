@@ -20,6 +20,30 @@
     text-align: center;
 }
 
+.calendar-remaining-sessions-area {
+    display: flex;
+    margin-left: auto;
+}
+
+.calendar-remaining-sessions {
+    font-size: 24px;
+    padding-right: 10px;
+    padding-left: 10px;
+    margin-right: 10px;
+    background-color: #00a65a;
+    color: white;
+    border-radius: 4px;
+}
+
+.calendar-remaining-sessions-desc {
+    width: 42px;
+    font-size: 12px;
+}
+
+.calendar-remaining-sessions-desc p {
+    margin-bottom: 0px;
+}
+
 .mistake-event-class {
     font-weight: bold;
     margin-bottom: 0px;
@@ -32,6 +56,15 @@
 
 .mistake-event-info {
     margin-right: 5px;
+}
+
+.mistake-event-action {
+    margin-top: 6px;
+}
+
+.mistake-event-action button {
+    border: none;
+    padding: 0px 10px;
 }
 
 table#calendar, th, td {
@@ -50,4 +83,15 @@ table#calendar, th, td {
 
 button#next {
     border-left: 1px solid white;
+}
+
+.modal-body-message {
+    font-weight: bold;
+}
+
+.modal-body-remaining-sessions {
+    font-weight: bold;
+    padding: 0px 4px;
+    background-color: #00a65a;
+    color: white;
 }

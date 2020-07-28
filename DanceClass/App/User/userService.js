@@ -1,5 +1,5 @@
 ﻿const userService = (function () {
-    var user = null;
+    let user = null;
 
     async function getCurrentUser() {
         if (user === null) {
@@ -17,22 +17,7 @@
         return user;
     }
 
-    async function isAdmin() {
-        return (await isInRole('Admin'));
-    }
-
-    async function isMember() {
-        return (await isInRole('Member'));
-    }
-
-    async function isInRole(roleName) {
-        await getCurrentUser();
-        return user && user.RoleNames.some(r => r === roleName);
-    }
-
     return {
-        getCurrentUser: getCurrentUser,
-        isAdmin: isAdmin,
-        isMember: isMember
+        getCurrentUser: getCurrentUser
     }
 })();
