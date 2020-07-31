@@ -391,7 +391,7 @@ namespace DanceClass.Controllers
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Schedule");
         }
 
         //
@@ -448,7 +448,7 @@ namespace DanceClass.Controllers
             {
                 return Redirect(returnUrl);
             }
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Schedule");
         }
 
         internal class ChallengeResult : HttpUnauthorizedResult

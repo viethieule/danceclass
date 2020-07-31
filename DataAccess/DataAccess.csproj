@@ -88,6 +88,7 @@
     <Compile Include="Entities\Schedule.cs" />
     <Compile Include="Entities\ScheduleDetail.cs" />
     <Compile Include="Entities\Trainer.cs" />
+    <Compile Include="Enums\RegistrationStatus.cs" />
     <Compile Include="IdentityAccessor\ApplicationRoleStore.cs" />
     <Compile Include="IdentityAccessor\ApplicationSignInManager.cs" />
     <Compile Include="IdentityAccessor\ApplicationUserManager.cs" />
@@ -132,6 +133,10 @@
     <Compile Include="Migrations\202007231504220_ChangeToICollection.designer.cs">
       <DependentUpon>202007231504220_ChangeToICollection.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202007301549003_AddRegistrationStatus.cs" />
+    <Compile Include="Migrations\202007301549003_AddRegistrationStatus.designer.cs">
+      <DependentUpon>202007301549003_AddRegistrationStatus.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -169,6 +174,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202007231504220_ChangeToICollection.resx">
       <DependentUpon>202007231504220_ChangeToICollection.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202007301549003_AddRegistrationStatus.resx">
+      <DependentUpon>202007301549003_AddRegistrationStatus.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

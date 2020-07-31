@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using DataAccess.Enums;
 
 namespace DataAccess.Entities
 {
@@ -19,5 +20,6 @@ namespace DataAccess.Entities
         public virtual ApplicationUser User { get; set; }
 
         public DateTime DateRegistered { get; set; }
+        public RegistrationStatus Status { get; set; }
     }
 }

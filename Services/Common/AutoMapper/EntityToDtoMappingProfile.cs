@@ -1,15 +1,12 @@
 ﻿using AutoMapper;
 using Services.Class;
-using Services.Common.AutoMapper.ApplicationUserResolver;
+using Services.MemberPackage;
 using Services.Members;
 using Services.Package;
-using Services.Schedule;
 using Services.Registration;
+using Services.Schedule;
 using Services.Trainer;
 using System.Linq;
-using System.Web;
-using Microsoft.AspNet.Identity;
-using Services.MemberPackage;
 
 namespace Services.Common.AutoMapper
 {

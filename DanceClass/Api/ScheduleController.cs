@@ -1,16 +1,11 @@
 ﻿using Services.Schedule;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace DanceClass.Api
 {
     [RoutePrefix("api/schedule")]
-    public class ScheduleController : ApiController
+    public class ScheduleController : ApiBaseController
     {
         private readonly IScheduleService _scheduleService;
         public ScheduleController(IScheduleService scheduleService)
@@ -23,7 +18,7 @@ namespace DanceClass.Api
         public async Task<IHttpActionResult> GetDetail(GetDetailedScheduleRq rq)
         {
             var rs = await _scheduleService.GetDetail(rq);
-            return Json(rs);
+            return ApiJson(rs);
         }
 
         [HttpPost]

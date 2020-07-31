@@ -128,6 +128,7 @@
     <Compile Include="Schedule\ScheduleDTO.cs" />
     <Compile Include="Schedule\ScheduleService.cs" />
     <Compile Include="Trainer\TrainerDTO.cs" />
+    <Compile Include="Utils\EnumHelper.cs" />
     <Compile Include="Utils\StringHelper.cs" />
   </ItemGroup>
   <ItemGroup>

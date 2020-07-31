@@ -95,3 +95,15 @@ button#next {
     background-color: #00a65a;
     color: white;
 }
+
+.cell-admin-add-schedule {
+    text-align: center;
+    vertical-align: middle;
+    background-color: #EFF0F1;
+    color: black;
+    cursor: pointer;
+}
+
+.session-info {
+    font-weight: bold;
+}

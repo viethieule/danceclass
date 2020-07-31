@@ -6,7 +6,7 @@
             const data = await $.ajax({
                 method: 'POST',
                 async: true,
-                url: '/Services/Members/GetCurrentUser'
+                url: '/api/user/GetCurrentUser'
             });
 
             if (data) {
@@ -17,7 +17,21 @@
         return user;
     }
 
+    function isAdmin() {
+        return isInRole('Admin');
+    }
+
+    function isMember() {
+        return isInRole('Member');
+    }
+
+    function isInRole(roleName) {
+        return user && user.RoleNames.includes(roleName);
+    }
+
     return {
-        getCurrentUser: getCurrentUser
+        getCurrentUser: getCurrentUser,
+        isAdmin: isAdmin,
+        isMember: isMember
     }
 })();

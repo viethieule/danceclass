@@ -225,6 +225,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api\ApiBaseController.cs" />
     <Compile Include="Api\RegistrationController.cs" />
     <Compile Include="Api\ScheduleController.cs" />
     <Compile Include="Api\UserController.cs" />
@@ -250,6 +251,7 @@
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Utils\EnumToKeyValuePairConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App\Common\js\apiService.js" />

@@ -1,4 +1,5 @@
-﻿using Services.Members;
+﻿using DataAccess.Enums;
+using Services.Members;
 using Services.Schedule;
 using System;
 
@@ -12,5 +13,6 @@ namespace Services.Registration
         public int UserId { get; set; }
         public MemberDTO User { get; set; }
         public DateTime DateRegistered { get; set; }
+        public RegistrationStatus Status { get; set; }
     }
 }

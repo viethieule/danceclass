@@ -34,7 +34,7 @@ namespace Services.Schedule
 
             var scheduleDetailDtos = await _dbContext.ScheduleDetails
                 .Where(x => !(DbFunctions.TruncateTime(x.Date) > end || DbFunctions.TruncateTime(x.Date) < start))
-                .ProjectTo<ScheduleDetailDTO>(_mappingConfig, dest => dest.Registrations, dest => dest.Schedule.Class)
+                .ProjectTo<ScheduleDetailDTO>(_mappingConfig, dest => dest.Registrations.Select(r => r.User), dest => dest.Schedule.Class)
                 .ToListAsync();
 
             var isMember = HttpContext.Current.User.Identity.IsAuthenticated && HttpContext.Current.User.IsInRole("Member");

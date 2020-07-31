@@ -34,5 +34,21 @@ namespace DanceClass.Api
             int result = await _registrationService.Cancel(registrationId);
             return Json(result);
         }
+
+        [HttpPost]
+        [Route("getbyscheduledetail")]
+        public async Task<IHttpActionResult> GetByScheduleDetail([FromBody]int scheduleDetailId)
+        {
+            var registrations = await _registrationService.GetByScheduleDetail(scheduleDetailId);
+            return Json(registrations);
+        }
+
+        [HttpPut]
+        [Route("confirmAttendance/:scheduleDetailId")]
+        [Authorize(Roles = "Admin")]
+        public async Task ConfirmAttendance(int scheduleDetailId)
+        {
+            await _registrationService.ConfirmAttendance(scheduleDetailId);
+        }
     }
 }

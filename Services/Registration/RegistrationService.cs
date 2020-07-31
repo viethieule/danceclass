@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using DataAccess;
+using DataAccess.Enums;
 using Microsoft.AspNet.Identity;
 using Services.Common;
 using System;
@@ -16,12 +18,17 @@ namespace Services.Registration
     {
         Task<int> Cancel(int id);
         Task<CreateRegistrationRs> Create(CreateRegistrationRq rq);
+        Task<List<RegistrationDTO>> GetByScheduleDetail(int scheduleDetailId);
+        Task ConfirmAttendance(int scheduleDetailId);
     }
 
     public class RegistrationService : BaseService, IRegistrationService
     {
-        public RegistrationService(DanceClassDbContext dbContext, IMapper mapper) : base(dbContext, mapper)
+        private readonly IConfigurationProvider _mappingConfig;
+
+        public RegistrationService(DanceClassDbContext dbContext, IMapper mapper, IConfigurationProvider mappingConfig) : base(dbContext, mapper)
         {
+            _mappingConfig = mappingConfig;
         }
 
         public async Task<int> Cancel(int id)
@@ -45,6 +52,9 @@ namespace Services.Registration
             }
 
             //DateTime dateAttending = scheduleDetail.Date.Add(scheduleDetail.Schedule.StartTime);
+
+            // TODO: ADMIN CAN CANCEL
+
             //if (DateTime.Now >= dateAttending || (dateAttending - DateTime.Now).TotalHours < 1)
             //{
             //    throw new Exception("Chỉ có thể hủy đăng ký ít nhất 1 tiếng trước khi tập!");
@@ -90,6 +100,7 @@ namespace Services.Registration
             //}
 
             registration.UserId = int.Parse(userId);
+            registration.Status = RegistrationStatus.Registered;
             registration.DateRegistered = DateTime.Now;
 
             _dbContext.Registrations.Add(registration);
@@ -102,6 +113,28 @@ namespace Services.Registration
             };
 
             return rs;
+        }
+
+        public async Task<List<RegistrationDTO>> GetByScheduleDetail(int scheduleDetailId)
+        {
+            var registrations = await _dbContext.Registrations
+                .Where(r => r.ScheduleDetailId == scheduleDetailId)
+                .ProjectTo<RegistrationDTO>(_mappingConfig, dest => dest.User)
+                .ToListAsync();
+
+            return registrations;
+        }
+
+        public async Task ConfirmAttendance(int scheduleDetailId)
+        {
+            var registration = await _dbContext.Registrations.FirstOrDefaultAsync(r => r.Id == scheduleDetailId);
+            if (registration == null)
+            {
+                throw new Exception("Đăng ký không tồn tại");
+            }
+
+            registration.Status = RegistrationStatus.Attended;
+            await _dbContext.SaveChangesAsync();
         }
     }
 }
