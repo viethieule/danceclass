@@ -115,6 +115,7 @@
     <Compile Include="Package\PackageDTO.cs" />
     <Compile Include="Package\PackageService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Registration\CancelRegistrationRq.cs" />
     <Compile Include="Registration\CreateRegistrationRq.cs" />
     <Compile Include="Registration\CreateRegistrationRs.cs" />
     <Compile Include="Registration\GetRegistrationResponse.cs" />

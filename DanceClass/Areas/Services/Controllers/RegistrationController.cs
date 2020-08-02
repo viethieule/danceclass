@@ -23,12 +23,5 @@ namespace DanceClass.Areas.Services.Controllers
             CreateRegistrationRs rs = await _registrationService.Create(rq);
             return Json(rs);
         }
-
-        [HttpPost]
-        public async Task<ActionResult> Cancel(int id)
-        {
-            int result = await _registrationService.Cancel(id);
-            return Json(result);
-        }
     }
 }

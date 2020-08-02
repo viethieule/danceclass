@@ -67,7 +67,7 @@
     padding: 0px 10px;
 }
 
-table#calendar, th, td {
+#calendar th, #calendar td {
     border: 1px solid #DDDDDD;
 }
 
@@ -106,4 +106,25 @@ button#next {
 
 .session-info {
     font-weight: bold;
+}
+
+.session-info-label {
+    margin-bottom: 0px;
+}
+
+.session-registrations {
+    padding-right: 5px;
+}
+
+.session-registration-list-label {
+    margin-bottom: 15px;
+}
+
+.btn-label {
+    font-size: 75%;
+    margin-right: 5px;
+}
+
+.btn-label .fa-times, .btn-label .fa-check {
+    margin-right: 3px;
 }

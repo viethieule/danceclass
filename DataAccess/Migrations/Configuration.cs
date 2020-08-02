@@ -38,7 +38,7 @@
             {
                 var userStore = new ApplicationUserStore(context);
                 var userManager = new ApplicationUserManager(userStore);
-                var member = new ApplicationUser { UserName = "member.test", Birthdate = DateTime.Now };
+                var member = new ApplicationUser { UserName = "member.test", FullName = "Test Member", Birthdate = DateTime.Now };
 
                 var result = userManager.CreateAsync(member, "123456").Result;
                 if (result.Succeeded)

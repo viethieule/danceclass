@@ -101,13 +101,13 @@ function registerEvent() {
 
         let $modal = $(this);
 
-        let timeStart = `${schedule.Class.Name} - ${moment(date).locale('vi').format('dddd D/M')}`
-        $modal.find('.modal-title').text(timeStart);
+        let [hour, minute, ...rest] = schedule.StartTime.split(':');
+        let timeStart = capitalizeFirstLetter(moment(date).hours(parseInt(hour)).minute(parseInt(minute)).locale('vi').format('dddd D/M HH:mm'));
+        $modal.find('.modal-title').text(schedule.Class.Name + ' - ' + timeStart);
 
-        const { Class: cls, Song: song, Branch: branch, Sessions: totalSessions } = schedule;
+        const { Song: song, Branch: branch, Sessions: totalSessions } = schedule;
         $('.session-general-info')
             .empty()
-            .append(renderSessionInfoGroup('Lớp', cls.Name))
             .append(renderSessionInfoGroup('Bài múa', song))
             .append(renderSessionInfoGroup('Buổi', sessionNo + ' / ' + totalSessions))
             .append(renderSessionInfoGroup('Thời gian', timeStart))
@@ -120,28 +120,39 @@ function registerEvent() {
         }, $());
 
         $('.session-registration-list').empty().append($registrationList);
-    })
+
+        $('#modal-manage').off('hide.bs.hide.bs.modal').on('hide.bs.hide.bs.modal', async function (event) {
+            if (registrations.some(r => r.isModified)) {
+                await renderCalendar();
+            }
+        })
+    });
+
+    $('.session-registrations').slimscroll({
+        distance: '5px'
+    });
 }
 
 function renderSessionInfoGroup(label, value) {
     return $('<div>', { class: 'session-info-group' })
-        .append($('<p>').text(label))
+        .append($('<p>', { class: 'session-info-label' }).text(label))
         .append($('<p>', { class: 'session-info' }).text(value));
 }
 
 function renderRegistrationRow(registration, index) {
     let tdNo = $('<td>').html(index + 1);
     let tdName = $('<td>').html(registration.User.FullName);
-    let confirmBtn = $('<button>', { class: 'btn btn-success' })
+    let confirmBtn = $('<button>', { class: 'btn btn-success btn-xs btn-label' })
         .html('Đến lớp')
-        .on('click', { registrationId: registration.Id }, handleConfirmRegistration);
+        .on('click', { registration }, handleConfirmRegistration);
 
-    let cancelBtn = $('<button>', { class: 'btn btn-danger' })
+    let cancelBtn = $('<button>', { class: 'btn btn-danger btn-xs btn-label' })
         .html('Hủy')
-        .on('click', { registrationId: registration.Id }, handleCancelRegistration);
+        .on('click', { registration }, handleCancelRegistration);
 
     if (registration.Status && registration.Status.Value === 1) {
         confirmBtn
+            .prop('disabled', true)
             .off('click')
             .prepend($('<i>', { class: 'fa fa-check' }))
 
@@ -150,7 +161,9 @@ function renderRegistrationRow(registration, index) {
         confirmBtn.prop('disabled', true).hide();
 
         cancelBtn
+            .html('Nghỉ')
             .off('click')
+            .prop('disabled', true)
             .prepend($('<i>', { class: 'fa fa-times' }))
     }
 
@@ -159,17 +172,73 @@ function renderRegistrationRow(registration, index) {
     return $('<tr>').append(tdNo).append(tdName).append(tdActionBtns)
 }
 
-function handleConfirmRegistration(event) {
-    alert('Confirm ' + event.data.registrationId)
+async function handleConfirmRegistration(event) {
+    try {
+        let $confirmBtn = $(event.target);
+        $confirmBtn
+            .prop('disabled', true)
+            .empty()
+            .append($('<li>', { class: 'fa fa-circle-o-notch fa-spin' }));
+
+        let $cancelBtn = $confirmBtn.closest('td').find('.btn-danger');
+        $cancelBtn.prop('disabled', true).hide();
+
+        let { registration } = event.data;
+        await confirmRegistration(event.data.registration.Id);
+
+        registration.Status.Value = 1;
+        registration.Status.Name = 'Đến lớp';
+
+        $confirmBtn
+            .empty()
+            .append($('<i>', { class: 'fa fa-check' }))
+            .append('Đến lớp')
+            .off('click');
+
+    } catch (ex) {
+        console.log(ex);
+    }
 }
 
-function handleCancelRegistration(event) {
-    alert('Cancel' + event.data.registrationId)
+async function handleCancelRegistration(event) {
+    let $cancelBtn = $(event.target);
+    $cancelBtn
+        .prop('disabled', true)
+        .empty()
+        .append($('<i>', { class: 'fa fa-circle-o-notch fa-spin' }));
+
+    let $confirmBtn = $cancelBtn.closest('td').find('.btn-success');
+    $confirmBtn.prop('disabled', true).hide();
+
+    let { registration } = event.data;
+    try {
+        await unregisterSchedule(registration.Id);
+
+        registration.Status.Value = 2;
+        registration.Status.Name = 'Nghỉ';
+        registration.isModified = true;
+
+        $cancelBtn
+            .empty()
+            .append($('<i>', { class: 'fa fa-times' }))
+            .append('Nghỉ')
+            .off('click');
+    } catch (ex) {
+        console.log(ex);
+        $confirmBtn.prop('disabled', false).show();
+        $cancelBtn
+            .empty()
+            .append('Hủy')
+            .prop('disabled', false);
+
+        $cancelBtn.closest('td').append('  Đã có lỗi xảy ra!');
+    }
+
 }
 
 async function handleUnregisterScheduleClick(registrationId, $modal) {
     try {
-        await unregisterSchedule(registrationId);
+        await unregisterSchedule(registrationId, true);
         $('.modal-body-message').css('color', 'green').text('Hủy thành công');
         setTimeout(async function () {
             $modal.modal('hide');
@@ -318,7 +387,7 @@ function renderEventTag(event) {
     $('<span></span>', {
         class: 'mistake-event-info',
     })
-        .text(`${registrations.length}/20`)
+        .text(`${event.TotalRegistered}/20`)
         .appendTo(infoDiv);
 
     $('<span></span>', {
@@ -330,8 +399,9 @@ function renderEventTag(event) {
     infoDiv.appendTo(div);
 
     if (userService.isMember()) {
-        let action = event.IsCurrentUserRegistered ? 'Hủy đăng ký' : 'Đăng ký';
-        let btnClass = event.IsCurrentUserRegistered ? 'btn-danger' : 'btn-success';
+        let isRegistered = event.IsCurrentUserRegistered && event.CurrentUserRegistration.Status.Value === 0;
+        let action = isRegistered ? 'Hủy đăng ký' : 'Đăng ký';
+        let btnClass = isRegistered ? 'btn-danger' : 'btn-success';
         $('<div>', { class: 'mistake-event-action' })
             .append($('<button>', { class: 'btn btn-xs ' + btnClass }).html(action))
             .appendTo(div);
@@ -409,6 +479,14 @@ function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+async function confirmRegistration(registrationId) {
+    return $.ajax({
+        method: 'PUT',
+        async: true,
+        url: '/api/registration/confirmAttendance/' + registrationId
+    });
+}
+
 async function registerSchedule(scheduleDetailId) {
     return $.ajax({
         method: 'POST',
@@ -420,13 +498,15 @@ async function registerSchedule(scheduleDetailId) {
     });
 }
 
-async function unregisterSchedule(id) {
+async function unregisterSchedule(id, isDelete) {
     return $.ajax({
         method: 'POST',
-        data: id.toString(),
+        data: {
+            registrationId: id,
+            isDelete
+        },
         async: true,
         url: '/api/registration/cancel',
-        contentType: 'application/json',
     });
 }
 

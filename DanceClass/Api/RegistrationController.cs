@@ -29,9 +29,9 @@ namespace DanceClass.Api
 
         [HttpPost]
         [Route("cancel")]
-        public async Task<IHttpActionResult> Cancel([FromBody]int registrationId)
+        public async Task<IHttpActionResult> Cancel(CancelRegistrationRq rq)
         {
-            int result = await _registrationService.Cancel(registrationId);
+            int result = await _registrationService.Cancel(rq);
             return Json(result);
         }
 
@@ -44,11 +44,11 @@ namespace DanceClass.Api
         }
 
         [HttpPut]
-        [Route("confirmAttendance/:scheduleDetailId")]
+        [Route("confirmAttendance/{registrationId}")]
         [Authorize(Roles = "Admin")]
-        public async Task ConfirmAttendance(int scheduleDetailId)
+        public async Task ConfirmAttendance(int registrationId)
         {
-            await _registrationService.ConfirmAttendance(scheduleDetailId);
+            await _registrationService.ConfirmAttendance(registrationId);
         }
     }
 }

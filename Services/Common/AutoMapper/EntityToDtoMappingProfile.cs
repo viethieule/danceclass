@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DataAccess.Enums;
 using Services.Class;
 using Services.MemberPackage;
 using Services.Members;
@@ -20,7 +21,7 @@ namespace Services.Common.AutoMapper
                 .ForMember(x => x.Class, opt => opt.ExplicitExpansion());
 
             CreateMap<DataAccess.Entities.ScheduleDetail, ScheduleDetailDTO>()
-                .ForMember(x => x.TotalRegistered, opt => opt.MapFrom(m => m.Registrations.Count()))
+                .ForMember(x => x.TotalRegistered, opt => opt.MapFrom(m => m.Registrations.Count(r => r.Status != RegistrationStatus.Off)))
                 .ForMember(x => x.Registrations, opt => opt.ExplicitExpansion())
                 .ForMember(x => x.Schedule, opt => opt.ExplicitExpansion());
 

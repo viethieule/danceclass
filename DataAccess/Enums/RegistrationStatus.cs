@@ -11,7 +11,7 @@ namespace DataAccess.Enums
     {
         [Description("Đăng ký")]
         Registered,
-        [Description("Tới lớp")]
+        [Description("Đến lớp")]
         Attended,
         [Description("Nghỉ")]
         Off

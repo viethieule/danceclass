@@ -16,10 +16,10 @@ namespace Services.Registration
 {
     public interface IRegistrationService
     {
-        Task<int> Cancel(int id);
+        Task<int> Cancel(CancelRegistrationRq rq);
         Task<CreateRegistrationRs> Create(CreateRegistrationRq rq);
         Task<List<RegistrationDTO>> GetByScheduleDetail(int scheduleDetailId);
-        Task ConfirmAttendance(int scheduleDetailId);
+        Task ConfirmAttendance(int registrationId);
     }
 
     public class RegistrationService : BaseService, IRegistrationService
@@ -31,16 +31,18 @@ namespace Services.Registration
             _mappingConfig = mappingConfig;
         }
 
-        public async Task<int> Cancel(int id)
+        public async Task<int> Cancel(CancelRegistrationRq rq)
         {
-            DataAccess.Entities.Registration registration = await _dbContext.Registrations.FirstOrDefaultAsync(r => r.Id == id);
+            DataAccess.Entities.Registration registration = await _dbContext.Registrations.FirstOrDefaultAsync(r => r.Id == rq.RegistrationId);
             if (registration == null)
             {
                 throw new Exception("Đăng ký không tồn tại!");
             }
 
+            bool isAdmin = HttpContext.Current.User.IsInRole("Admin");
             var currentUserId = HttpContext.Current.User.Identity.GetUserId();
-            if (registration.UserId.ToString() != currentUserId && !HttpContext.Current.User.IsInRole("Admin"))
+
+            if (registration.UserId.ToString() != currentUserId && !isAdmin)
             {
                 throw new Exception("Không đủ quyền hủy đăng ký!");
             }
@@ -60,12 +62,22 @@ namespace Services.Registration
             //    throw new Exception("Chỉ có thể hủy đăng ký ít nhất 1 tiếng trước khi tập!");
             //}
             
-            // Remove registration
-            _dbContext.Registrations.Remove(registration);
+            if (rq.IsDelete == true)
+            {
+                _dbContext.Registrations.Remove(registration);
+            }
+            else
+            {
+                registration.Status = RegistrationStatus.Off;
+            }
 
             // Increase remaining sessions of the user
-            var memberPackage = _dbContext.MemberPackages.FirstOrDefault(x => x.UserId.ToString() == currentUserId && x.IsActive);
-            if (memberPackage.RemainingSessions >= memberPackage.Package.NumberOfSessions)
+            var memberPackage = _dbContext.MemberPackages.FirstOrDefault(x => x.UserId == registration.UserId && x.IsActive);
+            if (memberPackage == null)
+            {
+                throw new Exception("Học viên chưa đăng ký gói tập nào!");
+            }
+            else if (memberPackage.RemainingSessions >= memberPackage.Package.NumberOfSessions)
             {
                 throw new Exception("Không thể hủy. Bạn vẫn chưa đăng ký buổi học nào mà!");
             }
@@ -125,9 +137,9 @@ namespace Services.Registration
             return registrations;
         }
 
-        public async Task ConfirmAttendance(int scheduleDetailId)
+        public async Task ConfirmAttendance(int registrationId)
         {
-            var registration = await _dbContext.Registrations.FirstOrDefaultAsync(r => r.Id == scheduleDetailId);
+            var registration = await _dbContext.Registrations.FirstOrDefaultAsync(r => r.Id == registrationId);
             if (registration == null)
             {
                 throw new Exception("Đăng ký không tồn tại");
