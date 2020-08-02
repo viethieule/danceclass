@@ -226,6 +226,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Api\ApiBaseController.cs" />
+    <Compile Include="Api\PackageController.cs" />
     <Compile Include="Api\RegistrationController.cs" />
     <Compile Include="Api\ScheduleController.cs" />
     <Compile Include="Api\UserController.cs" />
@@ -234,11 +235,6 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Areas\Services\Controllers\MembersController.cs" />
-    <Compile Include="Areas\Services\Controllers\PackageController.cs" />
-    <Compile Include="Areas\Services\Controllers\RegistrationController.cs" />
-    <Compile Include="Areas\Services\Controllers\ScheduleController.cs" />
-    <Compile Include="Areas\Services\ServicesAreaRegistration.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -287,7 +283,6 @@
     <Content Include="Scripts\adminlte.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <Content Include="Areas\Services\Views\web.config" />
     <Content Include="fonts\fontawesome-webfont.eot" />
     <Content Include="fonts\fontawesome-webfont.ttf" />
     <Content Include="fonts\fontawesome-webfont.woff" />
@@ -358,12 +353,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Areas\Services\Models\" />
-    <Folder Include="Areas\Services\Views\Members\" />
-    <Folder Include="Areas\Services\Views\Package\" />
-    <Folder Include="Areas\Services\Views\Registration\" />
-    <Folder Include="Areas\Services\Views\Schedule\" />
-    <Folder Include="Areas\Services\Views\Shared\" />
     <Folder Include="Views\Users\" />
   </ItemGroup>
   <ItemGroup>

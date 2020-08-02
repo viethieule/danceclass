@@ -12,8 +12,8 @@ async function populatePackages() {
 
         var select = $('#package');
         m_packages.forEach(package => {
-            $('<option></option>', { value: package.Id })
-                .text(package.NumberOfSessions)
+            $('<option></option>', { value: package.id })
+                .text(package.numberOfSessions)
                 .appendTo(select);
         });
 
@@ -30,7 +30,7 @@ async function getPackages() {
     return $.ajax({
         method: 'GET',
         async: true,
-        url: '/Services/Package/GetAll'
+        url: '/api/package/getAll'
     })
 }
 
@@ -104,23 +104,23 @@ function registerEvent() {
                 console.log(formData);
 
                 try {
-                    var package = m_packages.find(p => p.Id.toString() === formData['package']);
+                    var package = m_packages.find(p => p.id.toString() === formData['package']);
 
                     const data = await createMember({
-                        Member: {
-                            FullName: formData['name'],
-                            Birthdate: formData['dob'],
-                            PhoneNumber: formData['phone'],
-                            Email: formData['email']
+                        member: {
+                            fullName: formData['name'],
+                            birthdate: formData['dob'],
+                            phoneNumber: formData['phone'],
+                            email: formData['email']
                         },
-                        Package: package || {
-                            Months: formData['expired'],
-                            NumberOfSessions: formData['sessions'],
-                            Price: formData['price'],
+                        package: package || {
+                            months: formData['expired'],
+                            numberOfSessions: formData['sessions'],
+                            price: formData['price'],
                         }
                     });
-                    if (data && data.Member) {
-                        window.location.replace(window.location.origin + `/member/${data.Member.UserName}`);
+                    if (data && data.member) {
+                        window.location.replace(window.location.origin + `/member/${data.member.userName}`);
                     }
                 } catch (err) {
                     alert('Failed to create member');
@@ -133,7 +133,6 @@ function registerEvent() {
 
     $('select#package')
         .on('change', function (e) {
-            debugger;
             manipulateFieldsOnOtherPackage(['expired', 'sessions', 'price'], this.value);
         })
         .trigger('change');
@@ -151,8 +150,8 @@ function manipulateFieldsOnOtherPackage(fieldIds, packageId) {
         if (isOtherPackage) {
             jElement.val("");
         } else {
-            var package = m_packages.find(p => p.Id.toString() === packageId);
-            var prop = fieldId === 'expired' ? "Months" : fieldId === 'sessions' ? "NumberOfSessions" : fieldId === 'price' ? "Price" : "";
+            var package = m_packages.find(p => p.id.toString() === packageId);
+            var prop = fieldId === 'expired' ? "months" : fieldId === 'sessions' ? "numberOfSessions" : fieldId === 'price' ? "price" : "";
 
             if (prop) {
                 jElement.val(package[prop]);
@@ -182,7 +181,7 @@ async function createMember(data) {
     return $.ajax({
         method: 'POST',
         async: true,
-        url: '/Services/Members/Create',
+        url: '/api/user/create',
         data
     })
 }

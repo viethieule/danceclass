@@ -1,17 +1,12 @@
 ﻿using Services.Members;
 using Services.Members.Get;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace DanceClass.Api
 {
     [RoutePrefix("api/user")]
-    public class UserController : ApiController
+    public class UserController : ApiBaseController
     {
         private readonly IMemberService _memberService;
         public UserController(IMemberService memberService)
@@ -23,8 +18,8 @@ namespace DanceClass.Api
         [Route("create")]
         public async Task<IHttpActionResult> Create(CreateMemberRq rq)
         {
-            CreateMemberRs rs = await _memberService.Create(rq);            
-            return Json(rs);
+            CreateMemberRs rs = await _memberService.Create(rq);
+            return ApiJson(rs);
         }
 
         [HttpPost]
@@ -37,7 +32,7 @@ namespace DanceClass.Api
                 return NotFound();
             }
 
-            return Json(rs);
+            return ApiJson(rs);
         }
 
         [HttpPost]
@@ -45,7 +40,7 @@ namespace DanceClass.Api
         public async Task<IHttpActionResult> GetCurrentUser()
         {
             GetMemberRs rs = await _memberService.GetCurrentUser();
-            return Json(rs);
+            return ApiJson(rs);
         }
     }
 }

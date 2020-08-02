@@ -10,7 +10,7 @@ using System.Web.Http;
 namespace DanceClass.Api
 {
     [RoutePrefix("api/registration")]
-    public class RegistrationController : ApiController
+    public class RegistrationController : ApiBaseController
     {
         private readonly IRegistrationService _registrationService;
 
@@ -24,7 +24,7 @@ namespace DanceClass.Api
         public async Task<IHttpActionResult> Create(CreateRegistrationRq rq)
         {
             CreateRegistrationRs rs = await _registrationService.Create(rq);
-            return Json(rs);
+            return ApiJson(rs);
         }
 
         [HttpPost]
@@ -32,7 +32,7 @@ namespace DanceClass.Api
         public async Task<IHttpActionResult> Cancel(CancelRegistrationRq rq)
         {
             int result = await _registrationService.Cancel(rq);
-            return Json(result);
+            return ApiJson(result);
         }
 
         [HttpPost]
@@ -40,7 +40,7 @@ namespace DanceClass.Api
         public async Task<IHttpActionResult> GetByScheduleDetail([FromBody]int scheduleDetailId)
         {
             var registrations = await _registrationService.GetByScheduleDetail(scheduleDetailId);
-            return Json(registrations);
+            return ApiJson(registrations);
         }
 
         [HttpPut]

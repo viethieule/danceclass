@@ -6,11 +6,11 @@
             const data = await $.ajax({
                 method: 'POST',
                 async: true,
-                url: '/api/user/GetCurrentUser'
+                url: '/api/user/getCurrentUser'
             });
 
             if (data) {
-                user = data.Member;
+                user = data.member;
             }
         }
 
@@ -26,7 +26,7 @@
     }
 
     function isInRole(roleName) {
-        return user && user.RoleNames.includes(roleName);
+        return user && user.roleNames.includes(roleName);
     }
 
     return {

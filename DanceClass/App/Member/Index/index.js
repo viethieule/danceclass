@@ -1,6 +1,6 @@
 ﻿$(async function () {
     const member = await getMember();
-    $('#username').text(member.UserName);
+    $('#username').text(member.userName);
 });
 
 async function getMember() {
@@ -9,7 +9,7 @@ async function getMember() {
     try {
         const data = await ajaxMember(username);
         console.log(data);
-        return data.Member;
+        return data.member;
     } catch (err) {
         console.log(err);
     }

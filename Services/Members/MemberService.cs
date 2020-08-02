@@ -77,8 +77,11 @@ namespace Services.Members
                     UserId = user.Id,
                     PackageId = package.Id,
                     ExpiryDate = DateTime.Now.AddMonths(package.Months),
-                    RemainingSessions = package.NumberOfSessions
+                    RemainingSessions = package.NumberOfSessions,
+                    IsActive = true
                 });
+
+                await _userManager.AddToRoleAsync(user.Id, "Member");
 
                 await _dbContext.SaveChangesAsync();
                 scope.Complete();

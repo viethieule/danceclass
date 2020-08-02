@@ -12,7 +12,7 @@ namespace DanceClass.Api
             var serializerSettings = new Newtonsoft.Json.JsonSerializerSettings
             {
                 Formatting = Newtonsoft.Json.Formatting.Indented,
-                //ContractResolver = new CamelCasePropertyNamesContractResolver()
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
             };
             serializerSettings.Converters.Add(new EnumToKeyValuePairConverter());
             return Json(content, serializerSettings);

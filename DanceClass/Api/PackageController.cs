@@ -2,13 +2,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web;
-using System.Web.Mvc;
+using System.Web.Http;
 
-namespace DanceClass.Areas.Services.Controllers
+namespace DanceClass.Api
 {
-    public class PackageController : Controller
+    [RoutePrefix("api/package")]
+    public class PackageController : ApiBaseController
     {
         private readonly IPackageService _packageService;
         public PackageController(IPackageService packageService)
@@ -17,10 +19,11 @@ namespace DanceClass.Areas.Services.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetAll()
+        [Route("getall")]
+        public async Task<IHttpActionResult> GetAll()
         {
             var packages = await _packageService.GetAll(true);
-            return Json(packages, JsonRequestBehavior.AllowGet);
+            return ApiJson(packages);
         }
     }
 }

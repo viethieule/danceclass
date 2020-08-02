@@ -12,9 +12,9 @@ namespace DanceClass.Utils
             string description = ((Enum)value).GetDescription();
 
             writer.WriteStartObject();
-            writer.WritePropertyName("Name");
+            writer.WritePropertyName("name");
             writer.WriteValue(description);
-            writer.WritePropertyName("Value");
+            writer.WritePropertyName("value");
             writer.WriteValue(value);
             writer.WriteEndObject();
         }

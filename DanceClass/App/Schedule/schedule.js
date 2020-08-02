@@ -26,10 +26,10 @@ function initWeek(currentDate) {
 }
 
 function renderUserRemainingSessions() {
-    if (m_user && m_user.ActivePackage) {
-        let remainingSessions = m_user.ActivePackage.RemainingSessions;
+    if (m_user && m_user.activePackage) {
+        let remainingSessions = m_user.activePackage.remainingSessions;
         $('.calendar-remaining-sessions').html(formatRemainingSessions(remainingSessions));
-    } else if (m_user && m_user.RoleNames.includes("Member")) {
+    } else if (m_user && m_user.roleNames.includes("Member")) {
         $('.calendar-remaining-sessions').html(0);
     } else {
         $('.calendar-remaining-sessions-area').hide();
@@ -66,23 +66,23 @@ function registerEvent() {
         btnAction.off('click');
 
         $('.modal-body-message').empty();
-        $('.modal-body-remaining-sessions').html(m_user && m_user.ActivePackage ? m_user.ActivePackage.RemainingSessions : 0);
+        $('.modal-body-remaining-sessions').html(m_user && m_user.activePackage ? m_user.activePackage.remainingSessions : 0);
 
-        const scheduleDetail = m_scheduleDetails.find(x => x.Id === parseInt(id));
-        if (scheduleDetail.IsCurrentUserRegistered) {
+        const scheduleDetail = m_scheduleDetails.find(x => x.id === parseInt(id));
+        if (scheduleDetail.isCurrentUserRegistered) {
             modalTitle.text('Hủy đăng ký');
             modalBodyInfo.text('Bạn có chắc muốn hủy đăng ký?');
             btnAction.html('Hủy');
             btnAction.on('click', async function (e) {
-                handleUnregisterScheduleClick(scheduleDetail.CurrentUserRegistration.Id, $modal)
+                handleUnregisterScheduleClick(scheduleDetail.currentUserRegistration.id, $modal)
             });
         } else {
             modalTitle.text('Bạn có chắc chắn muốn đăng ký?');
 
-            $('<p>').text('Lớp: ' + scheduleDetail.Schedule.Class.Name).appendTo(modalBodyInfo);
-            $('<p>').text('Bài: ' + scheduleDetail.Schedule.Song).appendTo(modalBodyInfo).appendTo(modalBodyInfo);
-            $('<p>').text('Thời gian: ' + capitalizeFirstLetter(moment(scheduleDetail.Date).locale('vi').format('dddd D/M'))).appendTo(modalBodyInfo);
-            $('<p>').text('Địa điểm: ' + scheduleDetail.Schedule.Branch).appendTo(modalBodyInfo);
+            $('<p>').text('Lớp: ' + scheduleDetail.schedule.class.name).appendTo(modalBodyInfo);
+            $('<p>').text('Bài: ' + scheduleDetail.schedule.song).appendTo(modalBodyInfo).appendTo(modalBodyInfo);
+            $('<p>').text('Thời gian: ' + capitalizeFirstLetter(moment(scheduleDetail.date).locale('vi').format('dddd D/M'))).appendTo(modalBodyInfo);
+            $('<p>').text('Địa điểm: ' + scheduleDetail.schedule.branch).appendTo(modalBodyInfo);
 
             btnAction.html('Đăng ký');
             btnAction.on('click', async function (e) {
@@ -96,16 +96,16 @@ function registerEvent() {
         let div = $(event.relatedTarget);
         const id = div.data('id');
 
-        const scheduleDetail = m_scheduleDetails.find(x => x.Id === parseInt(id));
-        const { Schedule: schedule, Registrations: registrations, Date: date, TotalRegistered: totalRegistered, SessionNo: sessionNo } = scheduleDetail;
+        const scheduleDetail = m_scheduleDetails.find(x => x.id === parseInt(id));
+        const { schedule, registrations, date, totalRegistered, sessionNo } = scheduleDetail;
 
         let $modal = $(this);
 
-        let [hour, minute, ...rest] = schedule.StartTime.split(':');
+        let [hour, minute, ...rest] = schedule.startTime.split(':');
         let timeStart = capitalizeFirstLetter(moment(date).hours(parseInt(hour)).minute(parseInt(minute)).locale('vi').format('dddd D/M HH:mm'));
-        $modal.find('.modal-title').text(schedule.Class.Name + ' - ' + timeStart);
+        $modal.find('.modal-title').text(schedule.class.name + ' - ' + timeStart);
 
-        const { Song: song, Branch: branch, Sessions: totalSessions } = schedule;
+        const { song, branch, sessions: totalSessions } = schedule;
         $('.session-general-info')
             .empty()
             .append(renderSessionInfoGroup('Bài múa', song))
@@ -141,7 +141,7 @@ function renderSessionInfoGroup(label, value) {
 
 function renderRegistrationRow(registration, index) {
     let tdNo = $('<td>').html(index + 1);
-    let tdName = $('<td>').html(registration.User.FullName);
+    let tdName = $('<td>').html(registration.user.fullName);
     let confirmBtn = $('<button>', { class: 'btn btn-success btn-xs btn-label' })
         .html('Đến lớp')
         .on('click', { registration }, handleConfirmRegistration);
@@ -150,14 +150,14 @@ function renderRegistrationRow(registration, index) {
         .html('Hủy')
         .on('click', { registration }, handleCancelRegistration);
 
-    if (registration.Status && registration.Status.Value === 1) {
+    if (registration.status && registration.status.value === 1) {
         confirmBtn
             .prop('disabled', true)
             .off('click')
             .prepend($('<i>', { class: 'fa fa-check' }))
 
         cancelBtn.prop('disabled', true).hide();
-    } else if (registration.Status && registration.Status.Value === 2) {
+    } else if (registration.status && registration.status.value === 2) {
         confirmBtn.prop('disabled', true).hide();
 
         cancelBtn
@@ -184,10 +184,10 @@ async function handleConfirmRegistration(event) {
         $cancelBtn.prop('disabled', true).hide();
 
         let { registration } = event.data;
-        await confirmRegistration(event.data.registration.Id);
+        await confirmRegistration(event.data.registration.id);
 
-        registration.Status.Value = 1;
-        registration.Status.Name = 'Đến lớp';
+        registration.status.value = 1;
+        registration.status.name = 'Đến lớp';
 
         $confirmBtn
             .empty()
@@ -212,10 +212,10 @@ async function handleCancelRegistration(event) {
 
     let { registration } = event.data;
     try {
-        await unregisterSchedule(registration.Id);
+        await unregisterSchedule(registration.id);
 
-        registration.Status.Value = 2;
-        registration.Status.Name = 'Nghỉ';
+        registration.status.value = 2;
+        registration.status.name = 'Nghỉ';
         registration.isModified = true;
 
         $cancelBtn
@@ -231,7 +231,7 @@ async function handleCancelRegistration(event) {
             .append('Hủy')
             .prop('disabled', false);
 
-        $cancelBtn.closest('td').append('  Đã có lỗi xảy ra!');
+        $cancelBtn.closest('td').append(ex.responseJSON.ExceptionMessage);
     }
 
 }
@@ -253,8 +253,8 @@ async function handleUnregisterScheduleClick(registrationId, $modal) {
 
 async function handleRegisterScheduleClick(scheduleDetail, $modal) {
     try {
-        const rs = await registerSchedule(scheduleDetail.Id);
-        if (rs && rs.Registration) {
+        const rs = await registerSchedule(scheduleDetail.id);
+        if (rs && rs.registration) {
             $('.modal-body-message').css('color', 'green').text('Đăng ký thành công');
             setTimeout(async function () {
                 $modal.modal('hide');
@@ -269,12 +269,12 @@ async function handleRegisterScheduleClick(scheduleDetail, $modal) {
 }
 
 function updateUserRemainingSessions(isRegistration) {
-    if (m_user && m_user.ActivePackage) {
+    if (m_user && m_user.activePackage) {
         if (isRegistration) {
-            m_user.ActivePackage.RemainingSessions--;
+            m_user.activePackage.remainingSessions--;
         }
         else {
-            m_user.ActivePackage.RemainingSessions++;
+            m_user.activePackage.remainingSessions++;
         }
         renderUserRemainingSessions();
     }
@@ -319,7 +319,7 @@ async function renderSchedule() {
 
         m_currentDaysOfWeek.forEach(date => {
             let tdEvents = $('<td></td>');
-            let events = eventGroup.events.filter(e => (new Date(e.Date)).getDay() === date.day())
+            let events = eventGroup.events.filter(e => (new Date(e.date)).getDay() === date.day())
             if (events && events.length > 0) {
                 events
                     .reduce((jObject, event) => {
@@ -351,13 +351,13 @@ async function renderSchedule() {
 }
 
 function renderEventTag(event) {
-    const { Schedule: schedule, Registrations: registrations } = event;
+    const { schedule } = event;
 
     var div = $('<div></div>', {
-        'class': 'mistake-event mistake-event-' + schedule.Branch.toLowerCase(),
+        'class': 'mistake-event mistake-event-' + schedule.branch.toLowerCase(),
         'data-toggle': 'modal',
         'data-target': userService.isAdmin() ? '#modal-manage' : userService.isMember() ? '#modal-register' : '',
-        'data-id': event.Id
+        'data-id': event.id
     });
 
     div.hover(function () { $(this).css('cursor', 'pointer') });
@@ -365,13 +365,13 @@ function renderEventTag(event) {
     $('<p></p>', {
         class: 'mistake-event-class',
     })
-        .text(schedule.Class.Name)
+        .text(schedule.class.name)
         .appendTo(div);
 
     $('<p></p>', {
         class: 'mistake-event-song',
     })
-        .text(schedule.Song)
+        .text(schedule.song)
         .appendTo(div);
 
     var infoDiv = $('<div></div>', {
@@ -381,25 +381,25 @@ function renderEventTag(event) {
     $('<span></span>', {
         class: 'mistake-event-info',
     })
-        .text(`${event.SessionNo}/${schedule.Sessions}`)
+        .text(`${event.sessionNo}/${schedule.sessions}`)
         .appendTo(infoDiv);
 
     $('<span></span>', {
         class: 'mistake-event-info',
     })
-        .text(`${event.TotalRegistered}/20`)
+        .text(`${event.totalRegistered}/20`)
         .appendTo(infoDiv);
 
     $('<span></span>', {
         class: 'mistake-event-info',
     })
-        .text(schedule.Branch)
+        .text(schedule.branch)
         .appendTo(infoDiv);
 
     infoDiv.appendTo(div);
 
     if (userService.isMember()) {
-        let isRegistered = event.IsCurrentUserRegistered && event.CurrentUserRegistration.Status.Value === 0;
+        let isRegistered = event.isCurrentUserRegistered && event.currentUserRegistration.status.value === 0;
         let action = isRegistered ? 'Hủy đăng ký' : 'Đăng ký';
         let btnClass = isRegistered ? 'btn-danger' : 'btn-success';
         $('<div>', { class: 'mistake-event-action' })
@@ -415,10 +415,10 @@ async function getSchedule() {
         const data = await ajaxSchedule(m_currentDaysOfWeek[0].toDate());
         console.log(data);
 
-        if (data && data.ScheduleDetails) {
-            m_scheduleDetails = data.ScheduleDetails;
+        if (data && data.scheduleDetails) {
+            m_scheduleDetails = data.scheduleDetails;
             const eventsByTime = m_scheduleDetails.reduce((result, ele) => {
-                let [hours, minutes, ...rest] = ele.Schedule.StartTime.split(":");
+                let [hours, minutes, ...rest] = ele.schedule.startTime.split(":");
 
                 hours = parseInt(hours);
                 minutes = parseInt(minutes);
@@ -462,17 +462,6 @@ function compareTime(t1, t2) {
     const { hours: h1, minutes: m1 } = t1;
     const { hours: h2, minutes: m2 } = t2;
     return h1 > h2 ? 1 : h1 < h2 ? -1 : m1 > m2 ? 1 : m1 < m2 ? -1 : 0;
-}
-
-function getCurrentRecurrenceNumber(startRecur, currentDate, daysOfWeek) {
-    var daysPerWeek = daysOfWeek.length;
-    var numberOfSessionGoneBy =
-        Math.floor(moment(currentDate).diff(moment(startRecur), 'days') / 7) *
-        daysPerWeek;
-
-    var currentNumberOfSessionInWeek =
-        daysOfWeek.indexOf(currentDate.getDay()) + 1;
-    return numberOfSessionGoneBy + currentNumberOfSessionInWeek;
 }
 
 function capitalizeFirstLetter(string) {

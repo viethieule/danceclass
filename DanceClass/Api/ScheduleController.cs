@@ -26,7 +26,7 @@ namespace DanceClass.Api
         public async Task<IHttpActionResult> GetRegisteredSessions(GetRegisteredSessionRq rq)
         {
             var rs = await _scheduleService.GetRegisteredSessions(rq);
-            return Json(rs);
+            return ApiJson(rs);
         }
     }
 }
