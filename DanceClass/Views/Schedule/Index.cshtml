@@ -83,7 +83,27 @@
                     <div class="row">
                         <div class="col-md-3 session-general-info"></div>
                         <div class="col-md-9">
-                            <p class="session-registration-list-label">Danh sách đăng ký</p>
+                            <div class="session-registration-header">
+                                <p class="session-registration-list-label">Danh sách đăng ký</p>
+                                <div class="session-add-registration">
+                                    <input id="session-user-search" type="text" class="form-control input-sm" placeholder="Nhập số điện thoại..." />
+                                    <button class="btn btn-success btn-xs"><i class="fa fa-plus" aria-hidden="true"></i><span style="font-weight: bold">&nbsp;&nbsp;Thêm</span></button>
+                                </div>
+                            </div>
+                            <div class="session-user-search-result">
+                                <p class="session-search-message error-message"></p>
+                                <table class="table">
+                                    @*<thead>
+                                        <tr>
+                                            <th>Tên</th>
+                                            <th>Username</th>
+                                            <th>Số điện thoại</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>*@
+                                    <tbody></tbody>
+                                </table>
+                            </div>
                             <div class="session-registrations">
                                 <table class="table">
                                     <tbody class="session-registration-list">

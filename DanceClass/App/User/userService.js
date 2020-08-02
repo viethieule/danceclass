@@ -29,9 +29,25 @@
         return user && user.roleNames.includes(roleName);
     }
 
+    async function get(rq) {
+        const rs = await $.ajax({
+            method: 'POST',
+            data: rq,
+            async: true,
+            url: '/api/user/get'
+        });
+
+        if (rs && rs.member) {
+            return rs.member;
+        }
+
+        return null;
+    }
+
     return {
         getCurrentUser: getCurrentUser,
         isAdmin: isAdmin,
-        isMember: isMember
+        isMember: isMember,
+        get: get
     }
 })();

@@ -6,7 +6,7 @@ using DataAccess.IdentityAccessor;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Services.Common;
-using Services.Members.Get;
+using Services.Members;
 using Services.Utils;
 using System;
 using System.Collections.Generic;
@@ -23,7 +23,7 @@ namespace Services.Members
     public interface IMemberService
     {
         Task<CreateMemberRs> Create(CreateMemberRq rq);
-        Task<GetMemberRs> GetById(GetMemberRq rq);
+        Task<GetMemberRs> Get(GetMemberRq rq);
         Task<GetMemberRs> GetCurrentUser();
     }
 
@@ -93,12 +93,20 @@ namespace Services.Members
             }
         }
 
-        public async Task<GetMemberRs> GetById(GetMemberRq rq)
+        public async Task<GetMemberRs> Get(GetMemberRq rq)
         {
-            var member = await _dbContext.Users.ProjectTo<MemberDTO>(_mappingConfig).FirstOrDefaultAsync(u => u.UserName == rq.UserName);
-
             GetMemberRs rs = new GetMemberRs();
-            rs.Member = member;
+
+            var query = _dbContext.Users.ProjectTo<MemberDTO>(_mappingConfig);
+            if (!string.IsNullOrEmpty(rq.UserName))
+            {
+                rs.Member = await query.FirstOrDefaultAsync(u => u.UserName == rq.UserName);
+            }
+            else if (!string.IsNullOrEmpty(rq.PhoneNumber))
+            {
+                rs.Member = await query.FirstOrDefaultAsync(u => u.PhoneNumber == rq.PhoneNumber);
+            }
+
             return rs;
         }
 

@@ -104,11 +104,47 @@ button#next {
     cursor: pointer;
 }
 
+.session-registration-header {
+    position: relative;
+}
+
 .session-info {
     font-weight: bold;
 }
 
 .session-info-label {
+    margin-bottom: 0px;
+}
+
+.session-add-registration {
+    position: absolute;
+    top: -5px;
+    right: 0;
+    width: 33%;
+    display: flex;
+}
+
+.session-add-registration input {
+    margin-right: 5px;
+}
+
+.session-user-search {
+    width: 72%;
+    display: inline-block;
+}
+
+.session-user-search-result {
+    display: none;
+    padding: 8px;
+    background-color: #ECF0F5;
+}
+
+.session-user-search-result .table > thead > tr > th,
+.session-user-search-result .table > tbody > tr > td {
+    border: none;
+}
+
+.session-user-search-result table {
     margin-bottom: 0px;
 }
 
@@ -118,6 +154,11 @@ button#next {
 
 .session-registration-list-label {
     margin-bottom: 15px;
+    display: inline-block;
+}
+
+.session-search-message {
+    margin-bottom: 0px;
 }
 
 .btn-label {
@@ -125,6 +166,11 @@ button#next {
     margin-right: 5px;
 }
 
-.btn-label .fa-times, .btn-label .fa-check {
+.btn-label .fa-times, .btn-label .fa-check, .btn-label .fa-plus {
     margin-right: 3px;
+}
+
+.error-message {
+    color: #dd4b39;
+    font-weight: bold;
 }

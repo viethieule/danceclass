@@ -53,9 +53,7 @@ function registerEvent() {
 
     $('#modal-register').on('show.bs.modal', function (event) {
         let div = $(event.relatedTarget);
-        const id = div.data('id') // Extract info from data-* attributes
-        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+        const id = div.data('id');
 
         let $modal = $(this);
         let modalTitle = $modal.find('.modal-title');
@@ -94,9 +92,9 @@ function registerEvent() {
     $('#modal-manage').on('shown.bs.modal', function (event) {
 
         let div = $(event.relatedTarget);
-        const id = div.data('id');
+        const id = parseInt(div.data('id'));
 
-        const scheduleDetail = m_scheduleDetails.find(x => x.id === parseInt(id));
+        const scheduleDetail = m_scheduleDetails.find(x => x.id === id);
         const { schedule, registrations, date, totalRegistered, sessionNo } = scheduleDetail;
 
         let $modal = $(this);
@@ -114,16 +112,84 @@ function registerEvent() {
             .append(renderSessionInfoGroup('Địa điểm', branch))
             .append(renderSessionInfoGroup('Số học viên đăng ký', totalRegistered + ' / 20'));
 
-        let $registrationList = registrations.reduce((jObject, registration, index) => {
-            jObject = jObject.add(renderRegistrationRow(registration, index));
-            return jObject;
-        }, $());
+        renderRegistrationList(registrations);
 
-        $('.session-registration-list').empty().append($registrationList);
+        $('.session-user-search-result').hide();
+        $('.session-search-message').text('').hide();
+        $('#session-user-search').val('');
+        $('.session-add-registration button').off('click').on('click', async function (event) {
+            let $addBtn = $(event.target);
+            let $input = $addBtn.closest('div').find('input');
+            let phoneNumber = $input.val();
+            if (!phoneNumber) {
+                return;
+            }
+
+            $addBtn.find('i').removeClass('fa fa-plus').addClass('fa fa-circle-o-notch fa-spin').prop('disabled', true);
+            try {
+                const user = await userService.get({ phoneNumber });
+                $('.session-user-search-result').show();
+                if (user) {
+                    if (registrations.some(r => r.userId === user.id)) {
+                        $('.session-search-message').text('Học viên ' + user.fullName + ' đã đăng ký!').show();
+                        $('.session-user-search-result tbody').empty();
+                        return;
+                    }
+
+                    let registerBtn = $('<button>', { class: 'btn btn-block btn-success btn-xs btn-label' })
+                        .html('Đăng ký')
+                        .on('click', { id }, async function (event) {
+                            let $registerBtn = $(event.target);
+                            $registerBtn
+                                .prop('disabled', true)
+                                .empty()
+                                .append($('<i>', { class: 'fa fa-circle-o-notch fa-spin' }))
+                            try {
+                                const response = await registerSchedule(event.data.id, user.id);
+                                if (response && response.registration) {
+                                    response.registration.isModified = true;
+                                    registrations.push(response.registration);
+
+                                    // rerender
+                                    renderRegistrationList(registrations);
+
+                                    // hide search result
+                                    $('.session-user-search-result').hide();
+                                }
+                            } catch (ex) {
+                                console.log(ex);
+                                $('.session-search-message').text(ex.responseJSON ? ex.responseJSON.ExceptionMessage : ex).show();
+                            } finally {
+                                // empty search result
+                                $('.session-user-search-result tbody').empty();
+                            }
+                        });
+
+                    let searchResult = $('<tr>')
+                        .append($('<td>').text(user.fullName))
+                        .append($('<td>').text(user.userName))
+                        .append($('<td>').text(user.phoneNumber))
+                        .append($('<td>').append(registerBtn));
+
+                    $('.session-user-search-result tbody').empty().append(searchResult);
+                } else {
+                    $('.session-search-message').text('Không tìm thấy học viên!').show();
+                    $('.session-user-search-result tbody').empty();
+                }
+            } catch (ex) {
+                console.log(ex);
+                $('.session-search-message').text(ex.responseJSON ? ex.responseJSON.ExceptionMessage : ex).show();
+                $('.session-user-search-result tbody').empty();
+            } finally {
+                $addBtn.find('i')
+                    .removeClass('fa fa-circle-o-notch fa-spin').addClass('fa fa-plus')
+                    .prop('disabled', false);
+            }
+        })
 
         $('#modal-manage').off('hide.bs.hide.bs.modal').on('hide.bs.hide.bs.modal', async function (event) {
             if (registrations.some(r => r.isModified)) {
-                await renderCalendar();
+                await renderSchedule();
             }
         })
     });
@@ -137,6 +203,15 @@ function renderSessionInfoGroup(label, value) {
     return $('<div>', { class: 'session-info-group' })
         .append($('<p>', { class: 'session-info-label' }).text(label))
         .append($('<p>', { class: 'session-info' }).text(value));
+}
+
+function renderRegistrationList(registrations) {
+    let $registrationList = registrations.reduce((jObject, registration, index) => {
+        jObject = jObject.add(renderRegistrationRow(registration, index));
+        return jObject;
+    }, $());
+
+    $('.session-registration-list').empty().append($registrationList);
 }
 
 function renderRegistrationRow(registration, index) {
@@ -253,7 +328,7 @@ async function handleUnregisterScheduleClick(registrationId, $modal) {
 
 async function handleRegisterScheduleClick(scheduleDetail, $modal) {
     try {
-        const rs = await registerSchedule(scheduleDetail.id);
+        const rs = await registerSchedule(scheduleDetail.id, m_user.id);
         if (rs && rs.registration) {
             $('.modal-body-message').css('color', 'green').text('Đăng ký thành công');
             setTimeout(async function () {
@@ -476,11 +551,14 @@ async function confirmRegistration(registrationId) {
     });
 }
 
-async function registerSchedule(scheduleDetailId) {
+async function registerSchedule(scheduleDetailId, userId) {
     return $.ajax({
         method: 'POST',
         data: {
-            registration: { scheduleDetailId }
+            registration: {
+                scheduleDetailId,
+                userId
+            }
         },
         async: true,
         url: '/api/registration/create',

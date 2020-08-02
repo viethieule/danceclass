@@ -1,5 +1,4 @@
 ﻿using Services.Members;
-using Services.Members.Get;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -26,12 +25,7 @@ namespace DanceClass.Api
         [Route("get")]
         public async Task<IHttpActionResult> Get(GetMemberRq rq)
         {
-            GetMemberRs rs = await _memberService.GetById(rq);
-            if (rs.Member == null)
-            {
-                return NotFound();
-            }
-
+            GetMemberRs rs = await _memberService.Get(rq);
             return ApiJson(rs);
         }
 

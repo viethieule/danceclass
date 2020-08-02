@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -61,7 +60,7 @@ namespace Services.Registration
             //{
             //    throw new Exception("Chỉ có thể hủy đăng ký ít nhất 1 tiếng trước khi tập!");
             //}
-            
+
             if (rq.IsDelete == true)
             {
                 _dbContext.Registrations.Remove(registration);
@@ -89,14 +88,14 @@ namespace Services.Registration
 
         public async Task<CreateRegistrationRs> Create(CreateRegistrationRq rq)
         {
-            var userId = HttpContext.Current.User.Identity.GetUserId();
-            if (string.IsNullOrEmpty(userId))
+            int userId = rq.Registration.UserId;
+            // Decrease remaining sessions of the user
+            var memberPackage = _dbContext.MemberPackages.FirstOrDefault(x => x.UserId == userId && x.IsActive);
+            if (memberPackage == null)
             {
-                throw new Exception("Vui lòng đăng nhập để đăng ký lớp học");
+                throw new Exception("Bạn chưa đăng ký gói tập!");
             }
 
-            // Decrease remaining sessions of the user
-            var memberPackage = _dbContext.MemberPackages.FirstOrDefault(x => x.UserId.ToString() == userId && x.IsActive);
             if (memberPackage.RemainingSessions <= 0)
             {
                 throw new Exception("Bạn đã dùng hết gói tập hiện tại. Vui lòng đăng ký gói mới!");
@@ -111,7 +110,6 @@ namespace Services.Registration
             //    throw new Exception("Không thể đăng ký lớp học trong quá khứ");
             //}
 
-            registration.UserId = int.Parse(userId);
             registration.Status = RegistrationStatus.Registered;
             registration.DateRegistered = DateTime.Now;
 
@@ -119,9 +117,13 @@ namespace Services.Registration
 
             await _dbContext.SaveChangesAsync();
 
+            var registrationDTO = await _dbContext.Registrations
+                .ProjectTo<RegistrationDTO>(_mappingConfig, dest => dest.User)
+                .FirstOrDefaultAsync(u => u.Id == registration.Id);
+
             CreateRegistrationRs rs = new CreateRegistrationRs()
             {
-                Registration = _mapper.Map<RegistrationDTO>(registration)
+                Registration = registrationDTO
             };
 
             return rs;
