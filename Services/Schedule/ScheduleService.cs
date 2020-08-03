@@ -16,6 +16,7 @@ namespace Services.Schedule
     {
         Task<GetDetailedScheduleRs> GetDetail(GetDetailedScheduleRq rq);
         Task<GetRegisteredSessionRs> GetRegisteredSessions(GetRegisteredSessionRq rq);
+        Task<CreateScheduleRs> Create(CreateScheduleRq rq);
     }
 
     public class ScheduleService : BaseService, IScheduleService
@@ -25,6 +26,87 @@ namespace Services.Schedule
         public ScheduleService(DanceClassDbContext dbContext, IMapper mapper, IConfigurationProvider mappingConfig) : base(dbContext, mapper)
         {
             _mappingConfig = mappingConfig;
+        }
+
+        public async Task<CreateScheduleRs> Create(CreateScheduleRq rq)
+        {
+            var scheduleDTO = rq.Schedule;
+            var schedule = _mapper.Map<DataAccess.Entities.Schedule>(scheduleDTO);
+
+            if (!string.IsNullOrEmpty(scheduleDTO.TrainerName))
+            {
+                schedule.Trainer = new DataAccess.Entities.Trainer
+                {
+                    Name = scheduleDTO.TrainerName
+                };
+            }
+
+            if (!string.IsNullOrEmpty(scheduleDTO.ClassName))
+            {
+                schedule.Class = new DataAccess.Entities.Class
+                {
+                    Name = scheduleDTO.ClassName
+                };
+            }
+
+            var scheduleDetails = GenerateScheduleDetails(schedule);
+            if (scheduleDetails.Count == 0)
+            {
+                throw new Exception("Không thể tạo thời khóa biểu chi tiết cho lớp học!");
+            }
+
+            schedule.ScheduleDetails = scheduleDetails;
+            schedule.EndingDate = scheduleDetails.Last().Date;
+
+            _dbContext.Schedules.Add(schedule);
+            await _dbContext.SaveChangesAsync();
+            _dbContext.Entry(schedule).State = EntityState.Detached;
+
+            return new CreateScheduleRs
+            {
+                Schedule = _mapper.Map<ScheduleDTO>(schedule)
+            };
+        }
+
+        private List<DataAccess.Entities.ScheduleDetail> GenerateScheduleDetails(DataAccess.Entities.Schedule schedule)
+        {
+            DateTime date = schedule.OpeningDate;
+            int totalSessions = schedule.Sessions;
+            int[] recurDays = schedule.DaysPerWeek.Select(x => int.Parse(x.ToString())).ToArray();
+
+            var scheduleDetails = new List<DataAccess.Entities.ScheduleDetail>();
+            int startIndex = Array.IndexOf(recurDays, (int)date.DayOfWeek);
+            if (startIndex == -1)
+            {
+                throw new Exception("Ngày bắt đầu không nằm trong số buổi hàng tuần!");
+            }
+
+            for (int i = startIndex, j = 1; i >= -1 && j > 0; i++, j++)
+            {
+                scheduleDetails.Add(new DataAccess.Entities.ScheduleDetail
+                {
+                    ScheduleId = schedule.Id,
+                    Date = date,
+                    SessionNo = j
+                });
+
+                if (scheduleDetails.Count == totalSessions)
+                {
+                    break;
+                }
+
+                if (i == recurDays.Length - 1)
+                {
+                    date = date.AddDays(7 - (recurDays[i] - recurDays[0]));
+                    i = -1;
+                }
+                else
+                {
+                    date = date.AddDays(recurDays[i + 1] - recurDays[i]);
+                }
+            }
+
+            return scheduleDetails;
         }
 
         public async Task<GetDetailedScheduleRs> GetDetail(GetDetailedScheduleRq rq)

@@ -137,6 +137,10 @@
     <Compile Include="Migrations\202007301549003_AddRegistrationStatus.designer.cs">
       <DependentUpon>202007301549003_AddRegistrationStatus.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202008031715298_NullableClassAndTrainer.cs" />
+    <Compile Include="Migrations\202008031715298_NullableClassAndTrainer.designer.cs">
+      <DependentUpon>202008031715298_NullableClassAndTrainer.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -177,6 +181,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202007301549003_AddRegistrationStatus.resx">
       <DependentUpon>202007301549003_AddRegistrationStatus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202008031715298_NullableClassAndTrainer.resx">
+      <DependentUpon>202008031715298_NullableClassAndTrainer.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

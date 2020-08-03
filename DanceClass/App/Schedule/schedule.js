@@ -194,6 +194,11 @@ function registerEvent() {
         })
     });
 
+    $('#modal-create-schedule').on('shown.bs.modal', function (event) {
+        const date = $(event.relatedTarget).data('date');
+        
+    });
+
     $('.session-registrations').slimscroll({
         distance: '5px'
     });
@@ -386,9 +391,10 @@ async function renderSchedule() {
 
     eventsByTime.forEach((eventGroup) => {
         let tr = $('<tr></tr>');
+        const { hours, minutes } = eventGroup;
         let tdTime = $('<td></td>')
             .html(
-                `${formatHhMm(eventGroup.hours, eventGroup.minutes)} <br />- ${formatHhMm(eventGroup.hours + 1, eventGroup.minutes)}`
+                `${formatHhMm(hours, minutes)} <br />- ${formatHhMm(hours + 1, minutes)}`
             )
             .appendTo(tr);
 
@@ -405,7 +411,9 @@ async function renderSchedule() {
             } else {
                 if (userService.isAdmin()) {
                     tdEvents
-                        .on('click', function (event) { console.log(event) })
+                        .prop('data-toggle', 'modal')
+                        .prop('data-target', '#modal-create-schedule')
+                        .prop('data-date', date.hour(hours).minute(minutes))
                         .hover(function () {
                             $(this)
                                 .addClass('cell-admin-add-schedule')

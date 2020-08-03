@@ -20,11 +20,13 @@ namespace Services.Schedule
         public string DaysPerWeek { get; set; }
         public string Branch { get; set; }
         
-        public int ClassId { get; set; }
+        public int? ClassId { get; set; }
         public ClassDTO Class { get; set; }
+        public string ClassName { get; set; }
 
-        public int TrainerId { get; set; }
+        public int? TrainerId { get; set; }
         public TrainerDTO Trainer { get; set; }
+        public string TrainerName { get; set; }
 
         public List<ScheduleDetailDTO> ScheduleDetails { get; set; }
     }

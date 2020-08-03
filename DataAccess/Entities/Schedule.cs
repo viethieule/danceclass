@@ -20,11 +20,11 @@ namespace DataAccess.Entities
         public string DaysPerWeek { get; set; }
         public string Branch { get; set; }
 
-        public int ClassId { get; set; }
+        public int? ClassId { get; set; }
         [ForeignKey("ClassId")]
         public virtual Class Class { get; set; }
 
-        public int TrainerId { get; set; }
+        public int? TrainerId { get; set; }
         [ForeignKey("TrainerId")]
         public virtual Trainer Trainer { get; set; }
 
