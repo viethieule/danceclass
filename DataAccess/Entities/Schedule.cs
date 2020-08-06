@@ -13,10 +13,10 @@ namespace DataAccess.Entities
 
         public string Song { get; set; }
         public DateTime OpeningDate { get; set; }
-        public DateTime EndingDate { get; set; }
+        public DateTime? EndingDate { get; set; }
         public TimeSpan StartTime { get; set; }
-        public int Sessions { get; set; }
-        public int SessionsPerWeek { get; set; }
+        public int? Sessions { get; set; }
+        public int? SessionsPerWeek { get; set; }
         public string DaysPerWeek { get; set; }
         public string Branch { get; set; }
 

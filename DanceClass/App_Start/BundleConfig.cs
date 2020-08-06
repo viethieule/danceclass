@@ -39,6 +39,15 @@ namespace DanceClass
             
             bundles.Add(new ScriptBundle("~/bundles/pace").Include(
                       "~/Scripts/pace.min.js"));
+            
+            bundles.Add(new ScriptBundle("~/bundles/bootstrap-timepicker").Include(
+                      "~/Scripts/bootstrap-timepicker.min.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/bootstrap-datepicker").Include(
+                      "~/Scripts/bootstrap-datepicker.min.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/select2").Include(
+                      "~/Scripts/select2.full.min.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
@@ -46,7 +55,22 @@ namespace DanceClass
                       "~/Content/ionicons.css",
                       "~/Content/AdminLTE.css",
                       "~/Content/skin-black.css",
-                      "~/Content/pace.min.css"));
+                      "~/Content/pace.min.css"
+            ));
+            
+            bundles.Add(new StyleBundle("~/Content/bootstrap-datepicker").Include(
+                      "~/Content/bootstrap-datepicker.min.css"));
+
+            bundles.Add(new StyleBundle("~/Content/bootstrap-timepicker").Include(
+                      "~/Content/bootstrap-timepicker.min.css"));
+
+            bundles.Add(new StyleBundle("~/Content/select2").Include(
+                      "~/Content/select2.min.css"));
+
+            bundles.Add(new StyleBundle("~/Content/adminlte").Include(
+                      "~/Content/AdminLTE.css",
+                      "~/Content/skin-black.css"
+            ));
         }
     }
 }

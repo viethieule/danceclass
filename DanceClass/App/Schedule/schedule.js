@@ -4,11 +4,13 @@ let m_scheduleDetails = [];
 let m_user = null;
 
 $(async function () {
-    registerEvent();
     initWeek();
     await initUser();
+
+    registerEvent();
     renderUserRemainingSessions();
     await renderCalendar();
+    initCreateScheduleForm();
 });
 
 async function initUser() {
@@ -107,7 +109,7 @@ function registerEvent() {
         $('.session-general-info')
             .empty()
             .append(renderSessionInfoGroup('Bài múa', song))
-            .append(renderSessionInfoGroup('Buổi', sessionNo + ' / ' + totalSessions))
+            .append(renderSessionInfoGroup('Buổi', sessionNo + (totalSessions ? ' / ' + totalSessions : '')))
             .append(renderSessionInfoGroup('Thời gian', timeStart))
             .append(renderSessionInfoGroup('Địa điểm', branch))
             .append(renderSessionInfoGroup('Số học viên đăng ký', totalRegistered + ' / 20'));
@@ -194,10 +196,7 @@ function registerEvent() {
         })
     });
 
-    $('#modal-create-schedule').on('shown.bs.modal', function (event) {
-        const date = $(event.relatedTarget).data('date');
-        
-    });
+    registerCreateScheduleModal();
 
     $('.session-registrations').slimscroll({
         distance: '5px'
@@ -313,7 +312,6 @@ async function handleCancelRegistration(event) {
 
         $cancelBtn.closest('td').append(ex.responseJSON.ExceptionMessage);
     }
-
 }
 
 async function handleUnregisterScheduleClick(registrationId, $modal) {
@@ -410,10 +408,13 @@ async function renderSchedule() {
                     .appendTo(tdEvents);
             } else {
                 if (userService.isAdmin()) {
+                    let targetedDate = date.clone();
+                    targetedDate.hour(hours).minute(minutes);
+
                     tdEvents
-                        .prop('data-toggle', 'modal')
-                        .prop('data-target', '#modal-create-schedule')
-                        .prop('data-date', date.hour(hours).minute(minutes))
+                        .attr('data-toggle', 'modal')
+                        .attr('data-target', '#modal-create-schedule')
+                        .data('date', targetedDate)
                         .hover(function () {
                             $(this)
                                 .addClass('cell-admin-add-schedule')
@@ -464,7 +465,7 @@ function renderEventTag(event) {
     $('<span></span>', {
         class: 'mistake-event-info',
     })
-        .text(`${event.sessionNo}/${schedule.sessions}`)
+        .text(`${event.sessionNo}${schedule.sessions ? '/' + schedule.sessions : ''}`)
         .appendTo(infoDiv);
 
     $('<span></span>', {

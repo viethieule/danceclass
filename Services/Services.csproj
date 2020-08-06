@@ -97,6 +97,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class\ClassDTO.cs" />
+    <Compile Include="Class\ClassService.cs" />
     <Compile Include="Common\AutoMapper\ApplicationUserResolver\ApplicationUserRolesNameResolver.cs" />
     <Compile Include="Common\AutoMapper\AutoMapperModule.cs" />
     <Compile Include="Common\AutoMapper\DtoToEntityMappingProfile.cs" />

@@ -49,14 +49,29 @@ namespace Services.Schedule
                 };
             }
 
-            var scheduleDetails = GenerateScheduleDetails(schedule);
-            if (scheduleDetails.Count == 0)
+            if (schedule.Sessions.HasValue && !string.IsNullOrEmpty(schedule.DaysPerWeek))
             {
-                throw new Exception("Không thể tạo thời khóa biểu chi tiết cho lớp học!");
-            }
+                var scheduleDetails = GenerateScheduleDetails(schedule);
+                if (scheduleDetails.Count == 0)
+                {
+                    throw new Exception("Không thể tạo thời khóa biểu chi tiết cho lớp học!");
+                }
 
-            schedule.ScheduleDetails = scheduleDetails;
-            schedule.EndingDate = scheduleDetails.Last().Date;
+                schedule.ScheduleDetails = scheduleDetails;
+                schedule.EndingDate = scheduleDetails.Last().Date;
+            }
+            else
+            {
+                schedule.ScheduleDetails = new List<DataAccess.Entities.ScheduleDetail>
+                {
+                    new DataAccess.Entities.ScheduleDetail
+                    {
+                        Date = schedule.OpeningDate,
+                        ScheduleId = schedule.Id,
+                        SessionNo = 1
+                    }
+                };
+            }
 
             _dbContext.Schedules.Add(schedule);
             await _dbContext.SaveChangesAsync();
@@ -70,11 +85,17 @@ namespace Services.Schedule
 
         private List<DataAccess.Entities.ScheduleDetail> GenerateScheduleDetails(DataAccess.Entities.Schedule schedule)
         {
+            var scheduleDetails = new List<DataAccess.Entities.ScheduleDetail>();
+
+            if (!schedule.Sessions.HasValue || string.IsNullOrEmpty(schedule.DaysPerWeek))
+            {
+                return scheduleDetails;
+            }
+
             DateTime date = schedule.OpeningDate;
-            int totalSessions = schedule.Sessions;
+            int totalSessions = schedule.Sessions.Value;
             int[] recurDays = schedule.DaysPerWeek.Select(x => int.Parse(x.ToString())).ToArray();
 
-            var scheduleDetails = new List<DataAccess.Entities.ScheduleDetail>();
             int startIndex = Array.IndexOf(recurDays, (int)date.DayOfWeek);
             if (startIndex == -1)
             {

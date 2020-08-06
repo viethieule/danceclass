@@ -13,6 +13,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     @Styles.Render("~/Content/css")
     @RenderSection("Styles", false)
+    @Styles.Render("~/Content/adminlte")
     @Scripts.Render("~/bundles/modernizr")
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -335,8 +336,10 @@ desired effect
 
     <script src="~/App/User/userService.js"></script>
     <script>
-        $(document).ajaxStart(function() { Pace.restart(); });
+        $(document).ajaxStart(function () { Pace.restart(); });
     </script>
+
+    <script src="~/App/Common/js/apiService.js"></script>
     @RenderSection("scripts", required: false)
 
     <!-- Optionally, you can add Slimscroll and FastClick plugins.

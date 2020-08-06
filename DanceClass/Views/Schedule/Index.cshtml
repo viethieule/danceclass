@@ -4,6 +4,9 @@
 }
 
 @section Styles {
+    @Styles.Render("~/Content/bootstrap-datepicker")
+    @Styles.Render("~/Content/bootstrap-timepicker")
+    @Styles.Render("~/Content/select2")
     <link href="~/App/Schedule/schedule.css" rel="stylesheet" />
 }
 
@@ -94,13 +97,13 @@
                                 <p class="session-search-message error-message"></p>
                                 <table class="table">
                                     @*<thead>
-                                        <tr>
-                                            <th>Tên</th>
-                                            <th>Username</th>
-                                            <th>Số điện thoại</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>*@
+                                            <tr>
+                                                <th>Tên</th>
+                                                <th>Username</th>
+                                                <th>Số điện thoại</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>*@
                                     <tbody></tbody>
                                 </table>
                             </div>
@@ -118,12 +121,150 @@
         </div>
         <!-- /.modal-dialog -->
     </div>
+    <div class="modal fade" id="modal-create-schedule" style="display: none;">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title">Tạo lịch học</h4>
+                </div>
+                <form id="create-schedule">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="required" for="class">Lớp</label>
+                                    <select id="class" name="class" class="form-control select2" style="width: 100%;"></select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="song">Bài múa</label>
+                                    <input id="song" name="song" type="text" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Ngày bắt đầu</label>
+
+                                    <div class="input-group date">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input id="openingDate" name="openingDate" type="text" class="form-control pull-right mistake-datepicker">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="bootstrap-timepicker">
+                                    <div class="form-group">
+                                        <label>Giờ</label>
+                                        <div class="input-group">
+                                            <input id="startTime" name="startTime" type="text" class="form-control timepicker mistake-timepicker">
+
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-clock-o"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3" style="display: none">
+                                <div class="form-group">
+                                    <label>Ngày kết thúc</label>
+
+                                    <div class="input-group date">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input disabled id="endingDate" name="endingDate" type="text" class="form-control pull-right mistake-datepicker">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-7">
+                                <div class="form-group">
+                                    <label for="daysPerWeek">Các buổi / tuần</label>
+                                    <div class="days-per-week" >
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" value="1"> Thứ 2
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" value="2"> Thứ 3
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" value="3"> Thứ 4
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" value="4"> Thứ 5
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" value="5"> Thứ 6
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" value="6"> Thứ 7
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" value="0"> Chủ nhật
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label for="sessions">Tổng số buổi</label>
+                                    <input id="sessions" name="sessions" type="number" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="trainer">Giáo viên</label>
+                                    <select id="trainer" name="trainer" class="form-control select2" style="width: 100%;">
+                                        <option value="1">Linh</option>
+                                        <option value="2">Thảo</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="branch">Chi nhánh</label>
+                                    <select id="branch" name="branch" class="form-control">
+                                        <option selected="selected" value="Q3">Quận 3</option>
+                                        <option value="PN">Phú Nhuận</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Thoát</button>
+                        <button type="submit" id="btn-action" class="btn btn-primary">Tạo</button>
+                    </div>
+                </form>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
     <!-- /.row -->
 </section>
 <!-- /.content -->
 
 @section Scripts {
     @Scripts.Render("~/bundles/moment")
+    @Scripts.Render("~/bundles/bootstrap-timepicker")
+    @Scripts.Render("~/bundles/bootstrap-datepicker")
+    @Scripts.Render("~/bundles/select2")
+
+    <script src="~/App/Common/js/form.js"></script>
     <script src="~/App/Schedule/schedule.js"></script>
+    <script src="~/App/Schedule/createSchedule.js"></script>
 }
 

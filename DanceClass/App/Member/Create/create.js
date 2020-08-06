@@ -91,7 +91,6 @@ function registerEvent() {
                 }
             },
             submitHandler: async function (form) {
-                debugger;
                 var jForm = $(form);
 
                 // Find disabled inputs, and remove the "disabled" attribute

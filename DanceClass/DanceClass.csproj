@@ -226,6 +226,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Api\ApiBaseController.cs" />
+    <Compile Include="Api\ClassController.cs" />
     <Compile Include="Api\PackageController.cs" />
     <Compile Include="Api\RegistrationController.cs" />
     <Compile Include="Api\ScheduleController.cs" />
@@ -252,9 +253,11 @@
   <ItemGroup>
     <Content Include="App\Common\js\apiService.js" />
     <Content Include="App\Common\css\form.css" />
+    <Content Include="App\Common\js\form.js" />
     <Content Include="App\Common\js\utils.js" />
     <Content Include="App\Member\Create\create.js" />
     <Content Include="App\Member\Index\index.js" />
+    <Content Include="App\Schedule\createSchedule.js" />
     <Content Include="App\Schedule\schedule.css" />
     <Content Include="App\Schedule\schedule.js" />
     <Content Include="App\User\userService.js" />
@@ -262,8 +265,12 @@
     <Content Include="Content\AdminLTE.min.css" />
     <Content Include="Content\blue.css" />
     <Content Include="Content\blue.png" />
+    <Content Include="Content\bootstrap-datepicker.css" />
+    <Content Include="Content\bootstrap-datepicker.min.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
+    <Content Include="Content\bootstrap-timepicker.css" />
+    <Content Include="Content\bootstrap-timepicker.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\font-awesome.css" />
@@ -271,6 +278,8 @@
     <Content Include="Content\ionicons.css" />
     <Content Include="Content\ionicons.min.css" />
     <Content Include="Content\pace.min.css" />
+    <Content Include="Content\select2.css" />
+    <Content Include="Content\select2.min.css" />
     <Content Include="Content\skin-black.css" />
     <Content Include="Content\skin-black.min.css" />
     <Content Include="favicon.ico" />
@@ -281,6 +290,10 @@
     <Content Include="img\user2-160x160.jpg" />
     <Content Include="Scripts\adminlte.js" />
     <Content Include="Scripts\adminlte.min.js" />
+    <Content Include="Scripts\bootstrap-datepicker.js" />
+    <Content Include="Scripts\bootstrap-datepicker.min.js" />
+    <Content Include="Scripts\bootstrap-timepicker.js" />
+    <Content Include="Scripts\bootstrap-timepicker.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="fonts\fontawesome-webfont.eot" />
@@ -313,6 +326,8 @@
     <Content Include="Scripts\moment-with-locales.min.js" />
     <Content Include="Scripts\moment.js" />
     <Content Include="Scripts\pace.min.js" />
+    <Content Include="Scripts\select2.full.js" />
+    <Content Include="Scripts\select2.full.min.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
