@@ -1,9 +1,21 @@
 ﻿var m_packages = [];
 
 $(async function () {
+    initDatePicker();
     await populatePackages();
     registerEvent();
 });
+
+function initDatePicker() {
+    $('#dob')
+        .datepicker({
+            autoclose: true,
+            format: 'dd/mm/yyyy',
+        })
+        .inputmask('dd/mm/yyyy', {
+            'placeholder': 'dd/mm/yyyy'
+        });
+}
 
 async function populatePackages() {
     try {
@@ -105,10 +117,13 @@ function registerEvent() {
                 try {
                     var package = m_packages.find(p => p.id.toString() === formData['package']);
 
+                    let dob = $('#dob').datepicker('getDate');
+                    dob = moment(dob).format('MM-DD-YYYY');
+
                     const data = await createMember({
                         member: {
                             fullName: formData['name'],
-                            birthdate: formData['dob'],
+                            birthdate: dob,
                             phoneNumber: formData['phone'],
                             email: formData['email']
                         },

@@ -4,6 +4,7 @@
 }
 
 @section Styles {
+    @Styles.Render("~/Content/bootstrap-datepicker")
     <link href="~/App/Common/css/form.css" rel="stylesheet" />
 }
 
@@ -25,7 +26,13 @@
                         </div>
                         <div class="form-group">
                             <label class="required" for="dob">Ngày sinh</label>
-                            <input type="date" class="form-control" id="dob" name="dob">
+
+                            <div class="input-group date">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input id="dob" name="dob" type="text" class="form-control pull-right">
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="email">Email</label>
@@ -63,6 +70,9 @@
 </section>
 
 @section Scripts {
+    @Scripts.Render("~/bundles/inputMask")
+    @Scripts.Render("~/bundles/moment")
+    @Scripts.Render("~/bundles/bootstrap-datepicker")
     <script src="~/App/Member/Create/create.js"></script>
 }
 

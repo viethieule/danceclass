@@ -4,6 +4,7 @@ let m_scheduleDetails = [];
 let m_user = null;
 
 $(async function () {
+    collapseSideBar();
     initWeek();
     await initUser();
 

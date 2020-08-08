@@ -53,6 +53,10 @@ namespace DanceClass
                       "~/Scripts/jquery.dataTables.min.js",
                       "~/Scripts/dataTables.bootstrap.min.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/inputMask").Include(
+                      "~/Scripts/jquery.inputmask.js",
+                      "~/Scripts/jquery.inputmask.date.extensions.js"));
+
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/font-awesome.css",
