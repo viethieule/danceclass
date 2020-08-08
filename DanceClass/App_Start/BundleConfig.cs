@@ -49,6 +49,10 @@ namespace DanceClass
             bundles.Add(new ScriptBundle("~/bundles/select2").Include(
                       "~/Scripts/select2.full.min.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/dataTables").Include(
+                      "~/Scripts/jquery.dataTables.min.js",
+                      "~/Scripts/dataTables.bootstrap.min.js"));
+
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/font-awesome.css",
@@ -66,6 +70,9 @@ namespace DanceClass
 
             bundles.Add(new StyleBundle("~/Content/select2").Include(
                       "~/Content/select2.min.css"));
+            
+            bundles.Add(new StyleBundle("~/Content/dataTables").Include(
+                      "~/Content/dataTables.bootstrap.min.css"));
 
             bundles.Add(new StyleBundle("~/Content/adminlte").Include(
                       "~/Content/AdminLTE.css",

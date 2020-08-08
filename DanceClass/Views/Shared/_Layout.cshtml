@@ -53,7 +53,7 @@ desired effect
         <header class="main-header">
 
             <!-- Logo -->
-            <a href="index2.html" class="logo">
+            <a href="/" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
                 <span class="logo-mini"><b>M</b>DS</span>
                 <!-- logo for regular state and mobile devices -->
@@ -235,6 +235,12 @@ desired effect
 
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
+            <div class="alert alert-danger alert-dismissible" style="border-radius: 0px; display: none">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true" style="color: white; opacity: 1">×</button>
+                <h4><i class="icon fa fa-ban"></i>Lỗi</h4>
+                <span id="global-error-message"></span>
+            </div>
+
             @RenderBody()
         </div>
         <!-- /.content-wrapper -->

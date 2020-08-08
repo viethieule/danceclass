@@ -19,6 +19,7 @@ namespace Services.Registration
         Task<CreateRegistrationRs> Create(CreateRegistrationRq rq);
         Task<List<RegistrationDTO>> GetByScheduleDetail(int scheduleDetailId);
         Task ConfirmAttendance(int registrationId);
+        Task<GetRegistrationsRs> GetByUser(GetRegistrationsRq rq);
     }
 
     public class RegistrationService : BaseService, IRegistrationService
@@ -149,6 +150,27 @@ namespace Services.Registration
 
             registration.Status = RegistrationStatus.Attended;
             await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<GetRegistrationsRs> GetByUser(GetRegistrationsRq rq)
+        {
+            var rs = new GetRegistrationsRs();
+
+            bool isAdmin = HttpContext.Current.User.IsInRole("Admin");
+            var currentUserId = HttpContext.Current.User.Identity.GetUserId();
+
+            if (rq.UserId.ToString() != currentUserId && !isAdmin)
+            {
+                return rs;
+            }
+
+            var registrations = await _dbContext.Registrations
+                .Where(r => r.UserId == rq.UserId)
+                .ProjectTo<RegistrationDTO>(_mappingConfig, dest => dest.ScheduleDetail.Schedule.Class, dest => dest.ScheduleDetail.Schedule.Trainer)
+                .ToListAsync();
+
+            rs.Registrations = registrations;
+            return rs;
         }
     }
 }

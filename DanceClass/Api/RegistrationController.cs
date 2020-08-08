@@ -45,5 +45,14 @@ namespace DanceClass.Api
         {
             await _registrationService.ConfirmAttendance(registrationId);
         }
+
+        [HttpPost]
+        [Route("getByUser")]
+        [Authorize(Roles = "Member,Admin")]
+        public async Task<IHttpActionResult> GetByUser(GetRegistrationsRq rq)
+        {
+            var rs = await _registrationService.GetByUser(rq);
+            return ApiJson(rs);
+        }
     }
 }

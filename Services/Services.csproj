@@ -119,15 +119,14 @@
     <Compile Include="Registration\CancelRegistrationRq.cs" />
     <Compile Include="Registration\CreateRegistrationRq.cs" />
     <Compile Include="Registration\CreateRegistrationRs.cs" />
-    <Compile Include="Registration\GetRegistrationResponse.cs" />
+    <Compile Include="Registration\GetRegistrationsRq.cs" />
+    <Compile Include="Registration\GetRegistrationsRs.cs" />
     <Compile Include="Registration\RegistrationDTO.cs" />
     <Compile Include="Registration\RegistrationService.cs" />
     <Compile Include="Schedule\CreateScheduleRq.cs" />
     <Compile Include="Schedule\CreateScheduleRs.cs" />
     <Compile Include="Schedule\GetDetailScheduleRq.cs" />
     <Compile Include="Schedule\GetDetailScheduleRs.cs" />
-    <Compile Include="Schedule\GetRegisteredSessionRq.cs" />
-    <Compile Include="Schedule\GetRegisteredSessionRs.cs" />
     <Compile Include="Schedule\ScheduleDetailDTO.cs" />
     <Compile Include="Schedule\ScheduleDTO.cs" />
     <Compile Include="Schedule\ScheduleService.cs" />

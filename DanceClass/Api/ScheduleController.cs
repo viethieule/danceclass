@@ -23,14 +23,6 @@ namespace DanceClass.Api
         }
 
         [HttpPost]
-        [Route("getregisteredsessions")]
-        public async Task<IHttpActionResult> GetRegisteredSessions(GetRegisteredSessionRq rq)
-        {
-            var rs = await _scheduleService.GetRegisteredSessions(rq);
-            return ApiJson(rs);
-        }
-
-        [HttpPost]
         //[Authorize(Roles = "Admin")]
         [Route("create")]
         public async Task<IHttpActionResult> Create(CreateScheduleRq rq)

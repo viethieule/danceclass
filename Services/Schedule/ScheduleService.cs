@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using DataAccess;
 using Microsoft.AspNet.Identity;
 using Services.Common;
+using Services.Registration;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -15,7 +16,6 @@ namespace Services.Schedule
     public interface IScheduleService
     {
         Task<GetDetailedScheduleRs> GetDetail(GetDetailedScheduleRq rq);
-        Task<GetRegisteredSessionRs> GetRegisteredSessions(GetRegisteredSessionRq rq);
         Task<CreateScheduleRs> Create(CreateScheduleRq rq);
     }
 
@@ -145,15 +145,7 @@ namespace Services.Schedule
             if (isMember)
             {
                 int userId = int.Parse(HttpContext.Current.User.Identity.GetUserId());
-                scheduleDetailDtos.ForEach(x =>
-                {
-                    var currentUserRegistration = x.Registrations.FirstOrDefault(r => r.UserId == userId);
-                    if (currentUserRegistration != null)
-                    {
-                        x.CurrentUserRegistration = currentUserRegistration;
-                        x.IsCurrentUserRegistered = true;
-                    }
-                });
+                AppendCurrentUserRegistrationToDtos(scheduleDetailDtos);
             }
 
             GetDetailedScheduleRs rs = new GetDetailedScheduleRs
@@ -164,17 +156,23 @@ namespace Services.Schedule
             return rs;
         }
 
-        public async Task<GetRegisteredSessionRs> GetRegisteredSessions(GetRegisteredSessionRq rq)
+        private void AppendCurrentUserRegistrationToDtos(List<ScheduleDetailDTO> dtos)
         {
-            var sessions = await _dbContext.ScheduleDetails
-                .Where(s => s.Registrations.Any(r => r.UserId == rq.UserId))
-                .ProjectTo<ScheduleDetailDTO>(_mappingConfig, s => s.Schedule.Trainer, s => s.Schedule.Class)
-                .ToListAsync();
-
-            return new GetRegisteredSessionRs
+            string userId = HttpContext.Current.User.Identity.GetUserId();
+            if (string.IsNullOrEmpty(userId))
             {
-                Sessions = sessions
-            };
+                return;
+            }
+
+            dtos.ForEach(dto =>
+            {
+                var currentUserRegistration = dto.Registrations.FirstOrDefault(r => r.UserId.ToString() == userId);
+                if (currentUserRegistration != null)
+                {
+                    dto.CurrentUserRegistration = currentUserRegistration;
+                    dto.IsCurrentUserRegistered = true;
+                }
+            });
         }
     }
 }
