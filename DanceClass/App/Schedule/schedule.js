@@ -372,15 +372,18 @@ function renderDaysOfWeek() {
     );
     $('#calendarHead').empty();
 
-    var weekTableData = m_currentDaysOfWeek
-        .map(day => {
-            var dayLocale = capitalizeFirstLetter(day.locale('vi').format('dddd D/M'));
-            return `<th>${dayLocale}</th>`;
-        })
-        .join('');
+    let $tr = $('<tr>').append($('<th>'));
+    m_currentDaysOfWeek
+        .forEach(day => {
+            let dayLocale = capitalizeFirstLetter(day.locale('vi').format('dddd D/M'));
+            let $th = $('<th>').text(dayLocale);
+            if (day.isSame(new Date(), 'day')) {
+                $th.css('background-color', '#ECF0F5');
+            }
+            $th.appendTo($tr);
+        });
 
-    var weekTableHead = `<tr><th></th>${weekTableData}</th>`;
-    $('#calendarHead').append(weekTableHead);
+    $('#calendarHead').append($tr);
 }
 
 async function renderSchedule() {
@@ -408,6 +411,10 @@ async function renderSchedule() {
                     }, $())
                     .appendTo(tdEvents);
             } else {
+                if (date.isSame(new Date(), 'day')) {
+                    tdEvents.css('background-color', '#ECF0F5');
+                }
+
                 if (userService.isAdmin()) {
                     let targetedDate = date.clone();
                     targetedDate.hour(hours).minute(minutes);
@@ -437,6 +444,7 @@ async function renderSchedule() {
 
 function renderEventTag(event) {
     const { schedule } = event;
+    const isMember = userService.isMember();
 
     var div = $('<div></div>', {
         'class': 'mistake-event mistake-event-' + schedule.branch.toLowerCase(),
@@ -447,16 +455,21 @@ function renderEventTag(event) {
 
     div.hover(function () { $(this).css('cursor', 'pointer') });
 
-    $('<p></p>', {
+    let $class = $('<p></p>', {
         class: 'mistake-event-class',
     })
         .text(schedule.class.name)
         .appendTo(div);
 
+    if (event.sessionNo === 1) {
+        $class.prepend($('<small>', { class: 'label mistake-event-label-new' }).html('new'))
+    }
+
     $('<p></p>', {
         class: 'mistake-event-song',
     })
-        .text(schedule.song)
+        .html('&nbsp; ' + schedule.song)
+        .prepend($('<li>', { class: 'fa fa-music' }))
         .appendTo(div);
 
     var infoDiv = $('<div></div>', {
@@ -466,24 +479,29 @@ function renderEventTag(event) {
     $('<span></span>', {
         class: 'mistake-event-info',
     })
-        .text(`${event.sessionNo}${schedule.sessions ? '/' + schedule.sessions : ''}`)
+        .html(`&nbsp; ${event.sessionNo}${schedule.sessions ? '/' + schedule.sessions : ''}`)
+        .prepend($('<li>', { class: 'fa fa-calendar' }))
         .appendTo(infoDiv);
+
+    if (!isMember) {
+        $('<span></span>', {
+            class: 'mistake-event-info',
+        })
+            .html(`&nbsp; ${event.totalRegistered}/20`)
+            .prepend($('<li>', { class: 'fa fa-user' }))
+            .appendTo(infoDiv);
+    }
 
     $('<span></span>', {
         class: 'mistake-event-info',
     })
-        .text(`${event.totalRegistered}/20`)
-        .appendTo(infoDiv);
-
-    $('<span></span>', {
-        class: 'mistake-event-info',
-    })
-        .text(schedule.branch)
+        .html('&nbsp; ' + schedule.branch)
+        .prepend($('<li>', { class: 'fa fa-map-marker' }))
         .appendTo(infoDiv);
 
     infoDiv.appendTo(div);
 
-    if (userService.isMember()) {
+    if (isMember) {
         let isRegistered = event.isCurrentUserRegistered && event.currentUserRegistration.status.value === 0;
         let action = isRegistered ? 'Hủy đăng ký' : 'Đăng ký';
         let btnClass = isRegistered ? 'btn-danger' : 'btn-success';

@@ -14,7 +14,6 @@ namespace DanceClass.Api
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Member")]
         [Route("getdetail")]
         public async Task<IHttpActionResult> GetDetail(GetDetailedScheduleRq rq)
         {

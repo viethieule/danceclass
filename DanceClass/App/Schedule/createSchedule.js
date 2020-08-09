@@ -121,9 +121,13 @@ function registerFormEvent() {
 
                 if (startTime) {
                     let [time, meridiem] = startTime.trim().split(' ');
+                    let [hour, minute] = time.split(':');
                     if (meridiem === 'PM') {
-                        let [hour, minute] = time.split(':');
-                        hour = parseInt(hour) + 12;
+                        if (hour !== '12') {
+                            hour = parseInt(hour) + 12;
+                            startTime = hour + ':' + minute;
+                        }
+                    } else {
                         startTime = hour + ':' + minute;
                     }
                 }

@@ -47,15 +47,31 @@
 .mistake-event-class {
     font-weight: bold;
     margin-bottom: 0px;
+    max-width: 130px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mistake-event-label-new {
+    position: relative;
+    top: -2px;
+    margin-right: 4px;
+    font-size: 10px;
+    padding: 0.1em 0.4em 0.1em;
+    border: 0.25px dashed white;
+    background-color: #ffd715;
 }
 
 .mistake-event-song {
     height: 3em;
     margin-bottom: 0px;
+    font-size: 12px;
 }
 
 .mistake-event-info {
     margin-right: 5px;
+    font-size: 12px;
 }
 
 .mistake-event-action {
