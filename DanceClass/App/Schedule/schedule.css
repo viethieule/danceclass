@@ -20,6 +20,10 @@
     text-align: center;
 }
 
+.calendar-create-schedule {
+    margin-left: auto;
+}
+
 .calendar-remaining-sessions-area {
     display: flex;
     margin-left: auto;

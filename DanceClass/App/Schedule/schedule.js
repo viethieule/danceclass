@@ -468,7 +468,7 @@ function renderEventTag(event) {
     $('<p></p>', {
         class: 'mistake-event-song',
     })
-        .html('&nbsp; ' + schedule.song)
+        .html(schedule.song ? ('&nbsp; ' + schedule.song) : '&nbsp; <i>(Đang chờ cập nhật...)</i>')
         .prepend($('<li>', { class: 'fa fa-music' }))
         .appendTo(div);
 

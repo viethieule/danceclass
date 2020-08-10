@@ -7,6 +7,7 @@
     @Styles.Render("~/Content/bootstrap-datepicker")
     @Styles.Render("~/Content/bootstrap-timepicker")
     @Styles.Render("~/Content/select2")
+    <link href="~/App/Common/css/form.css" rel="stylesheet" />
     <link href="~/App/Schedule/schedule.css" rel="stylesheet" />
 }
 
@@ -149,7 +150,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>Ngày bắt đầu</label>
+                                    <label class="required" for="openingDate">Ngày bắt đầu</label>
 
                                     <div class="input-group date">
                                         <div class="input-group-addon">
@@ -162,7 +163,7 @@
                             <div class="col-md-2">
                                 <div class="bootstrap-timepicker">
                                     <div class="form-group">
-                                        <label>Giờ</label>
+                                        <label class="required" for="startTime">Giờ</label>
                                         <div class="input-group">
                                             <input id="startTime" name="startTime" type="text" class="form-control timepicker mistake-timepicker">
 
@@ -190,7 +191,7 @@
                             <div class="col-md-7">
                                 <div class="form-group">
                                     <label for="daysPerWeek">Các buổi / tuần</label>
-                                    <div class="days-per-week" >
+                                    <div class="days-per-week">
                                         <label class="checkbox-inline">
                                             <input type="checkbox" value="1"> Thứ 2
                                         </label>
@@ -258,6 +259,7 @@
 <!-- /.content -->
 
 @section Scripts {
+    @Scripts.Render("~/bundles/inputMask")
     @Scripts.Render("~/bundles/moment")
     @Scripts.Render("~/bundles/bootstrap-timepicker")
     @Scripts.Render("~/bundles/bootstrap-datepicker")

@@ -13,7 +13,7 @@
         $result.text(data.text);
 
         if (data.newOption) {
-            $result.append(" <em>(new)</em>");
+            $result.append(" <em>(thêm mới)</em>");
         }
 
         return $result;
@@ -30,6 +30,8 @@ function initCreateScheduleForm() {
     initTrainer();
 
     initDateTimePicker();
+
+    initCreateScheduleBtn();
 }
 
 async function initClass() {
@@ -37,6 +39,7 @@ async function initClass() {
         const classes = await apiService.get('api/class/getAll');
         if (classes) {
             let select = $('#class');
+            select.empty();
             classes.forEach((cls, i, a) => {
                 let attr = { value: cls.id };
                 if (i === 0) { attr.selected = 'selected' }
@@ -56,10 +59,14 @@ function initTrainer() {
 }
 
 function initDateTimePicker() {
-    $('.mistake-datepicker').datepicker({
-        autoclose: true,
-        format: 'dd/mm/yyyy',
-    });
+    $('.mistake-datepicker')
+        .datepicker({
+            autoclose: true,
+            format: 'dd/mm/yyyy',
+        })
+        .inputmask('dd/mm/yyyy', {
+            'placeholder': 'dd/mm/yyyy'
+        });
 
     $('.mistake-timepicker').timepicker();
 }
@@ -71,23 +78,38 @@ function registerCreateScheduleModal() {
 
     registerModalEvent();
     registerFormEvent();
+    registerDaysPerWeekEvent();
+}
+
+function initCreateScheduleBtn() {
+    $('<div>', { class: 'calendar-create-schedule' })
+        .append(
+            $('<button>', {
+                'class': 'btn btn-success',
+                'data-toggle': 'modal',
+                'data-target': '#modal-create-schedule'
+            })
+                .text('Tạo lịch học')
+        )
+        .appendTo($('.calendar-control'));
 }
 
 function registerModalEvent() {
     $('#modal-create-schedule').on('shown.bs.modal', function (event) {
-        const prevSelectedDate = $(this).data('prevDate');
-        const date = $(event.relatedTarget).data('date');
-        if (!prevSelectedDate) {
-            $(this).data('prevDate', date);
-        } else if (!date.isSame(prevSelectedDate)) {
-            $(this).data('prevDate', date);
-            resetForm($('form#create-schedule'), ['#class', '#trainer', '#branch']);
+        let $target = $(event.relatedTarget);
+        if (!$target.is(':button')) {
+            const prevSelectedDate = $(this).data('prevDate');
+            const date = $target.data('date');
+            if (!prevSelectedDate) {
+                $(this).data('prevDate', date);
+            } else if (!date.isSame(prevSelectedDate)) {
+                $(this).data('prevDate', date);
+                resetForm($('form#create-schedule'), ['#class', '#trainer', '#branch']);
+            }
+
+            $('#openingDate').datepicker('setDate', date.toDate());
+            $('#startTime').timepicker('setTime', date.locale('en').format('h:mm A'));
         }
-
-        $('#openingDate').datepicker('setDate', date.toDate());
-        $('#startTime').timepicker('setTime', date.locale('en').format('h:mm A'));
-
-        console.log(date);
     });
 }
 
@@ -106,6 +128,13 @@ function registerFormEvent() {
                 },
                 startTime: {
                     required: true
+                },
+                sessions: {
+                    required: {
+                        depends: function (element) {
+                            return $('.days-per-week input:checkbox:checked').length !== 0;
+                        }
+                    }
                 }
             },
             submitHandler: async function (form) {
@@ -134,14 +163,19 @@ function registerFormEvent() {
 
                 let schedule = { song, openingDate, startTime, sessions, daysPerWeek, branch }
 
+                let isRerenderClass = false;
+                let isRerenderTrainer = false;
+
                 if (cls && isNaN(cls)) {
                     schedule.className = cls;
+                    isRerenderClass = true;
                 } else if (cls) {
                     schedule.classId = parseInt(cls)
                 }
 
                 if (trainer && isNaN(trainer)) {
                     schedule.trainerName = trainer;
+                    isRerenderTrainer = true;
                 } else if (trainer) {
                     schedule.trainerId = parseInt(trainer)
                 }
@@ -149,10 +183,31 @@ function registerFormEvent() {
                 try {
                     await apiService.post('api/schedule/create', { schedule });
                     $('#modal-create-schedule').modal('hide');
-                    await renderSchedule();
+                    renderSchedule();
+                    if (isRerenderClass) {
+                        initClass();
+                    }
+                    resetCreateForm();
                 } catch (ex) {
                     console.log(ex);
                 }
             }
         }))
+}
+
+function resetCreateForm() {
+    resetForm($('form#create-schedule'), ['#class', '#trainer', '#branch']);
+    $('#openingDate').datepicker('setDate', null);
+    $('#startTime').timepicker('setTime', null);
+}
+
+function registerDaysPerWeekEvent() {
+    $('.days-per-week input:checkbox').change(function () {
+        let $label =  $(`label[for="sessions"]`)
+        if ($('.days-per-week input:checkbox:checked').length === 0) {
+            $label.removeClass('required');
+        } else {
+            $label.addClass('required');
+        }
+    })
 }
