@@ -1,4 +1,17 @@
-﻿let m_currentDaysOfWeek = [];
+﻿const TIME_SLOTS = [
+    { hours: 9, minutes: 0 },
+    { hours: 10, minutes: 0 },
+    { hours: 11, minutes: 0 },
+    { hours: 12, minutes: 0 },
+    { hours: 17, minutes: 0 },
+    { hours: 18, minutes: 0 },
+    { hours: 18, minutes: 30 },
+    { hours: 19, minutes: 0 },
+    { hours: 19, minutes: 35 },
+    { hours: 20, minutes: 0 },
+];
+
+let m_currentDaysOfWeek = [];
 let m_scheduleDetails = [];
 
 let m_user = null;
@@ -394,10 +407,11 @@ async function renderSchedule() {
     eventsByTime.forEach((eventGroup) => {
         let tr = $('<tr></tr>');
         const { hours, minutes } = eventGroup;
-        let tdTime = $('<td></td>')
+        $('<td></td>')
             .html(
                 `${formatHhMm(hours, minutes)} <br />- ${formatHhMm(hours + 1, minutes)}`
             )
+            .css('padding', '6px 0px')
             .appendTo(tr);
 
         m_currentDaysOfWeek.forEach(date => {
@@ -519,6 +533,9 @@ async function getSchedule() {
         console.log(data);
 
         if (data && data.scheduleDetails) {
+            let timeSlotsTemplate = userService.isAdmin() ? TIME_SLOTS.map(s => Object.assign({}, s)) : [];
+            timeSlotsTemplate.forEach(s => s.events = []);
+
             m_scheduleDetails = data.scheduleDetails;
             const eventsByTime = m_scheduleDetails.reduce((result, ele) => {
                 let [hours, minutes, ...rest] = ele.schedule.startTime.split(":");
@@ -529,6 +546,7 @@ async function getSchedule() {
                 var eventGroup = result.find(
                     (r) => r.hours === hours && r.minutes === minutes
                 );
+
                 if (!eventGroup) {
                     result.push({
                         hours,
@@ -540,7 +558,7 @@ async function getSchedule() {
                 }
 
                 return result;
-            }, []).sort(compareTime);
+            }, timeSlotsTemplate).sort(compareTime);
 
             console.log(eventsByTime);
             return eventsByTime;
