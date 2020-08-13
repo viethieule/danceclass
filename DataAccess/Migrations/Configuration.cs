@@ -19,6 +19,14 @@
 
         protected override void Seed(DataAccess.DanceClassDbContext context)
         {
+            if (!context.Roles.Any())
+            {
+                context.Roles.Add(new Role { Name = "Admin" });
+                context.Roles.Add(new Role { Name = "Member" });
+
+                context.SaveChanges();
+            }
+
             if (!context.Users.Any(x => x.UserName == "admin"))
             {
                 var userStore = new ApplicationUserStore(context);
@@ -45,14 +53,6 @@
                 {
                     userManager.AddToRole(member.Id, "Member");
                 }
-
-                context.SaveChanges();
-            }
-
-            if (!context.Roles.Any())
-            {
-                context.Roles.Add(new Role { Name = "Admin" });
-                context.Roles.Add(new Role { Name = "Member" });
 
                 context.SaveChanges();
             }

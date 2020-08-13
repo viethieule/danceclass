@@ -105,10 +105,12 @@ function registerModalEvent() {
             } else if (!date.isSame(prevSelectedDate)) {
                 $(this).data('prevDate', date);
                 resetForm($('form#create-schedule'), ['#class', '#trainer', '#branch']);
+                resetDaysPerWeekCheckboxes();
             }
 
             $('#openingDate').datepicker('setDate', date.toDate());
             $('#startTime').timepicker('setTime', date.locale('en').format('h:mm A'));
+            $('.days-per-week input:checkbox[value="' + date.day() + '"]').prop('checked', true);
         }
     });
 }
@@ -195,15 +197,23 @@ function resetCreateForm() {
     resetForm($('form#create-schedule'), ['#class', '#trainer', '#branch']);
     $('#openingDate').datepicker('setDate', null);
     $('#startTime').timepicker('setTime', null);
+
+    resetDaysPerWeekCheckboxes();
+}
+
+function resetDaysPerWeekCheckboxes() {
+    $('.days-per-week input:checkbox').off('change').prop('checked', false).change(daysPerWeekChangeHandler);
 }
 
 function registerDaysPerWeekEvent() {
-    $('.days-per-week input:checkbox').change(function () {
-        let $label =  $(`label[for="sessions"]`)
-        if ($('.days-per-week input:checkbox:checked').length === 0) {
-            $label.removeClass('required');
-        } else {
-            $label.addClass('required');
-        }
-    })
+    $('.days-per-week input:checkbox').change(daysPerWeekChangeHandler)
+}
+
+function daysPerWeekChangeHandler() {
+    let $label = $(`label[for="sessions"]`)
+    if ($('.days-per-week input:checkbox:checked').length === 0) {
+        $label.removeClass('required');
+    } else {
+        $label.addClass('required');
+    }
 }
