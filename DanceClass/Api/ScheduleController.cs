@@ -22,7 +22,7 @@ namespace DanceClass.Api
         }
 
         [HttpPost]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [Route("create")]
         public async Task<IHttpActionResult> Create(CreateScheduleRq rq)
         {

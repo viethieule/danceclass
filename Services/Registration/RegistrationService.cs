@@ -53,23 +53,13 @@ namespace Services.Registration
                 throw new Exception("Lịch học không tồn tại!");
             }
 
-            //DateTime dateAttending = scheduleDetail.Date.Add(scheduleDetail.Schedule.StartTime);
-
-            // TODO: ADMIN CAN CANCEL
-
-            //if (DateTime.Now >= dateAttending || (dateAttending - DateTime.Now).TotalHours < 1)
-            //{
-            //    throw new Exception("Chỉ có thể hủy đăng ký ít nhất 1 tiếng trước khi tập!");
-            //}
-
-            if (rq.IsDelete == true)
+            DateTime dateAttending = scheduleDetail.Date.Add(scheduleDetail.Schedule.StartTime);
+            if (!isAdmin && (DateTime.Now >= dateAttending || (dateAttending - DateTime.Now).TotalHours < 1))
             {
-                _dbContext.Registrations.Remove(registration);
+                throw new Exception("Chỉ có thể hủy đăng ký ít nhất 1 tiếng trước khi tập!");
             }
-            else
-            {
-                registration.Status = RegistrationStatus.Off;
-            }
+            
+            _dbContext.Registrations.Remove(registration);
 
             // Increase remaining sessions of the user
             var memberPackage = _dbContext.MemberPackages.FirstOrDefault(x => x.UserId == registration.UserId && x.IsActive);
@@ -106,10 +96,6 @@ namespace Services.Registration
 
             // Add registration
             DataAccess.Entities.Registration registration = _mapper.Map<DataAccess.Entities.Registration>(rq.Registration);
-            //if (registration.ScheduleDetail.Date < DateTime.Now)
-            //{
-            //    throw new Exception("Không thể đăng ký lớp học trong quá khứ");
-            //}
 
             registration.Status = RegistrationStatus.Registered;
             registration.DateRegistered = DateTime.Now;

@@ -83,12 +83,17 @@ function registerEvent() {
         $('.modal-body-remaining-sessions').html(m_user && m_user.activePackage ? m_user.activePackage.remainingSessions : 0);
 
         const scheduleDetail = m_scheduleDetails.find(x => x.id === parseInt(id));
-        if (scheduleDetail.isCurrentUserRegistered) {
+        if (!scheduleDetail) {
+            return;
+        }
+
+        const { currentUserRegistration } = scheduleDetail;
+        if (scheduleDetail.isCurrentUserRegistered && currentUserRegistration && currentUserRegistration.status.value === 0) {
             modalTitle.text('Hủy đăng ký');
             modalBodyInfo.text('Bạn có chắc muốn hủy đăng ký?');
             btnAction.html('Hủy');
             btnAction.on('click', async function (e) {
-                handleUnregisterScheduleClick(scheduleDetail.currentUserRegistration.id, $modal)
+                handleUnregisterScheduleClick(currentUserRegistration.id, $modal)
             });
         } else {
             modalTitle.text('Bạn có chắc chắn muốn đăng ký?');
@@ -204,7 +209,7 @@ function registerEvent() {
         })
 
         $('#modal-manage').off('hide.bs.hide.bs.modal').on('hide.bs.hide.bs.modal', async function (event) {
-            if (registrations.some(r => r.isModified)) {
+            if (registrations.some(r => r.isModified) || totalRegistered !== registrations.length) {
                 await renderSchedule();
             }
         })
@@ -224,15 +229,15 @@ function renderSessionInfoGroup(label, value) {
 }
 
 function renderRegistrationList(registrations) {
-    let $registrationList = registrations.reduce((jObject, registration, index) => {
-        jObject = jObject.add(renderRegistrationRow(registration, index));
+    let $registrationList = registrations.reduce((jObject, registration, index, arr) => {
+        jObject = jObject.add(renderRegistrationRow(registration, index, registrations));
         return jObject;
     }, $());
 
     $('.session-registration-list').empty().append($registrationList);
 }
 
-function renderRegistrationRow(registration, index) {
+function renderRegistrationRow(registration, index, registrations) {
     let tdNo = $('<td>').html(index + 1);
     let tdName = $('<td>').html(registration.user.fullName);
     let confirmBtn = $('<button>', { class: 'btn btn-success btn-xs btn-label' })
@@ -241,7 +246,7 @@ function renderRegistrationRow(registration, index) {
 
     let cancelBtn = $('<button>', { class: 'btn btn-danger btn-xs btn-label' })
         .html('Hủy')
-        .on('click', { registration }, handleCancelRegistration);
+        .on('click', { registration, registrations }, handleCancelRegistration);
 
     if (registration.status && registration.status.value === 1) {
         confirmBtn
@@ -250,14 +255,6 @@ function renderRegistrationRow(registration, index) {
             .prepend($('<i>', { class: 'fa fa-check' }))
 
         cancelBtn.prop('disabled', true).hide();
-    } else if (registration.status && registration.status.value === 2) {
-        confirmBtn.prop('disabled', true).hide();
-
-        cancelBtn
-            .html('Nghỉ')
-            .off('click')
-            .prop('disabled', true)
-            .prepend($('<i>', { class: 'fa fa-times' }))
     }
 
     let tdActionBtns = $('<td>').append(confirmBtn).append(cancelBtn);
@@ -266,18 +263,18 @@ function renderRegistrationRow(registration, index) {
 }
 
 async function handleConfirmRegistration(event) {
+    let $confirmBtn = $(event.target);
+    $confirmBtn
+        .prop('disabled', true)
+        .empty()
+        .append($('<li>', { class: 'fa fa-circle-o-notch fa-spin' }));
+
+    let $cancelBtn = $confirmBtn.closest('td').find('.btn-danger');
+    $cancelBtn.prop('disabled', true).hide();
+
+    let { registration } = event.data;
     try {
-        let $confirmBtn = $(event.target);
-        $confirmBtn
-            .prop('disabled', true)
-            .empty()
-            .append($('<li>', { class: 'fa fa-circle-o-notch fa-spin' }));
-
-        let $cancelBtn = $confirmBtn.closest('td').find('.btn-danger');
-        $cancelBtn.prop('disabled', true).hide();
-
-        let { registration } = event.data;
-        await confirmRegistration(event.data.registration.id);
+        await confirmRegistration(registration.id);
 
         registration.status.value = 1;
         registration.status.name = 'Đến lớp';
@@ -290,6 +287,13 @@ async function handleConfirmRegistration(event) {
 
     } catch (ex) {
         console.log(ex);
+        $cancelBtn.prop('disabled', false).show();
+        $confirmBtn
+            .empty()
+            .append('Đăng ký')
+            .prop('disabled', false);
+
+        $cancelBtn.closest('td').append(ex.responseJSON ? ex.responseJSON.ExceptionMessage : 'Đã có lỗi xảy ra');
     }
 }
 
@@ -303,19 +307,13 @@ async function handleCancelRegistration(event) {
     let $confirmBtn = $cancelBtn.closest('td').find('.btn-success');
     $confirmBtn.prop('disabled', true).hide();
 
-    let { registration } = event.data;
+    let { registration, registrations } = event.data;
     try {
         await unregisterSchedule(registration.id);
 
-        registration.status.value = 2;
-        registration.status.name = 'Nghỉ';
-        registration.isModified = true;
-
-        $cancelBtn
-            .empty()
-            .append($('<i>', { class: 'fa fa-times' }))
-            .append('Nghỉ')
-            .off('click');
+        let index = registrations.findIndex(r => r.id === registration.id);
+        registrations.splice(index, 1);
+        $cancelBtn.closest('tr').remove();
     } catch (ex) {
         console.log(ex);
         $confirmBtn.prop('disabled', false).show();
@@ -324,13 +322,13 @@ async function handleCancelRegistration(event) {
             .append('Hủy')
             .prop('disabled', false);
 
-        $cancelBtn.closest('td').append(ex.responseJSON.ExceptionMessage);
+        $cancelBtn.closest('td').append(ex.responseJSON ? ex.responseJSON.ExceptionMessage : 'Đã có lỗi xảy ra');
     }
 }
 
 async function handleUnregisterScheduleClick(registrationId, $modal) {
     try {
-        await unregisterSchedule(registrationId, true);
+        await unregisterSchedule(registrationId);
         $('.modal-body-message').css('color', 'green').text('Hủy thành công');
         setTimeout(async function () {
             $modal.modal('hide');
@@ -415,12 +413,16 @@ async function renderSchedule() {
             .appendTo(tr);
 
         m_currentDaysOfWeek.forEach(date => {
+            let targetedDate = date.clone();
+            targetedDate.hour(hours).minute(minutes);
+
             let tdEvents = $('<td></td>');
-            let events = eventGroup.events.filter(e => (new Date(e.date)).getDay() === date.day())
+            let events = eventGroup.events.filter(e => (new Date(e.date)).getDay() === date.day());
             if (events && events.length > 0) {
+                let isPast = targetedDate.isBefore(new Date(), 'second');
                 events
                     .reduce((jObject, event) => {
-                        jObject = jObject.add(renderEventTag(event));
+                        jObject = jObject.add(renderEventTag(event, isPast));
                         return jObject;
                     }, $())
                     .appendTo(tdEvents);
@@ -430,9 +432,6 @@ async function renderSchedule() {
                 }
 
                 if (userService.isAdmin()) {
-                    let targetedDate = date.clone();
-                    targetedDate.hour(hours).minute(minutes);
-
                     tdEvents
                         .attr('data-toggle', 'modal')
                         .attr('data-target', '#modal-create-schedule')
@@ -456,14 +455,15 @@ async function renderSchedule() {
     });
 }
 
-function renderEventTag(event) {
+function renderEventTag(event, isPast) {
     const { schedule } = event;
     const isMember = userService.isMember();
+    const isAdmin = userService.isAdmin();
 
     var div = $('<div></div>', {
         'class': 'mistake-event mistake-event-' + schedule.branch.toLowerCase(),
         'data-toggle': 'modal',
-        'data-target': userService.isAdmin() ? '#modal-manage' : userService.isMember() ? '#modal-register' : '',
+        'data-target': isAdmin ? '#modal-manage' : isMember ? '#modal-register' : '',
         'data-id': event.id
     });
 
@@ -497,7 +497,7 @@ function renderEventTag(event) {
         .prepend($('<li>', { class: 'fa fa-calendar' }))
         .appendTo(infoDiv);
 
-    if (!isMember) {
+    if (isAdmin) {
         $('<span></span>', {
             class: 'mistake-event-info',
         })
@@ -516,11 +516,33 @@ function renderEventTag(event) {
     infoDiv.appendTo(div);
 
     if (isMember) {
-        let isRegistered = event.isCurrentUserRegistered && event.currentUserRegistration.status.value === 0;
-        let action = isRegistered ? 'Hủy đăng ký' : 'Đăng ký';
-        let btnClass = isRegistered ? 'btn-danger' : 'btn-success';
+        let btnLabel = '';
+        let btnClass = '';
+
+        let { currentUserRegistration } = event;
+        let isRegistered = event.isCurrentUserRegistered;
+
+        if (isRegistered && currentUserRegistration && currentUserRegistration.status.value === 0) {
+            btnLabel = 'Hủy đăng ký';
+            btnClass = 'btn-danger';
+        } else if (isRegistered && currentUserRegistration && currentUserRegistration.status.value === 1) {
+            btnLabel = 'Đã đến lớp';
+            btnClass = 'btn-primary';
+            div.removeAttr('data-toggle').removeAttr('data-target');
+            div.off('mouseenter mouseleave');
+        } else {
+            btnLabel = 'Đăng ký';
+            btnClass = 'btn-success';
+        }
+
+        if (isPast) {
+            div.removeAttr('data-toggle').removeAttr('data-target');
+            div.off('mouseenter mouseleave');
+        }
+
+        let isDisabled = isPast && !(isRegistered && currentUserRegistration && currentUserRegistration.status.value === 1);
         $('<div>', { class: 'mistake-event-action' })
-            .append($('<button>', { class: 'btn btn-xs ' + btnClass }).html(action))
+            .append($('<button>', { class: 'btn btn-xs ' + btnClass }).html(btnLabel).prop('disabled', isDisabled))
             .appendTo(div);
     }
 
@@ -611,13 +633,10 @@ async function registerSchedule(scheduleDetailId, userId) {
     });
 }
 
-async function unregisterSchedule(id, isDelete) {
+async function unregisterSchedule(id) {
     return $.ajax({
         method: 'POST',
-        data: {
-            registrationId: id,
-            isDelete
-        },
+        data: { registrationId: id },
         async: true,
         url: '/api/registration/cancel',
     });

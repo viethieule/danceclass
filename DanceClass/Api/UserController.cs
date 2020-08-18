@@ -14,6 +14,7 @@ namespace DanceClass.Api
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [Route("create")]
         public async Task<IHttpActionResult> Create(CreateMemberRq rq)
         {

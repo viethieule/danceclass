@@ -6,6 +6,7 @@ using System.Web.Mvc;
 
 namespace DanceClass.Controllers
 {
+    [Authorize]
     public class ScheduleController : Controller
     {
         // GET: Schedule
