@@ -1,18 +1,21 @@
 ﻿function BaseController() {
     this.currentUser = null;
-    this.initialize = function (callback) {
+
+    this.initialize = function () {
         userService.getCurrentUser().then(function (user) {
             this.currentUser = user;
-            callback();
+            this.run();
         }.bind(this));
     };
 }
 
 function ScheduleController() {
     BaseController.call(this);
-    this.initialize(function () {
+
+    this.run = function () {
         console.log(this.currentUser);
-    }.bind(this));
+    }
 }
 
-new ScheduleController();
+var ctrl = new ScheduleController();
+ctrl.initialize();
