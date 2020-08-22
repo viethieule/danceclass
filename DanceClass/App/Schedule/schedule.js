@@ -580,7 +580,7 @@ async function getSchedule() {
                 }
 
                 return result;
-            }, timeSlotsTemplate).sort(compareTime);
+            }, timeSlotsTemplate).sort(hourMinuteComparer);
 
             console.log(eventsByTime);
             return eventsByTime;
@@ -591,24 +591,10 @@ async function getSchedule() {
     }
 }
 
-function formatHhMm(hours, minutes) {
-    const formatLeadingZero = (timePart) =>
-        `${
-        timePart.toString().length === 1
-            ? '0' + timePart
-            : timePart.toString()
-        }`;
-    return `${formatLeadingZero(hours)}:${formatLeadingZero(minutes)}`;
-}
-
-function compareTime(t1, t2) {
+function hourMinuteComparer(t1, t2) {
     const { hours: h1, minutes: m1 } = t1;
     const { hours: h2, minutes: m2 } = t2;
     return h1 > h2 ? 1 : h1 < h2 ? -1 : m1 > m2 ? 1 : m1 < m2 ? -1 : 0;
-}
-
-function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 async function confirmRegistration(registrationId) {

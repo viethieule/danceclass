@@ -1,0 +1,4 @@
+﻿const REGISTRATION_STATUS = {
+    REGISTERED: 0,
+    ATTENDED: 1
+}
