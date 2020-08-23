@@ -1,53 +1,29 @@
-﻿function BaseController() {
-    this.currentUser = null;
+﻿const TIME_SLOTS = [
+    { hours: 9, minutes: 0 },
+    { hours: 10, minutes: 0 },
+    { hours: 11, minutes: 0 },
+    { hours: 12, minutes: 0 },
+    { hours: 17, minutes: 0 },
+    { hours: 18, minutes: 0 },
+    { hours: 18, minutes: 30 },
+    { hours: 19, minutes: 0 },
+    { hours: 19, minutes: 35 },
+    { hours: 20, minutes: 0 },
+];
 
-    this.initialize = function () {
-        userService.getCurrentUser().then(function (user) {
-            this.currentUser = user;
-            this.run();
-        }.bind(this));
-    };
-}
-
-function ScheduleController() {
+function CalendarManager() {
     var _self = this;
-    BaseController.call(this);
 
-    const TIME_SLOTS = [
-        { hours: 9, minutes: 0 },
-        { hours: 10, minutes: 0 },
-        { hours: 11, minutes: 0 },
-        { hours: 12, minutes: 0 },
-        { hours: 17, minutes: 0 },
-        { hours: 18, minutes: 0 },
-        { hours: 18, minutes: 30 },
-        { hours: 19, minutes: 0 },
-        { hours: 19, minutes: 35 },
-        { hours: 20, minutes: 0 },
-    ];
-
-    this.currentDaysOfWeek = [];
-    this.scheduleDetails = [];
-
-    this.run = function () {
-        collapseSideBar();
+    this.initCalendar = function () {
         initWeek();
-        renderUserRemainingSessions();
-        initCreateScheduleForm();
+
+        this.renderUserRemainingSessions();
         renderCalendar();
+
+        registerEvent();
     }
 
-    function initWeek(currentDate) {
-        currentDate = moment(currentDate || new Date());
-
-        var weekStart = currentDate.clone().startOf('isoWeek');
-
-        for (var i = 0; i <= 6; i++) {
-            _self.currentDaysOfWeek.push(moment(weekStart).add(i, 'days'));
-        }
-    }
-
-    function renderUserRemainingSessions() {
+    this.renderUserRemainingSessions = function () {
         let user = _self.currentUser;
         if (user && user.activePackage) {
             let remainingSessions = user.activePackage.remainingSessions;
@@ -59,48 +35,16 @@ function ScheduleController() {
         }
     }
 
-    function formatRemainingSessions(remainingSessions) {
-        return remainingSessions < 10 && remainingSessions !== 0 ? "0" + remainingSessions : remainingSessions;
-    }
-
-    function renderCalendar() {
-        // render days of current week header
-        renderDaysOfWeek();
-        // render schedule data
-        renderSchedule();
-    }
-
-    function renderDaysOfWeek() {
-        var currentDaysOfWeek = _self.currentDaysOfWeek;
-        $('.calendar-control-current-week').html(
-            `${currentDaysOfWeek[0].locale('vi').format('DD/MM')} - ${currentDaysOfWeek[6].locale('vi').format('DD/MM')}`
-        );
-        $('#calendarHead').empty();
-
-        let $tr = $('<tr>').append($('<th>'));
-        currentDaysOfWeek
-            .forEach(day => {
-                let dayLocale = capitalizeFirstLetter(day.locale('vi').format('dddd D/M'));
-                let $th = $('<th>').text(dayLocale);
-                if (day.isSame(new Date(), 'day')) {
-                    $th.css('background-color', '#ECF0F5');
-                }
-                $th.appendTo($tr);
-            });
-
-        $('#calendarHead').append($tr);
-    }
-
-    async function renderSchedule() {
+    this.renderSchedule = async function () {
         $('#calendarBody').empty();
 
         const eventsByTime = await getSchedule();
 
-        eventsByTime.forEach((eventGroup) => {
+        eventsByTime.forEach(function(eventGroup) {
             let tr = $('<tr></tr>');
             const { hours, minutes } = eventGroup;
             $('<td></td>')
-                .html(`${formatHhMm(hours, minutes)} <br />- ${formatHhMm(hours + 1, minutes)}`)
+                .html(`${Utils.formatHhMm(hours, minutes)} <br />- ${Utils.formatHhMm(hours + 1, minutes)}`)
                 .css('padding', '6px 0px')
                 .appendTo(tr);
 
@@ -123,7 +67,7 @@ function ScheduleController() {
                         tdEvents.css('background-color', '#ECF0F5');
                     }
 
-                    if (userService.isAdmin()) {
+                    if (UserService.isAdmin()) {
                         tdEvents
                             .attr('data-toggle', 'modal')
                             .attr('data-target', '#modal-create-schedule')
@@ -147,10 +91,52 @@ function ScheduleController() {
         });
     }
 
+    function formatRemainingSessions(remainingSessions) {
+        return remainingSessions < 10 && remainingSessions !== 0 ? "0" + remainingSessions : remainingSessions;
+    }
+
+    function initWeek(currentDate) {
+        currentDate = moment(currentDate || new Date());
+
+        var weekStart = currentDate.clone().startOf('isoWeek');
+
+        for (var i = 0; i <= 6; i++) {
+            _self.currentDaysOfWeek.push(moment(weekStart).add(i, 'days'));
+        }
+    }
+
+    function renderCalendar() {
+        // render days of current week header
+        renderDaysOfWeek();
+        // render schedule data
+        _self.renderSchedule();
+    }
+
+    function renderDaysOfWeek() {
+        var currentDaysOfWeek = _self.currentDaysOfWeek;
+        $('.calendar-control-current-week').html(
+            `${currentDaysOfWeek[0].locale('vi').format('DD/MM')} - ${currentDaysOfWeek[6].locale('vi').format('DD/MM')}`
+        );
+        $('#calendarHead').empty();
+
+        let $tr = $('<tr>').append($('<th>'));
+        currentDaysOfWeek
+            .forEach(day => {
+                let dayLocale = Utils.capitalizeFirstLetter(day.locale('vi').format('dddd D/M'));
+                let $th = $('<th>').text(dayLocale);
+                if (day.isSame(new Date(), 'day')) {
+                    $th.css('background-color', '#ECF0F5');
+                }
+                $th.appendTo($tr);
+            });
+
+        $('#calendarHead').append($tr);
+    }
+
     function renderEventTag(event, isPast) {
         const { schedule } = event;
-        const isMember = userService.isMember();
-        const isAdmin = userService.isAdmin();
+        const isMember = UserService.isMember();
+        const isAdmin = UserService.isAdmin();
 
         var div = $('<div></div>', {
             'class': 'mistake-event mistake-event-' + schedule.branch.toLowerCase(),
@@ -235,12 +221,12 @@ function ScheduleController() {
 
     async function getSchedule() {
         try {
-            const data = await apiService.post('/api/schedule/getdetail', {
+            const data = await ApiService.post('/api/schedule/getdetail', {
                 start: _self.currentDaysOfWeek[0].toDate().toISOString()
             });
 
             if (data && data.scheduleDetails) {
-                let timeSlotsTemplate = userService.isAdmin() ? TIME_SLOTS.map(s => Object.assign({}, s)) : [];
+                let timeSlotsTemplate = UserService.isAdmin() ? TIME_SLOTS.map(s => Object.assign({}, s)) : [];
                 timeSlotsTemplate.forEach(s => s.events = []);
 
                 _self.scheduleDetails = data.scheduleDetails;
@@ -280,11 +266,15 @@ function ScheduleController() {
         const { hours: h2, minutes: m2 } = t2;
         return h1 > h2 ? 1 : h1 < h2 ? -1 : m1 > m2 ? 1 : m1 < m2 ? -1 : 0;
     }
+
+    function registerEvent() {
+        $('.btn-calendar-navigate').click(function (e) {
+            if (e.target.id === 'prev') {
+                _self.currentDaysOfWeek = _self.currentDaysOfWeek.map(day => day.subtract(7, 'days'));
+            } else if (e.target.id === 'next') {
+                _self.currentDaysOfWeek = _self.currentDaysOfWeek.map(day => day.add(7, 'days'));
+            }
+            renderCalendar();
+        });
+    }
 }
-
-var ScheduleCreateController = function () {
-
-}.bind(ScheduleController)
-
-var ctrl = new ScheduleController();
-ctrl.initialize();

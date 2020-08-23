@@ -108,7 +108,7 @@ function registerEvent() {
                 // Find disabled inputs, and remove the "disabled" attribute
                 var disabled = jForm.find(':input:disabled').prop('disabled', false);
                 // Get form data including disabled inputs
-                var formData = convertFormDataToDictionary(jForm.serializeArray());
+                var formData = FormUtils.convertFormDataToDictionary(jForm.serializeArray());
                 // Re-disabled the set of inputs that were previously enabled
                 disabled.prop('disabled', true);
 
@@ -182,13 +182,6 @@ function addRemoveRequired(name, isRequired) {
     } else {
         ele.removeClass('required');
     }
-}
-
-function convertFormDataToDictionary(formData) {
-    return formData.reduce((prev, cur) => {
-        prev[cur.name] = cur.value;
-        return prev;
-    }, {});
 }
 
 async function createMember(data) {

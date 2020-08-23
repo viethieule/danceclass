@@ -9,7 +9,7 @@ async function populateUserInfo() {
     const fragments = window.location.pathname.split('/');
     const username = fragments[fragments.length - 1];
     try {
-        m_user = await userService.get({ username });
+        m_user = await UserService.get({ username });
         if (m_user) {
             console.log(m_user);
             const { userName, birthdate, fullName, phoneNumber } = m_user;
@@ -31,7 +31,7 @@ async function populateRegistrations() {
     }
 
     try {
-        const rs = await apiService.post('/api/registration/getByUser', { userId: m_user.id });
+        const rs = await ApiService.post('/api/registration/getByUser', { userId: m_user.id });
         if (rs && rs.registrations) {
             const { registrations } = rs;
             const dataSet = registrations.reduce(function (result, registration) {

@@ -251,18 +251,22 @@
     <Compile Include="Utils\EnumToKeyValuePairConverter.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App\Common\constants.js" />
     <Content Include="App\Common\js\apiService.js" />
     <Content Include="App\Common\css\form.css" />
-    <Content Include="App\Common\js\form.js" />
+    <Content Include="App\Common\js\base.js" />
+    <Content Include="App\Common\js\formUtils.js" />
     <Content Include="App\Common\js\utils.js" />
-    <Content Include="App\Schedule\schedule-new.js" />
+    <Content Include="App\Schedule\Index\calendar.js" />
+    <Content Include="App\Schedule\Index\registration.js" />
+    <Content Include="App\Schedule\Index\user-registration.js" />
     <Content Include="Content\dataTables.bootstrap.css" />
     <Content Include="Content\dataTables.bootstrap.min.css" />
     <Content Include="App\Member\Create\create.js" />
     <Content Include="App\Member\Index\index.js" />
-    <Content Include="App\Schedule\createSchedule.js" />
-    <Content Include="App\Schedule\schedule.css" />
-    <Content Include="App\Schedule\schedule.js" />
+    <Content Include="App\Schedule\Index\schedule-create.js" />
+    <Content Include="App\Schedule\Index\schedule.css" />
+    <Content Include="App\Schedule\Index\schedule.js" />
     <Content Include="App\User\userService.js" />
     <Content Include="Content\AdminLTE.css" />
     <Content Include="Content\AdminLTE.min.css" />

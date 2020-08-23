@@ -7,8 +7,9 @@
     @Styles.Render("~/Content/bootstrap-datepicker")
     @Styles.Render("~/Content/bootstrap-timepicker")
     @Styles.Render("~/Content/select2")
+
     <link href="~/App/Common/css/form.css" rel="stylesheet" />
-    <link href="~/App/Schedule/schedule.css" rel="stylesheet" />
+    <link href="~/App/Schedule/Index/schedule.css" rel="stylesheet" />
 }
 
 <!-- Content Header (Page header) -->
@@ -265,9 +266,18 @@
     @Scripts.Render("~/bundles/bootstrap-datepicker")
     @Scripts.Render("~/bundles/select2")
 
-    <script src="~/App/Common/js/form.js"></script>
-    <script src="~/App/Schedule/schedule.js"></script>
-    <script src="~/App/Schedule/createSchedule.js"></script>
-    <script src="~/App/Schedule/schedule-new.js"></script>
+    <script src="~/App/Common/js/formUtils.js"></script>
+
+    <script src="~/App/Schedule/Index/calendar.js"></script>
+    <script src="~/App/Schedule/Index/registration.js"></script>
+    <script src="~/App/Schedule/Index/user-registration.js"></script>
+    <script src="~/App/Schedule/Index/schedule-create.js"></script>
+    <script src="~/App/Schedule/Index/schedule.js"></script>
+    <script>
+        $(function () {
+            var ctrl = new ScheduleController();
+            ctrl.initialize();
+        })
+    </script>
 }
 

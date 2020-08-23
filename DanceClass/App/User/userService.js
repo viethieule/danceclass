@@ -1,4 +1,4 @@
-﻿const userService = (function () {
+﻿const UserService = (function () {
     let user = null;
 
     async function getCurrentUser() {

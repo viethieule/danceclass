@@ -1,4 +1,4 @@
-﻿const apiService = (function () {
+﻿const ApiService = (function () {
 
     function ajax(method, url, data) {
         let request = { method, url }

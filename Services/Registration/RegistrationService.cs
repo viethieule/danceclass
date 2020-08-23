@@ -84,7 +84,7 @@ namespace Services.Registration
             var memberPackage = _dbContext.MemberPackages.FirstOrDefault(x => x.UserId == userId && x.IsActive);
             if (memberPackage == null)
             {
-                throw new Exception("Bạn chưa đăng ký gói tập!");
+                throw new Exception("Học viên chưa đăng ký gói tập!");
             }
 
             if (memberPackage.RemainingSessions <= 0)
