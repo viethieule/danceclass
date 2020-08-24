@@ -14,6 +14,12 @@
 function CalendarManager() {
     var _self = this;
 
+    if (window.screen.width >= 1024) {
+        CalendarDesktopManager.call(this);
+    } else {
+        CalendarMobileManager.call(this);
+    }
+
     this.initCalendar = function () {
         initWeek();
 
@@ -277,4 +283,12 @@ function CalendarManager() {
             renderCalendar();
         });
     }
+}
+
+function CalendarDesktopManager() {
+
+}
+
+function CalendarMobileManager() {
+
 }
