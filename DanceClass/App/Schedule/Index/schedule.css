@@ -12,15 +12,17 @@
     background-color: #fd7e14;
 }
 
-#calendarHead tr th:not(:first-child) {
-    width: 13.4%;
+@media screen and (min-width: 1023px) {
+    #calendarHead tr th:not(:first-child) {
+        width: 13.4%;
+    }
 }
 
 #calendarBody tr td:first-child {
     text-align: center;
 }
 
-.calendar-create-schedule {
+.btn-switch-view {
     margin-left: auto;
 }
 
@@ -99,6 +101,10 @@
 .calendar-control-current-week {
     margin-left: 10px;
     font-size: 24px;
+}
+
+.calendar-today {
+    background-color: #ECF0F5;
 }
 
 button#next {

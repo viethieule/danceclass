@@ -14,11 +14,13 @@
 function CalendarManager() {
     var _self = this;
 
-    if (window.screen.width >= 1024) {
-        CalendarDesktopManager.call(this);
-    } else {
-        CalendarMobileManager.call(this);
-    }
+    //if (window.screen.width >= 1024) {
+    //    CalendarDesktopManager.call(this);
+    //} else {
+    //    CalendarMobileManager.call(this);
+    //}
+
+    this.selectedDayIndex = null;
 
     this.initCalendar = function () {
         initWeek();
@@ -70,7 +72,7 @@ function CalendarManager() {
                         .appendTo(tdEvents);
                 } else {
                     if (date.isSame(new Date(), 'day')) {
-                        tdEvents.css('background-color', '#ECF0F5');
+                        tdEvents.addClass('calendar-today');
                     }
 
                     if (UserService.isAdmin()) {
@@ -131,7 +133,7 @@ function CalendarManager() {
                 let dayLocale = Utils.capitalizeFirstLetter(day.locale('vi').format('dddd D/M'));
                 let $th = $('<th>').text(dayLocale);
                 if (day.isSame(new Date(), 'day')) {
-                    $th.css('background-color', '#ECF0F5');
+                    $th.addClass('calendar-today');
                 }
                 $th.appendTo($tr);
             });
@@ -282,6 +284,12 @@ function CalendarManager() {
             }
             renderCalendar();
         });
+
+        $('.btn-switch-view').on('click', function (e) {
+            var index = $('#calendar th').index($('#calendar th.calendar-today'));
+            $('#calendar td').not(':nth-child(' + (index + 1) + ')').not(':first-child').hide();
+            $('#calendar th').not(':nth-child(' + (index + 1) + ')').not(':first-child').hide();
+        })
     }
 }
 
@@ -290,5 +298,7 @@ function CalendarDesktopManager() {
 }
 
 function CalendarMobileManager() {
+    this.initCalendar = function () {
 
+    }
 }
