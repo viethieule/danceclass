@@ -13,8 +13,14 @@
 }
 
 @media screen and (min-width: 1023px) {
-    #calendarHead tr th:not(:first-child) {
+    .calendar-head {
         width: 13.4%;
+    }
+}
+
+@media screen and (max-width: 1023px) {
+    .calendar-create-schedule span {
+        display: none;
     }
 }
 
@@ -101,6 +107,30 @@
 .calendar-control-current-week {
     margin-left: 10px;
     font-size: 24px;
+}
+
+.btn-date {
+    border-radius: 100% !important;
+    padding: 6px;
+    width: 34px;
+}
+
+.btn-date.active {
+    color: #fff;
+    background-color: #449d44;
+    border-color: #398439;
+}
+
+.calendar-control-current-week-detail .btn.active:focus {
+    outline-offset: 0px;
+    outline: none;
+    box-shadow: none;
+}
+
+.calendar-control-current-week-detail .btn.focus {
+    outline-offset: 0px;
+    outline: none;
+    box-shadow: none;
 }
 
 .calendar-today {

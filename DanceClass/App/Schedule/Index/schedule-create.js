@@ -81,7 +81,8 @@ function ScheduleCreate() {
                     'data-toggle': 'modal',
                     'data-target': '#modal-create-schedule'
                 })
-                    .text('Tạo lịch học')
+                    .append($('<i>', { class: 'fa fa-plus' }))
+                    .append($('<span>').html('&nbsp;&nbsp;Tạo lịch học'))
             )
             .appendTo($('.calendar-control'));
     }

@@ -21,6 +21,7 @@ function CalendarManager() {
     //}
 
     this.selectedDayIndex = null;
+    this.singleDayMode = false;
 
     this.initCalendar = function () {
         initWeek();
@@ -131,7 +132,7 @@ function CalendarManager() {
         currentDaysOfWeek
             .forEach(day => {
                 let dayLocale = Utils.capitalizeFirstLetter(day.locale('vi').format('dddd D/M'));
-                let $th = $('<th>').text(dayLocale);
+                let $th = $('<th>', { class: 'calendar-head' }).text(dayLocale);
                 if (day.isSame(new Date(), 'day')) {
                     $th.addClass('calendar-today');
                 }
@@ -287,8 +288,27 @@ function CalendarManager() {
 
         $('.btn-switch-view').on('click', function (e) {
             var index = $('#calendar th').index($('#calendar th.calendar-today'));
-            $('#calendar td').not(':nth-child(' + (index + 1) + ')').not(':first-child').hide();
-            $('#calendar th').not(':nth-child(' + (index + 1) + ')').not(':first-child').hide();
+
+            if (index === -1) {
+                var lastDayOfWeekIndex = _self.currentDaysOfWeek.length - 1;
+                if (_self.currentDaysOfWeek[lastDayOfWeekIndex].isBefore(new Date())) {
+                    index = 8; // last day column, index of nth-child starts from 1
+                } else {
+                    index = 2; // first day column, index of nth-child starts from 1
+                }
+            } else {
+                index++; // index of nth-child starts from 1
+            }
+
+            var $hiddenTd = $('#calendar td').not(':nth-child(' + index + ')').not(':first-child');
+            var $hiddenTh = $('#calendar th').not(':nth-child(' + index + ')').not(':first-child');
+            var $dayTh = $('#calendarHead tr th').not(':first-child');
+
+            $hiddenTd.toggle(_self.singleDayMode);
+            $hiddenTh.toggle(_self.singleDayMode);
+            $dayTh.toggleClass('calendar-head', _self.singleDayMode);
+
+            _self.singleDayMode = !_self.singleDayMode;
         })
     }
 }

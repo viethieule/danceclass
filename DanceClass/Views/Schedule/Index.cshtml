@@ -30,8 +30,31 @@
                     <div id="calendar">
                         <div class="calendar-control">
                             <div class="btn-group" role="group" aria-label="Basic example">
-                                <button id="prev" type="button" class="btn btn-light btn-calendar-navigate">&lt;</button>
-                                <button id="next" type="button" class="btn btn-light btn-calendar-navigate">&gt;</button>
+                                <button id="prev" type="button" class="btn btn-light btn-calendar-navigate"><i class="fa fa-arrow-left"></i></button>
+                                <div class="calendar-control-current-week-detail btn-group" data-toggle="buttons">
+                                    <label class="btn btn-date">
+                                        <input type="radio" name="options" id="option1" autocomplete="off" checked> 12
+                                    </label>
+                                    <label class="btn btn-date">
+                                        <input type="radio" name="options" id="option2" autocomplete="off"> 02
+                                    </label>
+                                    <label class="btn btn-date">
+                                        <input type="radio" name="options" id="option3" autocomplete="off"> 03
+                                    </label>
+                                    <label class="btn btn-date">
+                                        <input type="radio" name="options" id="option3" autocomplete="off"> 03
+                                    </label>
+                                    <label class="btn btn-date">
+                                        <input type="radio" name="options" id="option3" autocomplete="off"> 03
+                                    </label>
+                                    <label class="btn btn-date">
+                                        <input type="radio" name="options" id="option3" autocomplete="off"> 03
+                                    </label>
+                                    <label class="btn btn-date">
+                                        <input type="radio" name="options" id="option3" autocomplete="off"> 03
+                                    </label>
+                                </div>
+                                <button id="next" type="button" class="btn btn-light btn-calendar-navigate"><i class="fa fa-arrow-right"></i></button>
                             </div>
                             <div class="calendar-control-current-week"></div>
                             <button class="btn btn-default btn-switch-view">Hôm nay</button>&nbsp;&nbsp;&nbsp;
