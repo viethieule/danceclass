@@ -12,15 +12,80 @@
     background-color: #fd7e14;
 }
 
+.header-calendar-control .calendar-create-schedule,
+.header-calendar-control .calendar-remaining-sessions-area {
+    float: right;
+}
+
+.content-header h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
 @media screen and (min-width: 1023px) {
     .calendar-head {
         width: 13.4%;
     }
+
+    .header-calendar-control .calendar-create-schedule,
+    .header-calendar-control .calendar-remaining-sessions-area {
+        display: none;
+    }
 }
 
 @media screen and (max-width: 1023px) {
+    .content-header h1 {
+        margin-top: 4px;
+    }
+
     .calendar-create-schedule span {
         display: none;
+    }
+
+    .calendar-control .calendar-create-schedule,
+    .calendar-control .calendar-remaining-sessions-area {
+        display: none;
+    }
+
+    .calendar-control-current-week {
+        display: none;
+    }
+
+    .calendar-day-selector {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    button#next, button#prev {
+        padding: 6px;
+    }
+
+    .btn-calendar-navigate {
+        background-color: transparent;
+    }
+
+    .btn-switch-view {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 351px) {
+    .calendar-day-selector {
+        position: relative;
+        left: 4px;
+    }
+
+    button#next, button#prev {
+        font-size: 9px;
+        padding: 10px 0px;
+    }
+
+    button#prev {
+        margin-right: 6px;
+    }
+    
+    button#next {
+        margin-left: 5px;
     }
 }
 
@@ -139,6 +204,13 @@
 
 button#next {
     border-left: 1px solid white;
+    border-radius: 50%;
+    margin-left: 5px;
+}
+
+button#prev {
+    border-radius: 50%;
+    margin-right: 5px;
 }
 
 .modal-body-message {

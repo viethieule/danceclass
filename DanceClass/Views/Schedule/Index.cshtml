@@ -14,9 +14,19 @@
 
 <!-- Content Header (Page header) -->
 <section class="content-header">
-    <h1>
-        Lịch các lớp
-    </h1>
+    <div class="row">
+        <div class="col-xs-6 col-md-6">
+            <h1>
+                Lịch các lớp
+            </h1>
+        </div>
+        <div class="col-xs-6 col-md-6 header-calendar-control">
+            <div class="calendar-remaining-sessions-area">
+                <div class="calendar-remaining-sessions"></div>
+                <div class="calendar-remaining-sessions-desc"><p>Số buổi<br />còn lại</p></div>
+            </div>
+        </div>
+    </div>
 </section>
 
 <!-- Main content -->
@@ -29,35 +39,35 @@
                     <!-- THE CALENDAR -->
                     <div id="calendar">
                         <div class="calendar-control">
-                            <div class="btn-group" role="group" aria-label="Basic example">
+                            <div class="calendar-day-selector btn-group" role="group" aria-label="Basic example">
                                 <button id="prev" type="button" class="btn btn-light btn-calendar-navigate"><i class="fa fa-arrow-left"></i></button>
                                 <div class="calendar-control-current-week-detail btn-group" data-toggle="buttons">
                                     <label class="btn btn-date">
-                                        <input type="radio" name="options" id="option1" autocomplete="off" checked> 12
+                                        <input type="radio" class="btn-day-of-week" name="options" data-index="0" id="option1" autocomplete="off"><span></span>
                                     </label>
                                     <label class="btn btn-date">
-                                        <input type="radio" name="options" id="option2" autocomplete="off"> 02
+                                        <input type="radio" class="btn-day-of-week" name="options" data-index="1" value="2" id="option2" autocomplete="off"><span></span>
                                     </label>
                                     <label class="btn btn-date">
-                                        <input type="radio" name="options" id="option3" autocomplete="off"> 03
+                                        <input type="radio" class="btn-day-of-week" name="options" data-index="2" id="option3" autocomplete="off"><span></span>
                                     </label>
                                     <label class="btn btn-date">
-                                        <input type="radio" name="options" id="option3" autocomplete="off"> 03
+                                        <input type="radio" class="btn-day-of-week" name="options" data-index="3" id="option3" autocomplete="off"><span></span>
                                     </label>
                                     <label class="btn btn-date">
-                                        <input type="radio" name="options" id="option3" autocomplete="off"> 03
+                                        <input type="radio" class="btn-day-of-week" name="options" data-index="4" id="option3" autocomplete="off"><span></span>
                                     </label>
                                     <label class="btn btn-date">
-                                        <input type="radio" name="options" id="option3" autocomplete="off"> 03
+                                        <input type="radio" class="btn-day-of-week" name="options" data-index="5" id="option3" autocomplete="off"><span></span>
                                     </label>
                                     <label class="btn btn-date">
-                                        <input type="radio" name="options" id="option3" autocomplete="off"> 03
+                                        <input type="radio" class="btn-day-of-week" name="options" data-index="6" id="option3" autocomplete="off"><span></span>
                                     </label>
                                 </div>
                                 <button id="next" type="button" class="btn btn-light btn-calendar-navigate"><i class="fa fa-arrow-right"></i></button>
                             </div>
                             <div class="calendar-control-current-week"></div>
-                            <button class="btn btn-default btn-switch-view">Hôm nay</button>&nbsp;&nbsp;&nbsp;
+                            <button class="btn btn-default btn-switch-view">Ngày</button>&nbsp;&nbsp;&nbsp;
                             <div class="calendar-remaining-sessions-area">
                                 <div class="calendar-remaining-sessions"></div>
                                 <div class="calendar-remaining-sessions-desc"><p>Số buổi<br />còn lại</p></div>

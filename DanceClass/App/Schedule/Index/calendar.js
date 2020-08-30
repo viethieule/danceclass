@@ -20,6 +20,7 @@ function CalendarManager() {
     //    CalendarMobileManager.call(this);
     //}
 
+    this.selectedDay = null;
     this.selectedDayIndex = null;
     this.singleDayMode = false;
 
@@ -98,6 +99,8 @@ function CalendarManager() {
 
             tr.appendTo('#calendarBody');
         });
+
+        adaptUI();
     }
 
     function formatRemainingSessions(remainingSessions) {
@@ -106,19 +109,22 @@ function CalendarManager() {
 
     function initWeek(currentDate) {
         currentDate = moment(currentDate || new Date());
+        _self.selectedDay = currentDate;
 
         var weekStart = currentDate.clone().startOf('isoWeek');
 
         for (var i = 0; i <= 6; i++) {
             _self.currentDaysOfWeek.push(moment(weekStart).add(i, 'days'));
         }
+
+        _self.selectedDayIndex = _self.currentDaysOfWeek.findIndex(d => d.date() === _self.selectedDay.date());
     }
 
-    function renderCalendar() {
+    async function renderCalendar() {
         // render days of current week header
         renderDaysOfWeek();
         // render schedule data
-        _self.renderSchedule();
+        await _self.renderSchedule();
     }
 
     function renderDaysOfWeek() {
@@ -129,6 +135,7 @@ function CalendarManager() {
         $('#calendarHead').empty();
 
         let $tr = $('<tr>').append($('<th>'));
+        // current week for desktop / week view
         currentDaysOfWeek
             .forEach(day => {
                 let dayLocale = Utils.capitalizeFirstLetter(day.locale('vi').format('dddd D/M'));
@@ -138,8 +145,13 @@ function CalendarManager() {
                 }
                 $th.appendTo($tr);
             });
-
         $('#calendarHead').append($tr);
+
+        // current week for mobile / day view
+        $('.calendar-control-current-week-detail span').each(function (i, e) {
+            var date = currentDaysOfWeek[i].date();
+            $(e).html(date);
+        })
     }
 
     function renderEventTag(event, isPast) {
@@ -276,17 +288,59 @@ function CalendarManager() {
         return h1 > h2 ? 1 : h1 < h2 ? -1 : m1 > m2 ? 1 : m1 < m2 ? -1 : 0;
     }
 
+    function adaptUI() {
+        var width = window.screen.width;
+        if (width >= 1024 && _self.singleDayMode === false) {
+            // TODO
+        } else {
+            _self.singleDayMode = true;
+            toggleDaySelector();
+            showHideDayByDayIndex(_self.selectedDayIndex);
+        }
+    }
+
+    // render based on 'prev' or 'next'
+    async function renderPrevNextWeek(key) {
+        if (key === 'prev') {
+            _self.currentDaysOfWeek = _self.currentDaysOfWeek.map(day => day.subtract(7, 'days'));
+        } else if (key === 'next') {
+            _self.currentDaysOfWeek = _self.currentDaysOfWeek.map(day => day.add(7, 'days'));
+        }
+        _self.selectedDay = _self.currentDaysOfWeek[_self.selectedDayIndex];
+        await renderCalendar();
+    }
+
     function registerEvent() {
-        $('.btn-calendar-navigate').click(function (e) {
-            if (e.target.id === 'prev') {
-                _self.currentDaysOfWeek = _self.currentDaysOfWeek.map(day => day.subtract(7, 'days'));
-            } else if (e.target.id === 'next') {
-                _self.currentDaysOfWeek = _self.currentDaysOfWeek.map(day => day.add(7, 'days'));
+        $('.btn-calendar-navigate').click(async function (e) {
+            var key = e.currentTarget.id;
+            var { currentDaysOfWeek, selectedDay, selectedDayIndex } = _self;
+            if (_self.singleDayMode && selectedDay) {
+                if (selectedDayIndex === 0 && key === 'prev') {
+                    _self.selectedDayIndex = currentDaysOfWeek.length - 1;
+                    await renderPrevNextWeek(key);
+                } else if (selectedDayIndex == currentDaysOfWeek.length - 1 && key === 'next') {
+                    _self.selectedDayIndex = 0;
+                    await renderPrevNextWeek(key);
+                } else {
+                    _self.selectedDayIndex = _self.selectedDayIndex + (key === 'prev' ? -1 : 1);
+                    _self.selectedDay = currentDaysOfWeek[_self.selectedDayIndex];
+                    toggleDaySelector();
+                }
+            } else {
+                renderPrevNextWeek(e.currentTarget.id);
             }
-            renderCalendar();
         });
 
         $('.btn-switch-view').on('click', function (e) {
+            if (_self.singleDayMode) {
+                $('#calendarHead tr').children().show().not(':first-child').addClass('calendar-head');
+                $('#calendarBody tr').show().children().show();
+            } else {
+
+            }
+            return;
+            _self.singleDayMode = !_self.singleDayMode;
+
             var index = $('#calendar th').index($('#calendar th.calendar-today'));
 
             if (index === -1) {
@@ -308,8 +362,37 @@ function CalendarManager() {
             $hiddenTh.toggle(_self.singleDayMode);
             $dayTh.toggleClass('calendar-head', _self.singleDayMode);
 
+            $(e.currentTarget).html(_self.singleDayMode ? 'Ngày' : 'Tuần')
+            _self.selectedDay = _self.currentDaysOfWeek[index - 2];
             _self.singleDayMode = !_self.singleDayMode;
-        })
+        });
+
+        $('.btn-day-of-week').on('change', function (e) {
+            var index = $(e.currentTarget).data('index');
+            _self.selectedDay = _self.currentDaysOfWeek[index];
+            _self.selectedDayIndex = index;
+            _self.singleDayMode = true;
+            showHideDayByDayIndex(index);
+        });
+    }
+
+    function toggleDaySelector() {
+        $('.btn-day-of-week').eq(_self.selectedDayIndex).closest('.btn').button('toggle');
+    }
+
+    // show hide by index in current day of weeks
+    function showHideDayByDayIndex(index) {
+        $('#calendar td, #calendar th').not(':first-child').hide();
+        $('#calendarHead tr th').removeClass('calendar-head');
+
+        index += 2; // nth-child start from one, excluding the first row that indicates time
+        $('#calendar th:nth-child(' + index + ')').show();
+
+        var $shownTds = $('#calendar td:nth-child(' + index + ')');
+        $shownTds.show();
+
+        $('#calendarBody tr').hide();
+        $shownTds.find('.mistake-event').closest('tr').show();
     }
 }
 

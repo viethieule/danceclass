@@ -74,7 +74,7 @@ function ScheduleCreate() {
     }
 
     function initCreateScheduleBtn() {
-        $('<div>', { class: 'calendar-create-schedule' })
+        var element = $('<div>', { class: 'calendar-create-schedule' })
             .append(
                 $('<button>', {
                     'class': 'btn btn-success',
@@ -83,8 +83,8 @@ function ScheduleCreate() {
                 })
                     .append($('<i>', { class: 'fa fa-plus' }))
                     .append($('<span>').html('&nbsp;&nbsp;Tạo lịch học'))
-            )
-            .appendTo($('.calendar-control'));
+            );
+        element.appendTo('.calendar-control, .header-calendar-control');
     }
 
     function registerEvent() {
