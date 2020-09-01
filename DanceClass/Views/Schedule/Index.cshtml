@@ -16,8 +16,11 @@
 <section class="content-header">
     <div class="row">
         <div class="col-xs-6 col-md-6">
-            <h1>
+            <h1 class="content-header-title hidden-xs hidden-sm">
                 Lịch các lớp
+            </h1>
+            <h1 class="calendar-control-current-week hidden-md hidden-lg">
+
             </h1>
         </div>
         <div class="col-xs-6 col-md-6 header-calendar-control">
@@ -67,7 +70,7 @@
                                 <button id="next" type="button" class="btn btn-light btn-calendar-navigate"><i class="fa fa-arrow-right"></i></button>
                             </div>
                             <div class="calendar-control-current-week"></div>
-                            <button class="btn btn-default btn-switch-view">Ngày</button>&nbsp;&nbsp;&nbsp;
+                            <button class="btn btn-default btn-switch-view">Lịch ngày</button>&nbsp;&nbsp;&nbsp;
                             <div class="calendar-remaining-sessions-area">
                                 <div class="calendar-remaining-sessions"></div>
                                 <div class="calendar-remaining-sessions-desc"><p>Số buổi<br />còn lại</p></div>
@@ -296,6 +299,7 @@
 <!-- /.content -->
 
 @section Scripts {
+    @Scripts.Render("~/bundles/jquery-touchSwipe")
     @Scripts.Render("~/bundles/inputMask")
     @Scripts.Render("~/bundles/moment")
     @Scripts.Render("~/bundles/bootstrap-timepicker")

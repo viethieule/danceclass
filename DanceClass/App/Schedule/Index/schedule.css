@@ -22,7 +22,7 @@
     font-size: 24px;
 }
 
-@media screen and (min-width: 1023px) {
+@media screen and (min-width: 1025px) {
     .calendar-head {
         width: 13.4%;
     }
@@ -33,13 +33,9 @@
     }
 }
 
-@media screen and (max-width: 1023px) {
+@media screen and (max-width: 1024px) {
     .content-header h1 {
         margin-top: 4px;
-    }
-
-    .calendar-create-schedule span {
-        display: none;
     }
 
     .calendar-control .calendar-create-schedule,
@@ -47,7 +43,7 @@
         display: none;
     }
 
-    .calendar-control-current-week {
+    .calendar-control .calendar-control-current-week {
         display: none;
     }
 
@@ -99,7 +95,6 @@
 
 .calendar-remaining-sessions-area {
     display: flex;
-    margin-left: auto;
 }
 
 .calendar-remaining-sessions {

@@ -16,8 +16,13 @@
         return timePart.length === 1 ? '0' + timePart : timePart;
     }
 
+    function setNavBarTitle() {
+        $('.navbar-current-page-title').text($('.content-header-title').text())
+    }
+
     return {
         collapseSideBar,
+        setNavBarTitle,
         capitalizeFirstLetter,
         formatHhMm
     }

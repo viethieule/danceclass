@@ -10,6 +10,7 @@
 
     this.run = function () {
         Utils.collapseSideBar();
+        Utils.setNavBarTitle();
 
         this.initCalendar();
         this.initRegistrationMng();

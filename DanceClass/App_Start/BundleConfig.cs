@@ -14,6 +14,9 @@ namespace DanceClass
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*"));
+            
+            bundles.Add(new ScriptBundle("~/bundles/jquery-touchSwipe").Include(
+                        "~/Scripts/jquery.touchSwipe.js"));
 
             // Use the development version of Modernizr to develop with and learn from. Then, when you're
             // ready for production, use the build tool at https://modernizr.com to pick only the tests you need.
@@ -58,6 +61,7 @@ namespace DanceClass
                       "~/Scripts/jquery.inputmask.date.extensions.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
+                      "~/Content/Site.css",
                       "~/Content/bootstrap.css",
                       "~/Content/font-awesome.css",
                       "~/Content/ionicons.css",
@@ -65,7 +69,7 @@ namespace DanceClass
                       "~/Content/skin-black.css",
                       "~/Content/pace.min.css"
             ));
-            
+
             bundles.Add(new StyleBundle("~/Content/bootstrap-datepicker").Include(
                       "~/Content/bootstrap-datepicker.min.css"));
 

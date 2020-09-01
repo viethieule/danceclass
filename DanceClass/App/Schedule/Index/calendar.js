@@ -14,12 +14,6 @@
 function CalendarManager() {
     var _self = this;
 
-    //if (window.screen.width >= 1024) {
-    //    CalendarDesktopManager.call(this);
-    //} else {
-    //    CalendarMobileManager.call(this);
-    //}
-
     this.selectedDay = null;
     this.selectedDayIndex = null;
     this.singleDayMode = false;
@@ -31,6 +25,7 @@ function CalendarManager() {
         renderCalendar();
 
         registerEvent();
+        registerDeviceEvent();
     }
 
     this.renderUserRemainingSessions = function () {
@@ -290,7 +285,7 @@ function CalendarManager() {
 
     function adaptUI() {
         var width = window.screen.width;
-        if (width >= 1024 && _self.singleDayMode === false) {
+        if (width > 1024 && _self.singleDayMode === false) {
             // TODO
         } else {
             _self.singleDayMode = true;
@@ -327,6 +322,7 @@ function CalendarManager() {
                     toggleDaySelector();
                 }
             } else {
+                _self.selectedDayIndex = key === 'prev' ? currentDaysOfWeek.length - 1 : 0;
                 renderPrevNextWeek(e.currentTarget.id);
             }
         });
@@ -335,49 +331,34 @@ function CalendarManager() {
             if (_self.singleDayMode) {
                 $('#calendarHead tr').children().show().not(':first-child').addClass('calendar-head');
                 $('#calendarBody tr').show().children().show();
+                $('.btn-day-of-week').eq(_self.selectedDayIndex).closest('.btn').removeClass('active');
+                $('.btn-day-of-week').eq(_self.selectedDayIndex).prop('checked', false);
+                _self.singleDayMode = false;
             } else {
-
+                toggleDaySelector();
             }
-            return;
-            _self.singleDayMode = !_self.singleDayMode;
-
-            var index = $('#calendar th').index($('#calendar th.calendar-today'));
-
-            if (index === -1) {
-                var lastDayOfWeekIndex = _self.currentDaysOfWeek.length - 1;
-                if (_self.currentDaysOfWeek[lastDayOfWeekIndex].isBefore(new Date())) {
-                    index = 8; // last day column, index of nth-child starts from 1
-                } else {
-                    index = 2; // first day column, index of nth-child starts from 1
-                }
-            } else {
-                index++; // index of nth-child starts from 1
-            }
-
-            var $hiddenTd = $('#calendar td').not(':nth-child(' + index + ')').not(':first-child');
-            var $hiddenTh = $('#calendar th').not(':nth-child(' + index + ')').not(':first-child');
-            var $dayTh = $('#calendarHead tr th').not(':first-child');
-
-            $hiddenTd.toggle(_self.singleDayMode);
-            $hiddenTh.toggle(_self.singleDayMode);
-            $dayTh.toggleClass('calendar-head', _self.singleDayMode);
-
-            $(e.currentTarget).html(_self.singleDayMode ? 'Ngày' : 'Tuần')
-            _self.selectedDay = _self.currentDaysOfWeek[index - 2];
-            _self.singleDayMode = !_self.singleDayMode;
+            toggleSwitchViewLabel();
         });
 
         $('.btn-day-of-week').on('change', function (e) {
+            if (!e.currentTarget.checked) {
+                return;
+            }
             var index = $(e.currentTarget).data('index');
             _self.selectedDay = _self.currentDaysOfWeek[index];
             _self.selectedDayIndex = index;
             _self.singleDayMode = true;
             showHideDayByDayIndex(index);
+            toggleSwitchViewLabel();
         });
     }
 
     function toggleDaySelector() {
         $('.btn-day-of-week').eq(_self.selectedDayIndex).closest('.btn').button('toggle');
+    }
+
+    function toggleSwitchViewLabel() {
+        $('.btn-switch-view').html(_self.singleDayMode ? 'Lịch tuần' : 'Lịch ngày')
     }
 
     // show hide by index in current day of weeks
@@ -391,17 +372,24 @@ function CalendarManager() {
         var $shownTds = $('#calendar td:nth-child(' + index + ')');
         $shownTds.show();
 
-        $('#calendarBody tr').hide();
-        $shownTds.find('.mistake-event').closest('tr').show();
+        if (!UserService.isAdmin()) {
+            $('#calendarBody tr').hide();
+            $shownTds.find('.mistake-event').closest('tr').show();
+        }
     }
-}
 
-function CalendarDesktopManager() {
+    function registerDeviceEvent() {
+        if (window.screen.width > 1024) {
+            return;
+        }
 
-}
-
-function CalendarMobileManager() {
-    this.initCalendar = function () {
-
+        $('#calendar').swipe({
+            swipeLeft: function (event, direction, distance, duration, fingerCount, fingerData) {
+                $('button#next').trigger('click');
+            },
+            swipeRight: function (event, direction, distance, duration, fingerCount, fingerData) {
+                $('button#prev').trigger('click');
+            },
+        })
     }
 }
