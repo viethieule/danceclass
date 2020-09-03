@@ -7,6 +7,8 @@
 
     this.currentDaysOfWeek = [];
     this.scheduleDetails = [];
+    this.selectedSchedule = null;
+    this.selectedScheduleDetails = null;
 
     this.run = function () {
         Utils.collapseSideBar();

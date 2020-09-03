@@ -28,8 +28,9 @@
             let div = $(event.relatedTarget);
             const id = parseInt(div.data('id'));
 
-            const scheduleDetail = _self.scheduleDetails.find(x => x.id === id);
-            const { schedule, registrations, date, totalRegistered, sessionNo } = scheduleDetail;
+            _self.selectedScheduleDetails = _self.scheduleDetails.find(x => x.id === id);
+            const { schedule, registrations, date, totalRegistered, sessionNo } = _self.selectedScheduleDetails;
+            _self.selectedSchedule = schedule;
 
             let $modal = $(this);
 
@@ -129,7 +130,19 @@
                 if (registrations.some(r => r.isModified) || totalRegistered !== registrations.length) {
                     _self.renderSchedule();
                 }
-            })
+            });
+
+            $('.btn-schedule-update').off('click').on('click', function (event) {
+                _self.openScheduleCreateModal(true);
+            });
+
+            $('.btn-schedule-delete-create').off('click').on('click', function (event) {
+
+            });
+
+            $('.btn-schedule-delete').off('click').on('click', function (event) {
+
+            });
         });
 
         $('.session-registrations').slimscroll({

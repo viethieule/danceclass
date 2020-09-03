@@ -22,6 +22,7 @@
 
 function ScheduleCreate() {
     var _self = this;
+    var _editMode = false;
 
     this.initScheduleCreate = function () {
         if (!UserService.isAdmin()) {
@@ -34,6 +35,11 @@ function ScheduleCreate() {
         initCreateScheduleBtn();
 
         registerEvent();
+    }
+
+    this.openScheduleCreateModal = function (isEdit) {
+        _editMode = !!isEdit;
+        $('#modal-create-schedule').modal('show');
     }
 
     async function initClass() {
@@ -110,6 +116,9 @@ function ScheduleCreate() {
                 $('#openingDate').datepicker('setDate', date.toDate());
                 $('#startTime').timepicker('setTime', date.locale('en').format('h:mm A'));
                 $('.days-per-week input:checkbox[value="' + date.day() + '"]').prop('checked', true);
+            } else if (_editMode && _self.selectedSchedule) {
+                console.log(editMode);
+                console.log(_self.selectedSchedule);
             }
         });
     }
