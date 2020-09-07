@@ -37,9 +37,9 @@ function ScheduleCreate() {
         registerEvent();
     }
 
-    this.openScheduleCreateModal = function (isEdit) {
+    this.openScheduleCreateModal = function (isEdit, $triggerElement) {
         _editMode = !!isEdit;
-        $('#modal-create-schedule').modal('show');
+        $('#modal-create-schedule').modal('toggle', $triggerElement);
     }
 
     async function initClass() {
@@ -83,7 +83,7 @@ function ScheduleCreate() {
         var element = $('<div>', { class: 'calendar-create-schedule' })
             .append(
                 $('<button>', {
-                    'class': 'btn btn-success',
+                    'class': 'btn btn-success btn-create-schedule',
                     'data-toggle': 'modal',
                     'data-target': '#modal-create-schedule'
                 })
@@ -102,7 +102,8 @@ function ScheduleCreate() {
     function registerModalEvent() {
         $('#modal-create-schedule').on('shown.bs.modal', function (event) {
             let $target = $(event.relatedTarget);
-            if (!$target.is(':button')) {
+            if ($target.is('td')) {
+                // From calendar blank cells
                 const prevSelectedDate = $(this).data('prevDate');
                 const date = $target.data('date');
                 if (!prevSelectedDate) {
@@ -116,10 +117,41 @@ function ScheduleCreate() {
                 $('#openingDate').datepicker('setDate', date.toDate());
                 $('#startTime').timepicker('setTime', date.locale('en').format('h:mm A'));
                 $('.days-per-week input:checkbox[value="' + date.day() + '"]').prop('checked', true);
-            } else if (_editMode && _self.selectedSchedule) {
-                console.log(editMode);
+            } else if (_editMode && _self.selectedSchedule && $target.hasClass('btn-schedule-update')) {
+                // From edit button in manage schedule modal (also check not the create schedule button above calendar)
+                console.log(_editMode);
                 console.log(_self.selectedSchedule);
+                console.log(_self.selectedScheduleDetails);
+
+                var { selectedSchedule, selectedScheduleDetails } = _self;
+                var { classId, song, openingDate, startTime, daysPerWeek, sessions, trainerId, branch } = selectedSchedule;
+
+                daysPerWeek = daysPerWeek.split('');
+                $('#class').val(classId);
+                $('#song').val(song);
+                $('#openingDate').datepicker('setDate', new Date(openingDate));
+                $('#startTime').timepicker('setTime', startTime);
+                $('.days-per-week input:checkbox').each(function (i, e) {
+                    $(this).prop('checked', false);
+                    if (daysPerWeek.indexOf($(this).val()) !== -1) {
+                        $(this).prop('checked', true);
+                    };
+                });
+
+                $('#sessions').val(sessions);
+                $('#trainer').val(trainerId);
+                $('#branch').val(branch);
             }
+
+            if (_editMode) {
+                $('btn-action').html('Sửa');
+            } else {
+                $('btn-action').html('Tạo');
+            }
+        });
+
+        $('#modal-create-schedule').on('hide.bs.modal', function (e) {
+            _editMode = false;
         });
     }
 
@@ -148,6 +180,7 @@ function ScheduleCreate() {
                     }
                 },
                 submitHandler: async function (form) {
+                    $('.btn-exit, .btn-action').prop('disabled', true);
                     let $form = $(form);
                     let { song, sessions, branch, class: cls, trainer, startTime } = FormUtils.convertFormDataToDictionary($form.serializeArray());
 
@@ -186,15 +219,23 @@ function ScheduleCreate() {
                     }
 
                     try {
-                        await ApiService.post('api/schedule/create', { schedule });
-                        $('#modal-create-schedule').modal('hide');
-                        _self.renderSchedule();
+                        if (_editMode) {
+                            schedule.id = _self.selectedSchedule.id;
+                            //_self.selectedSchedule = await ApiService.post('api/schedule/update', { schedule });
+                            _editMode = false;
+                        } else {
+                            await ApiService.post('api/schedule/create', { schedule });
+                            $('#modal-create-schedule').modal('hide');
+                            _self.renderSchedule();
+                        }
                         if (isRerenderClass) {
                             initClass();
                         }
                         resetCreateForm();
                     } catch (ex) {
                         console.log(ex);
+                    } finally {
+                        $('.btn-exit, .btn-action').prop('disabled', false);
                     }
                 }
             }))

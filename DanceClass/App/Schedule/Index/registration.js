@@ -133,7 +133,7 @@
             });
 
             $('.btn-schedule-update').off('click').on('click', function (event) {
-                _self.openScheduleCreateModal(true);
+                _self.openScheduleCreateModal(true, $(this));
             });
 
             $('.btn-schedule-delete-create').off('click').on('click', function (event) {
