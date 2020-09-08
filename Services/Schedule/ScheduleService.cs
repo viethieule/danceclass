@@ -17,6 +17,8 @@ namespace Services.Schedule
     {
         Task<GetDetailedScheduleRs> GetDetail(GetDetailedScheduleRq rq);
         Task<CreateScheduleRs> Create(CreateScheduleRq rq);
+        Task<UpdateScheduleRs> Update(UpdateScheduleRq rq);
+        Task<UpdateScheduleRs> PreUpdate(UpdateScheduleRq rq);
     }
 
     public class ScheduleService : BaseService, IScheduleService
@@ -173,6 +175,41 @@ namespace Services.Schedule
                     dto.IsCurrentUserRegistered = true;
                 }
             });
+        }
+
+        public async Task<UpdateScheduleRs> Update(UpdateScheduleRq rq)
+        {
+            var scheduleDto = rq.Schedule;
+            var updatedSchedule = _mapper.Map<DataAccess.Entities.Schedule>(scheduleDto);
+
+            var currentSchedule = await _dbContext.Schedules.FirstOrDefaultAsync(s => s.Id == scheduleDto.Id);
+            if (currentSchedule == null)
+            {
+                throw new Exception("Lịch học không tồn tại");
+            }
+
+            if (updatedSchedule.OpeningDate.Date != currentSchedule.OpeningDate.Date)
+            {
+                if (DateTime.Now > currentSchedule.OpeningDate.Add(updatedSchedule.StartTime))
+                {
+                    throw new Exception("Không thể thay đổi ngày bắt đầu của lớp học đã bắt đầu");
+                }
+            }
+
+            // TODO
+            // Generate schedule details if changed
+            // Keep same schedule detail between updated and current
+            // Create new one and delete old one
+            // Move registration to new one if any
+            // Generate warning to inform member of changed schedule detail
+
+            var rs = new UpdateScheduleRs();
+            return rs;
+        }
+
+        public Task<UpdateScheduleRs> PreUpdate(UpdateScheduleRq rq)
+        {
+            throw new NotImplementedException();
         }
     }
 }

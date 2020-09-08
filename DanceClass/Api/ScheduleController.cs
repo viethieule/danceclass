@@ -29,5 +29,14 @@ namespace DanceClass.Api
             var rs = await _scheduleService.Create(rq);
             return ApiJson(rs);
         }
+
+        [HttpPost]
+        [Route("update")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IHttpActionResult> Update(UpdateScheduleRq rq)
+        {
+            var rs = await _scheduleService.Update(rq);
+            return ApiJson(rs);
+        }
     }
 }

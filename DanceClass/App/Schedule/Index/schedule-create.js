@@ -222,7 +222,11 @@ function ScheduleCreate() {
                         if (_editMode) {
                             schedule.id = _self.selectedSchedule.id;
                             //_self.selectedSchedule = await ApiService.post('api/schedule/update', { schedule });
+                            // _self.selectedScheduleDetails = ???
                             _editMode = false;
+                            $('#modal-create-schedule').modal('hide');
+                            await _self.renderSchedule();
+                            _self.reloadManageModal();
                         } else {
                             await ApiService.post('api/schedule/create', { schedule });
                             $('#modal-create-schedule').modal('hide');
@@ -230,6 +234,9 @@ function ScheduleCreate() {
                         }
                         if (isRerenderClass) {
                             initClass();
+                        }
+                        if (isRerenderTrainer) {
+                            // TODO: initTrainer()
                         }
                         resetCreateForm();
                     } catch (ex) {

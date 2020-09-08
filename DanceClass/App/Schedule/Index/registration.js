@@ -22,6 +22,10 @@
         return ApiService.put('/api/registration/confirmAttendance/' + registrationId);
     }
 
+    this.reloadManageModal = function () {
+        // based on whether the selected schedule details is modified / deleted 
+    }
+
     function registerEvent() {
         $('#modal-manage').on('shown.bs.modal', function (event) {
 
