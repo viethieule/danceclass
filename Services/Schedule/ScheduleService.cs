@@ -179,6 +179,8 @@ namespace Services.Schedule
 
         public async Task<UpdateScheduleRs> Update(UpdateScheduleRq rq)
         {
+            var rs = new UpdateScheduleRs();
+
             var scheduleDto = rq.Schedule;
             var updatedSchedule = _mapper.Map<DataAccess.Entities.Schedule>(scheduleDto);
 
@@ -198,7 +200,7 @@ namespace Services.Schedule
 
             if (updatedSchedule.StartTime != currentSchedule.StartTime)
             {
-                // output a warning message that has to inform reigstered user
+                rs.Messages.Add("Thời gian lớp học đã thay đổi. Vui lòng thông báo lại cho các hội viên đã đăng ký");
             }
 
             if (updatedSchedule.OpeningDate.Date != currentSchedule.OpeningDate.Date ||
@@ -207,6 +209,8 @@ namespace Services.Schedule
             {
                 var updatedScheduleDetails = GenerateScheduleDetails(updatedSchedule);
                 var currentScheduleDetails = await _dbContext.ScheduleDetails.Where(s => s.ScheduleId == updatedSchedule.Id).ToListAsync();
+                var changedSessionNumbers = new List<int>();
+
                 foreach (var updatedSession in updatedScheduleDetails)
                 {
                     var currentSession = currentScheduleDetails.FirstOrDefault(s => s.SessionNo == updatedSession.SessionNo);
@@ -219,6 +223,8 @@ namespace Services.Schedule
                             updatedSession.DateBeforeUpdated = currentSession.Date;
                             updatedSession.Registrations = currentSession.Registrations;
                             _dbContext.ScheduleDetails.Add(updatedSession);
+
+                            changedSessionNumbers.Add(updatedSession.SessionNo);
                         }
                     }
                     else
@@ -227,23 +233,43 @@ namespace Services.Schedule
                     }
                 }
 
+                if (changedSessionNumbers.Count > 0)
+                {
+                    rs.Messages.Add(string.Format("Đã có thay đổi trong buổi học {0}. Vui lòng thông báo lại cho các học viên đã đăng ký", string.Join(", ", changedSessionNumbers)));
+                }
+
                 if (updatedScheduleDetails.Count < currentScheduleDetails.Count)
                 {
                     var deletedScheduleDetails = currentScheduleDetails.Where(s => s.SessionNo > updatedScheduleDetails.Count);
+
+                    var deletedSessionWithRegistrationNumbers = new List<int>();
+                    
+                    foreach (var deletedSession in deletedScheduleDetails)
+                    {
+                        if (deletedSession.Registrations.Any())
+                        {
+                            foreach (var registration in deletedSession.Registrations)
+                            {
+                                var memberPackage = await _dbContext.MemberPackages.FirstOrDefaultAsync(m => m.UserId == registration.UserId && m.IsActive);
+                                memberPackage.RemainingSessions++;
+                            }
+
+                            deletedSessionWithRegistrationNumbers.Add(deletedSession.SessionNo);
+                        }
+                    }
+
                     _dbContext.ScheduleDetails.RemoveRange(deletedScheduleDetails);
+
+                    if (deletedSessionWithRegistrationNumbers.Count > 0)
+                    {
+                        rs.Messages.Add(string.Format("Buổi học {0} đã có hội viên đăng ký và đã được xóa. Hội viên đã được hoàn lại một buổi. Vui lòng thông báo lại cho các học viên đã đăng ký", string.Join(", ", deletedSessionWithRegistrationNumbers)));
+                    }
                 }
             }
 
-            _dbContext.Entry(updatedSchedule).State = EntityState.Modified;
+            _mapper.Map(updatedSchedule, currentSchedule);
+            _dbContext.SaveChanges();
 
-            // TODO
-            // Generate schedule details if changed
-            // Keep same schedule detail between updated and current
-            // Create new one and delete old one
-            // Move registration to new one if any
-            // Generate warning to inform member of changed schedule detail
-
-            var rs = new UpdateScheduleRs();
             return rs;
         }
 
