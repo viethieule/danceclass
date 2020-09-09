@@ -20,5 +20,6 @@ namespace DataAccess.Entities
         public virtual ICollection<Registration> Registrations { get; set; }
 
         public int SessionNo { get; set; }
+        public DateTime? DateBeforeUpdated { get; set; }
     }
 }

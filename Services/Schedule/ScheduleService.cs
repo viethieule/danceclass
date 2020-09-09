@@ -196,6 +196,46 @@ namespace Services.Schedule
                 }
             }
 
+            if (updatedSchedule.StartTime != currentSchedule.StartTime)
+            {
+                // output a warning message that has to inform reigstered user
+            }
+
+            if (updatedSchedule.OpeningDate.Date != currentSchedule.OpeningDate.Date ||
+                updatedSchedule.DaysPerWeek != currentSchedule.DaysPerWeek ||
+                updatedSchedule.Sessions != currentSchedule.Sessions)
+            {
+                var updatedScheduleDetails = GenerateScheduleDetails(updatedSchedule);
+                var currentScheduleDetails = await _dbContext.ScheduleDetails.Where(s => s.ScheduleId == updatedSchedule.Id).ToListAsync();
+                foreach (var updatedSession in updatedScheduleDetails)
+                {
+                    var currentSession = currentScheduleDetails.FirstOrDefault(s => s.SessionNo == updatedSession.SessionNo);
+                    if (currentSession != null)
+                    {
+                        if (updatedSession.Date.Date != currentSession.Date.Date)
+                        {
+                            _dbContext.ScheduleDetails.Remove(currentSession);
+
+                            updatedSession.DateBeforeUpdated = currentSession.Date;
+                            updatedSession.Registrations = currentSession.Registrations;
+                            _dbContext.ScheduleDetails.Add(updatedSession);
+                        }
+                    }
+                    else
+                    {
+                        _dbContext.ScheduleDetails.Add(updatedSession);
+                    }
+                }
+
+                if (updatedScheduleDetails.Count < currentScheduleDetails.Count)
+                {
+                    var deletedScheduleDetails = currentScheduleDetails.Where(s => s.SessionNo > updatedScheduleDetails.Count);
+                    _dbContext.ScheduleDetails.RemoveRange(deletedScheduleDetails);
+                }
+            }
+
+            _dbContext.Entry(updatedSchedule).State = EntityState.Modified;
+
             // TODO
             // Generate schedule details if changed
             // Keep same schedule detail between updated and current
