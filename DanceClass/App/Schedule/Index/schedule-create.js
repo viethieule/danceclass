@@ -180,6 +180,7 @@ function ScheduleCreate() {
                     }
                 },
                 submitHandler: async function (form) {
+                    $('#modal-create-schedule .modal-body').alert(false);
                     $('.btn-exit, .btn-action').prop('disabled', true);
                     let $form = $(form);
                     let { song, sessions, branch, class: cls, trainer, startTime } = FormUtils.convertFormDataToDictionary($form.serializeArray());
@@ -221,12 +222,13 @@ function ScheduleCreate() {
                     try {
                         if (_editMode) {
                             schedule.id = _self.selectedSchedule.id;
-                            //_self.selectedSchedule = await ApiService.post('api/schedule/update', { schedule });
-                            // _self.selectedScheduleDetails = ???
+                            var rs = await ApiService.post('api/schedule/update', { schedule, selectedScheduleDetailId: _self.selectedScheduleDetails.id });
                             _editMode = false;
                             $('#modal-create-schedule').modal('hide');
                             await _self.renderSchedule();
-                            _self.reloadManageModal();
+
+                            var message = rs && rs.messages ? ('<ul>' + rs.messages.map(function (message) { return '<li>' + message + '</li>' }).join('') + '</ul>') : ''
+                            _self.reloadManageModal(message);
                         } else {
                             await ApiService.post('api/schedule/create', { schedule });
                             $('#modal-create-schedule').modal('hide');
@@ -241,6 +243,7 @@ function ScheduleCreate() {
                         resetCreateForm();
                     } catch (ex) {
                         console.log(ex);
+                        $('#modal-create-schedule .modal-body').alert(true, ex);
                     } finally {
                         $('.btn-exit, .btn-action').prop('disabled', false);
                     }

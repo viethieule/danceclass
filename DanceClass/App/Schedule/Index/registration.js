@@ -22,7 +22,7 @@
         return ApiService.put('/api/registration/confirmAttendance/' + registrationId);
     }
 
-    this.reloadManageModal = function () {
+    this.reloadManageModal = function (message) {
         // based on whether the selected schedule details is modified / deleted 
     }
 
