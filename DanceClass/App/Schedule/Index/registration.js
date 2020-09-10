@@ -22,7 +22,7 @@
         return ApiService.put('/api/registration/confirmAttendance/' + registrationId);
     }
 
-    this.reloadManageModal = function (message) {
+    this.reloadManageModal = function (scheduleDetailId, message) {
         // based on whether the selected schedule details is modified / deleted 
     }
 
@@ -131,7 +131,8 @@
             })
 
             $('#modal-manage').off('hide.bs.hide.bs.modal').on('hide.bs.hide.bs.modal', async function (event) {
-                if (registrations.some(r => r.isModified) || totalRegistered !== registrations.length) {
+                if (_self.selectedScheduleDetails &&
+                    (registrations.some(r => r.isModified) || totalRegistered !== registrations.length)) {
                     _self.renderSchedule();
                 }
             });

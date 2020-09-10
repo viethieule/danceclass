@@ -220,6 +220,11 @@ namespace Services.Schedule
                         {
                             _dbContext.ScheduleDetails.Remove(currentSession);
 
+                            if (rq.SelectedScheduleDetailId == currentSession.Id)
+                            {
+                                // rs.IsSelectedSessionDeleted = true;
+                            }
+
                             updatedSession.DateBeforeUpdated = currentSession.Date;
                             updatedSession.Registrations = currentSession.Registrations;
                             _dbContext.ScheduleDetails.Add(updatedSession);
