@@ -145,6 +145,10 @@
     <Compile Include="Migrations\202008061451175_UpdateNullableForScheduleProps.designer.cs">
       <DependentUpon>202008061451175_UpdateNullableForScheduleProps.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202009110334482_AddScheduleDetailDateBeforeUpdated.cs" />
+    <Compile Include="Migrations\202009110334482_AddScheduleDetailDateBeforeUpdated.designer.cs">
+      <DependentUpon>202009110334482_AddScheduleDetailDateBeforeUpdated.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -191,6 +195,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202008061451175_UpdateNullableForScheduleProps.resx">
       <DependentUpon>202008061451175_UpdateNullableForScheduleProps.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009110334482_AddScheduleDetailDateBeforeUpdated.resx">
+      <DependentUpon>202009110334482_AddScheduleDetailDateBeforeUpdated.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

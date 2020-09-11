@@ -22,136 +22,143 @@
         return ApiService.put('/api/registration/confirmAttendance/' + registrationId);
     }
 
-    this.reloadManageModal = function (scheduleDetailId, message) {
-        // based on whether the selected schedule details is modified / deleted 
+    this.reloadManageModal = function (scheduleDetailId, alertType, message) {
+        handleShowingModalManage(scheduleDetailId, alertType, message); 
     }
 
     function registerEvent() {
         $('#modal-manage').on('shown.bs.modal', function (event) {
+            $('#modal-manage .modal-body').alert(false);
 
             let div = $(event.relatedTarget);
             const id = parseInt(div.data('id'));
 
-            _self.selectedScheduleDetails = _self.scheduleDetails.find(x => x.id === id);
-            const { schedule, registrations, date, totalRegistered, sessionNo } = _self.selectedScheduleDetails;
-            _self.selectedSchedule = schedule;
-
-            let $modal = $(this);
-
-            let [hour, minute, ...rest] = schedule.startTime.split(':');
-            let timeStart = Utils.capitalizeFirstLetter(moment(date).hours(parseInt(hour)).minute(parseInt(minute)).locale('vi').format('dddd D/M HH:mm'));
-
-            // Update modal title to schedule's class name
-            $modal.find('.modal-title').text(schedule.class.name + ' - ' + timeStart);
-
-            const { song, branch, sessions: totalSessions } = schedule;
-            $('.session-general-info')
-                .empty()
-                .append(renderSessionInfoGroup('Bài múa', song))
-                .append(renderSessionInfoGroup('Buổi', sessionNo + (totalSessions ? ' / ' + totalSessions : '')))
-                .append(renderSessionInfoGroup('Thời gian', timeStart))
-                .append(renderSessionInfoGroup('Địa điểm', branch))
-                .append(renderSessionInfoGroup('Số học viên đăng ký', totalRegistered + ' / 20'));
-
-            renderRegistrationList(registrations);
-
-            $('.session-user-search-result').hide();
-            $('.session-search-message').text('').hide();
-            $('#session-user-search').val('');
-
-            $('.session-add-registration button').off('click').on('click', async function (event) {
-                let $addBtn = $(event.target);
-                let $input = $addBtn.closest('div').find('input');
-                let phoneNumber = $input.val();
-                if (!phoneNumber) {
-                    return;
-                }
-
-                $addBtn.find('i').removeClass('fa fa-plus').addClass('fa fa-circle-o-notch fa-spin').prop('disabled', true);
-                try {
-                    const user = await UserService.get({ phoneNumber });
-                    $('.session-user-search-result').show();
-                    if (user) {
-                        $('.session-search-message').empty();
-                        if (registrations.some(r => r.userId === user.id)) {
-                            $('.session-search-message').text('Học viên ' + user.fullName + ' đã đăng ký!').show();
-                            $('.session-user-search-result tbody').empty();
-                            return;
-                        }
-
-                        let registerBtn = $('<button>', { class: 'btn btn-block btn-success btn-xs btn-label' })
-                            .html('Đăng ký')
-                            .on('click', { id }, async function (event) {
-                                let $registerBtn = $(event.target);
-                                $registerBtn
-                                    .prop('disabled', true)
-                                    .empty()
-                                    .append($('<i>', { class: 'fa fa-circle-o-notch fa-spin' }))
-                                try {
-                                    const response = await _self.registerSchedule(event.data.id, user.id);
-                                    if (response && response.registration) {
-                                        response.registration.isModified = true;
-                                        registrations.push(response.registration);
-
-                                        // rerender
-                                        renderRegistrationList(registrations);
-
-                                        // hide search result
-                                        $('.session-user-search-result').hide();
-                                    }
-                                } catch (ex) {
-                                    console.log(ex);
-                                    $('.session-search-message').text(ex.responseJSON ? ex.responseJSON.ExceptionMessage : ex).show();
-                                } finally {
-                                    // empty search result
-                                    $('.session-user-search-result tbody').empty();
-                                }
-                            });
-
-                        let searchResult = $('<tr>')
-                            .append($('<td>').text(user.fullName))
-                            .append($('<td>').text(user.userName))
-                            .append($('<td>').text(user.phoneNumber))
-                            .append($('<td>').append(registerBtn));
-
-                        $('.session-user-search-result tbody').empty().append(searchResult);
-                    } else {
-                        $('.session-search-message').text('Không tìm thấy học viên!').show();
-                        $('.session-user-search-result tbody').empty();
-                    }
-                } catch (ex) {
-                    console.log(ex);
-                    $('.session-search-message').text(ex.responseJSON ? ex.responseJSON.ExceptionMessage : ex).show();
-                    $('.session-user-search-result tbody').empty();
-                } finally {
-                    $addBtn.find('i')
-                        .removeClass('fa fa-circle-o-notch fa-spin').addClass('fa fa-plus')
-                        .prop('disabled', false);
-                }
-            })
-
-            $('#modal-manage').off('hide.bs.hide.bs.modal').on('hide.bs.hide.bs.modal', async function (event) {
-                if (_self.selectedScheduleDetails &&
-                    (registrations.some(r => r.isModified) || totalRegistered !== registrations.length)) {
-                    _self.renderSchedule();
-                }
-            });
-
-            $('.btn-schedule-update').off('click').on('click', function (event) {
-                _self.openScheduleCreateModal(true, $(this));
-            });
-
-            $('.btn-schedule-delete-create').off('click').on('click', function (event) {
-
-            });
-
-            $('.btn-schedule-delete').off('click').on('click', function (event) {
-
-            });
+            handleShowingModalManage(id);
         });
 
         $('.session-registrations').slimscroll({
             distance: '5px'
+        });
+    }
+
+    function handleShowingModalManage(scheduleDetailId, alertType, message) {
+        if (message) {
+            $('#modal-manage .modal-body').alert(true, alertType, message);
+        }
+
+        _self.selectedScheduleDetails = _self.scheduleDetails.find(x => x.id === scheduleDetailId);
+        const { schedule, registrations, date, totalRegistered, sessionNo } = _self.selectedScheduleDetails;
+        _self.selectedSchedule = schedule;
+
+        let [hour, minute, ...rest] = schedule.startTime.split(':');
+        let timeStart = Utils.capitalizeFirstLetter(moment(date).hours(parseInt(hour)).minute(parseInt(minute)).locale('vi').format('dddd D/M HH:mm'));
+
+        // Update modal title to schedule's class name
+        $('#modal-manage').find('.modal-title').html(schedule.class.name + ' - ' + timeStart);
+
+        const { song, branch, sessions: totalSessions } = schedule;
+        $('.session-general-info')
+            .empty()
+            .append(renderSessionInfoGroup('Bài múa', song))
+            .append(renderSessionInfoGroup('Buổi', sessionNo + (totalSessions ? ' / ' + totalSessions : '')))
+            .append(renderSessionInfoGroup('Thời gian', timeStart))
+            .append(renderSessionInfoGroup('Địa điểm', branch))
+            .append(renderSessionInfoGroup('Số học viên đăng ký', totalRegistered + ' / 20'));
+
+        renderRegistrationList(registrations);
+
+        $('.session-user-search-result').hide();
+        $('.session-search-message').text('').hide();
+        $('#session-user-search').val('');
+
+        $('.session-add-registration button').off('click').on('click', async function (event) {
+            let $addBtn = $(event.target);
+            let $input = $addBtn.closest('div').find('input');
+            let phoneNumber = $input.val();
+            if (!phoneNumber) {
+                return;
+            }
+
+            $addBtn.find('i').removeClass('fa fa-plus').addClass('fa fa-circle-o-notch fa-spin').prop('disabled', true);
+            try {
+                const user = await UserService.get({ phoneNumber });
+                $('.session-user-search-result').show();
+                if (user) {
+                    $('.session-search-message').empty();
+                    if (registrations.some(r => r.userId === user.id)) {
+                        $('.session-search-message').text('Học viên ' + user.fullName + ' đã đăng ký!').show();
+                        $('.session-user-search-result tbody').empty();
+                        return;
+                    }
+
+                    let registerBtn = $('<button>', { class: 'btn btn-block btn-success btn-xs btn-label' })
+                        .html('Đăng ký')
+                        .on('click', { id: scheduleDetailId }, async function (event) {
+                            let $registerBtn = $(event.target);
+                            $registerBtn
+                                .prop('disabled', true)
+                                .empty()
+                                .append($('<i>', { class: 'fa fa-circle-o-notch fa-spin' }))
+                            try {
+                                const response = await _self.registerSchedule(event.data.id, user.id);
+                                if (response && response.registration) {
+                                    response.registration.isModified = true;
+                                    registrations.push(response.registration);
+
+                                    // rerender
+                                    renderRegistrationList(registrations);
+
+                                    // hide search result
+                                    $('.session-user-search-result').hide();
+                                }
+                            } catch (ex) {
+                                console.log(ex);
+                                $('.session-search-message').text(ex.responseJSON ? ex.responseJSON.ExceptionMessage : ex).show();
+                            } finally {
+                                // empty search result
+                                $('.session-user-search-result tbody').empty();
+                            }
+                        });
+
+                    let searchResult = $('<tr>')
+                        .append($('<td>').text(user.fullName))
+                        .append($('<td>').text(user.userName))
+                        .append($('<td>').text(user.phoneNumber))
+                        .append($('<td>').append(registerBtn));
+
+                    $('.session-user-search-result tbody').empty().append(searchResult);
+                } else {
+                    $('.session-search-message').text('Không tìm thấy học viên!').show();
+                    $('.session-user-search-result tbody').empty();
+                }
+            } catch (ex) {
+                console.log(ex);
+                $('.session-search-message').text(ex.responseJSON ? ex.responseJSON.ExceptionMessage : ex).show();
+                $('.session-user-search-result tbody').empty();
+            } finally {
+                $addBtn.find('i')
+                    .removeClass('fa fa-circle-o-notch fa-spin').addClass('fa fa-plus')
+                    .prop('disabled', false);
+            }
+        })
+
+        $('#modal-manage').off('hide.bs.hide.bs.modal').on('hide.bs.hide.bs.modal', async function (event) {
+            if (_self.selectedScheduleDetails &&
+                (registrations.some(r => r.isModified) || totalRegistered !== registrations.length)) {
+                _self.renderSchedule();
+            }
+        });
+
+        $('.btn-schedule-update').off('click').on('click', function (event) {
+            _self.openScheduleCreateModal(true, $(this));
+        });
+
+        $('.btn-schedule-delete-create').off('click').on('click', function (event) {
+
+        });
+
+        $('.btn-schedule-delete').off('click').on('click', function (event) {
+
         });
     }
 

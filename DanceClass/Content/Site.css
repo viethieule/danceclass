@@ -1,3 +1,7 @@
 ﻿.navbar-current-page-title {
     padding: 7px 7px 7px 14px;
 }
+
+.alert ul {
+    margin-bottom: 0px;
+}

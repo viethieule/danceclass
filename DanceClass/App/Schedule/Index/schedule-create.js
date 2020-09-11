@@ -74,6 +74,9 @@ function ScheduleCreate() {
             })
             .inputmask('dd/mm/yyyy', {
                 'placeholder': 'dd/mm/yyyy'
+            })
+            .on('hide', function (e) {
+                e.stopPropagation();
             });
 
         $('.mistake-timepicker').timepicker();
@@ -101,6 +104,7 @@ function ScheduleCreate() {
 
     function registerModalEvent() {
         $('#modal-create-schedule').on('shown.bs.modal', function (event) {
+            $('#modal-create-schedule .modal-body').alert(false);
             let $target = $(event.relatedTarget);
             if ($target.is('td')) {
                 // From calendar blank cells
@@ -144,9 +148,9 @@ function ScheduleCreate() {
             }
 
             if (_editMode) {
-                $('btn-action').html('Sửa');
+                $(this).find('.btn-action').html('Sửa');
             } else {
-                $('btn-action').html('Tạo');
+                $(this).find('.btn-action').html('Tạo');
             }
         });
 
@@ -227,31 +231,36 @@ function ScheduleCreate() {
                             $('#modal-create-schedule').modal('hide');
 
                             await _self.renderSchedule();
-                            if (rs && rs.IsSelectedSessionDeleted) {
-                                _self.selectedScheduleDetails = null;
-                                $('#modal-manage .modal-body').alert(true, 'Lịch học đã bị xóa sau khi cập nhật!');
-                                setTimeout(function () {
-                                    $('#modal-manage').modal('hide');
-                                }, 2000)
-                            } else {
-                                var message = rs && rs.messages ? ('<ul>' + rs.messages.map(function (m) { return '<li>' + m + '</li>' }).join('') + '</ul>') : ''
-                                _self.reloadManageModal(message);
+                            if (rs) {
+                                var message = rs.messages && rs.messages.length > 0 ? ('<ul>' + rs.messages.map(function (m) { return '<li>' + m + '</li>' }).join('') + '</ul>') : '';
+                                if (rs.isSelectedSessionDeleted) {
+                                    _self.selectedScheduleDetails = null;
+                                    $('#modal-manage .modal-body').alert(true, 'warning', message);
+                                } else if (rs.isSelectedSessionUpdated) {
+                                    _self.reloadManageModal(rs.updatedSessionId, 'warning', message);
+                                } else {
+                                    _self.reloadManageModal(_self.selectedScheduleDetails.id, 'warning', message);
+                                }
+                                $('#modal-manage .modal-body').alert(true, 'success', 'Sửa thành công');
                             }
                         } else {
                             await ApiService.post('api/schedule/create', { schedule });
-                            $('#modal-create-schedule').modal('hide');
                             _self.renderSchedule();
+                            $('#modal-create-schedule').modal('hide');
                         }
+
                         if (isRerenderClass) {
                             initClass();
                         }
+
                         if (isRerenderTrainer) {
                             // TODO: initTrainer()
                         }
+
                         resetCreateForm();
                     } catch (ex) {
                         console.log(ex);
-                        $('#modal-create-schedule .modal-body').alert(true, ex);
+                        $('#modal-create-schedule .modal-body').alert(true, 'danger', ex);
                     } finally {
                         $('.btn-exit, .btn-action').prop('disabled', false);
                     }

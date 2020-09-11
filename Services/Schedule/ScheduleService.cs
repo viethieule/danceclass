@@ -220,16 +220,17 @@ namespace Services.Schedule
                         {
                             _dbContext.ScheduleDetails.Remove(currentSession);
 
-                            if (rq.SelectedScheduleDetailId == currentSession.Id)
-                            {
-                                // rs.IsSelectedSessionDeleted = true;
-                            }
-
                             updatedSession.DateBeforeUpdated = currentSession.Date;
                             updatedSession.Registrations = currentSession.Registrations;
                             _dbContext.ScheduleDetails.Add(updatedSession);
 
                             changedSessionNumbers.Add(updatedSession.SessionNo);
+
+                            if (rq.SelectedScheduleDetailId == currentSession.Id)
+                            {
+                                rs.IsSelectedSessionUpdated = true;
+                                rs.SelectedSessionNumber = currentSession.SessionNo;
+                            }
                         }
                     }
                     else
@@ -240,7 +241,7 @@ namespace Services.Schedule
 
                 if (changedSessionNumbers.Count > 0)
                 {
-                    rs.Messages.Add(string.Format("Đã có thay đổi trong buổi học {0}. Vui lòng thông báo lại cho các học viên đã đăng ký", string.Join(", ", changedSessionNumbers)));
+                    rs.Messages.Add(string.Format("Đã có thay đổi về thời gian trong buổi học {0}. Vui lòng thông báo lại cho các học viên đã đăng ký", string.Join(", ", changedSessionNumbers)));
                 }
 
                 if (updatedScheduleDetails.Count < currentScheduleDetails.Count)
@@ -261,6 +262,12 @@ namespace Services.Schedule
 
                             deletedSessionWithRegistrationNumbers.Add(deletedSession.SessionNo);
                         }
+
+                        if (rq.SelectedScheduleDetailId == deletedSession.Id)
+                        {
+                            rs.IsSelectedSessionDeleted = true;
+                            rs.Messages.Add("Lịch học này đã bị xóa sau khi cập nhật số buổi");
+                        }
                     }
 
                     _dbContext.ScheduleDetails.RemoveRange(deletedScheduleDetails);
@@ -273,7 +280,17 @@ namespace Services.Schedule
             }
 
             _mapper.Map(updatedSchedule, currentSchedule);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
+
+            rs.Schedule = await _dbContext.Schedules.ProjectTo<ScheduleDTO>(_mappingConfig).FirstOrDefaultAsync(s => s.Id == currentSchedule.Id);
+            if (rs.IsSelectedSessionUpdated && rs.SelectedSessionNumber.HasValue)
+            {
+                var updatedSession = await _dbContext.ScheduleDetails.FirstOrDefaultAsync(s => s.ScheduleId == currentSchedule.Id && s.SessionNo == rs.SelectedSessionNumber.Value);
+                if (updatedSession != null)
+                {
+                    rs.UpdatedSessionId = updatedSession.Id;
+                }
+            }
 
             return rs;
         }
