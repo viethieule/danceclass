@@ -131,7 +131,7 @@ function ScheduleCreate() {
                 var { classId, song, openingDate, startTime, daysPerWeek, sessions, trainerId, branch } = selectedSchedule;
 
                 daysPerWeek = daysPerWeek.split('');
-                $('#class').val(classId);
+                $('#class').val(classId).trigger('change');
                 $('#song').val(song);
                 $('#openingDate').datepicker('setDate', new Date(openingDate));
                 $('#startTime').timepicker('setTime', startTime);
@@ -241,7 +241,7 @@ function ScheduleCreate() {
                                 } else {
                                     _self.reloadManageModal(_self.selectedScheduleDetails.id, 'warning', message);
                                 }
-                                $('#modal-manage .modal-body').alert(true, 'success', 'Sửa thành công');
+                                $('#modal-manage .modal-body').alert(true, 'success', 'Sửa thành công', 2500);
                             }
                         } else {
                             await ApiService.post('api/schedule/create', { schedule });

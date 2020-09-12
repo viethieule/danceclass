@@ -209,7 +209,7 @@ namespace Services.Schedule
             {
                 var updatedScheduleDetails = GenerateScheduleDetails(updatedSchedule);
                 var currentScheduleDetails = await _dbContext.ScheduleDetails.Where(s => s.ScheduleId == updatedSchedule.Id).ToListAsync();
-                var changedSessionNumbers = new List<int>();
+                var changedSessionWithRegistrationNumbers = new List<int>();
 
                 foreach (var updatedSession in updatedScheduleDetails)
                 {
@@ -218,13 +218,18 @@ namespace Services.Schedule
                     {
                         if (updatedSession.Date.Date != currentSession.Date.Date)
                         {
-                            _dbContext.ScheduleDetails.Remove(currentSession);
-
                             updatedSession.DateBeforeUpdated = currentSession.Date;
-                            updatedSession.Registrations = currentSession.Registrations;
-                            _dbContext.ScheduleDetails.Add(updatedSession);
+                            if (currentSession.Registrations.Any())
+                            {
+                                changedSessionWithRegistrationNumbers.Add(updatedSession.SessionNo);
+                                foreach (var registration in currentSession.Registrations)
+                                {
+                                    registration.ScheduleDetail = updatedSession;
+                                }
+                            }
 
-                            changedSessionNumbers.Add(updatedSession.SessionNo);
+                            _dbContext.ScheduleDetails.Remove(currentSession);
+                            _dbContext.ScheduleDetails.Add(updatedSession);                            
 
                             if (rq.SelectedScheduleDetailId == currentSession.Id)
                             {
@@ -239,9 +244,9 @@ namespace Services.Schedule
                     }
                 }
 
-                if (changedSessionNumbers.Count > 0)
+                if (changedSessionWithRegistrationNumbers.Count > 0)
                 {
-                    rs.Messages.Add(string.Format("Đã có thay đổi về thời gian trong buổi học {0}. Vui lòng thông báo lại cho các học viên đã đăng ký", string.Join(", ", changedSessionNumbers)));
+                    rs.Messages.Add(string.Format("Đã có thay đổi về thời gian trong buổi học {0}. Vui lòng thông báo lại cho các học viên đã đăng ký", string.Join(", ", changedSessionWithRegistrationNumbers)));
                 }
 
                 if (updatedScheduleDetails.Count < currentScheduleDetails.Count)

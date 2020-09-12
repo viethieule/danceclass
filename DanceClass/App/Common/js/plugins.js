@@ -1,5 +1,5 @@
 ﻿(function ($) {
-    $.fn.alert = function (isShow, style, error) {
+    $.fn.alert = function (isShow, style, error, fadeTime) {
         var alertStyleMap = [
             { name: 'danger', class: 'alert-danger', icon: 'fa-ban', title: 'Lỗi' },
             { name: 'info', class: 'alert-info', icon: 'fa-info', title: 'Lưu ý' },
@@ -38,6 +38,13 @@
             $alert.find('p').html(message);
         }
         $alert.toggle(isShow);
+
+        if (isShow && fadeTime) {
+            setTimeout(function () {
+                $alert.toggle(false);
+            }, fadeTime);
+        }
+
         return this;
     }
 }(jQuery));

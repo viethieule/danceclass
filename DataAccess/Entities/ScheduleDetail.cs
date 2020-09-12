@@ -7,6 +7,11 @@ namespace DataAccess.Entities
 {
     public class ScheduleDetail
     {
+        public ScheduleDetail()
+        {
+            Registrations = new HashSet<Registration>();
+        }
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
