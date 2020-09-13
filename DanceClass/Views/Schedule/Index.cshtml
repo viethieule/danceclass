@@ -158,9 +158,18 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary btn-schedule-update">Sửa</button>
-                    <button type="button" class="btn btn-primary btn-schedule-delete-create">Xóa và tạo mới</button>
-                    <button type="button" class="btn btn-danger btn-schedule-delete">Xóa</button>
+                    <div class="dropup">
+                        <button type="button" class="btn btn-primary btn-schedule-update">Sửa</button>
+                        <button type="button" class="btn btn-primary btn-schedule-delete-create">Xóa và tạo mới</button>
+                        <button class="btn btn-danger dropdown-toggle" type="button" id="about-us" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Xóa
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu pull-right" aria-labelledby="about-us">
+                            <li><a class="danger btn-session-delete">Xóa buổi học</a></li>
+                            <li><a class="danger btn-schedule-delete">Xóa toàn bộ lịch học</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
             <!-- /.modal-content -->

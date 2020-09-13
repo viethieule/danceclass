@@ -293,6 +293,10 @@ button#prev {
     margin-right: 3px;
 }
 
+.danger {
+    color: #dd4b39 !important;
+}
+
 .error-message {
     color: #dd4b39;
     font-weight: bold;

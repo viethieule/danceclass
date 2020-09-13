@@ -154,11 +154,26 @@
         });
 
         $('.btn-schedule-delete-create').off('click').on('click', function (event) {
-
         });
 
         $('.btn-schedule-delete').off('click').on('click', function (event) {
-
+            var message = 'Toàn bộ học viên có đăng ký các buổi thuộc lịch học này sẽ được hoàn lại buổi học sau khi xóa.<br />Bạn có chắc chắn muốn xóa lịch học này?';
+            _self.showAlert(message, async function (event) {
+                var $modalBody = $('#modal-manage .modal-body');
+                try {
+                    var rs = await ApiService.del('/api/schedule/delete/' + _self.selectedSchedule.id);
+                    if (rs && rs.success && rs.isUserGetSessionBack) {
+                        $modalBody.alert(true, 'warning', 'Xóa thành công. Vui lòng thông báo học viên đã được hoàn lại buổi đã đăng ký sau khi xóa.');
+                    } else if (rs) {
+                        $modalBody.alert(true, 'success', 'Xóa thành công');
+                    } else {
+                        $modalBody.alert(true, 'danger', 'Xóa không thành công');
+                    }
+                } catch (ex) {
+                    console.log(ex);
+                    $modalBody.alert(true, 'danger', ex);
+                }                
+            })
         });
     }
 

@@ -18,7 +18,8 @@ namespace Services.Schedule
         Task<GetDetailedScheduleRs> GetDetail(GetDetailedScheduleRq rq);
         Task<CreateScheduleRs> Create(CreateScheduleRq rq);
         Task<UpdateScheduleRs> Update(UpdateScheduleRq rq);
-        Task<UpdateScheduleRs> PreUpdate(UpdateScheduleRq rq);
+        Task<DeleteScheduleRs> Delete(int id);
+        Task<bool> DeleteSession(int scheduleDetailId);
     }
 
     public class ScheduleService : BaseService, IScheduleService
@@ -300,7 +301,48 @@ namespace Services.Schedule
             return rs;
         }
 
-        public Task<UpdateScheduleRs> PreUpdate(UpdateScheduleRq rq)
+        public Task<UpdateScheduleRs> Delete(UpdateScheduleRq rq)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<DeleteScheduleRs> Delete(int id)
+        {
+            var rs = new DeleteScheduleRs();
+
+            var schedule = await _dbContext.Schedules.FirstOrDefaultAsync(s => s.Id == id);
+            if (schedule == null)
+            {
+                throw new Exception("Lịch học không tồn tại");
+            }
+
+            var userAndCountRegistrationMap = schedule.ScheduleDetails
+                .SelectMany(x => x.Registrations)
+                .Select(x => x.UserId)
+                .GroupBy(x => x)
+                .Select(grp => new { UserId = grp.Key, Count = grp.Count() })
+                .ToDictionary(x => x.UserId, x => x.Count);
+
+            if (userAndCountRegistrationMap.Count() > 0)
+            {
+                var registeredUserIds = userAndCountRegistrationMap.Keys;
+                var memberPackages = _dbContext.MemberPackages.Where(x => registeredUserIds.Contains(x.UserId) && x.IsActive);
+                foreach (var memberPackage in memberPackages)
+                {
+                    memberPackage.RemainingSessions += userAndCountRegistrationMap[memberPackage.UserId];
+                }
+
+                rs.IsUserGetSessionBack = true;
+            }
+
+            _dbContext.Schedules.Remove(schedule);
+            await _dbContext.SaveChangesAsync();
+
+            rs.Success = true;
+            return rs;
+        }
+
+        public Task<bool> DeleteSession(int scheduleDetailId)
         {
             throw new NotImplementedException();
         }

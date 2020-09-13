@@ -7,4 +7,10 @@
             this.run();
         }.bind(this));
     };
+
+    this.showAlert = function (message, confirmHandler) {
+        $('#mistake-modal-confirm .modal-body p').html(message);
+        $('.btn-mistake-modal-confirm').off('click').on('click', confirmHandler);
+        $('#mistake-modal-confirm').modal('show');
+    }
 }

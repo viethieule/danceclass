@@ -108,6 +108,28 @@ desired effect
             </div>
 
             @RenderBody()
+
+            <div class="modal fade" id="mistake-modal-confirm">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title">Xác nhận</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p></p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Hủy</button>
+                            <button type="button" class="btn btn-primary btn-mistake-modal-confirm">Xác nhận</button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
         </div>
         <!-- /.content-wrapper -->
         <!-- Main Footer -->
