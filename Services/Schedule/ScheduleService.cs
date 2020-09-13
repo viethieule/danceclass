@@ -271,7 +271,7 @@ namespace Services.Schedule
                         if (rq.SelectedScheduleDetailId == deletedSession.Id)
                         {
                             rs.IsSelectedSessionDeleted = true;
-                            rs.Messages.Add("Lịch học này đã bị xóa sau khi cập nhật số buổi");
+                            rs.Messages.Add("Buổi học này đã bị xóa sau khi cập nhật số buổi");
                         }
                     }
 

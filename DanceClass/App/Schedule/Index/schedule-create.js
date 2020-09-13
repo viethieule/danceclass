@@ -148,9 +148,11 @@ function ScheduleCreate() {
             }
 
             if (_editMode) {
-                $(this).find('.btn-action').html('Sửa');
+                $(this).find('#btn-action').html('Sửa');
+                $(this).find('.modal-title').html('Sửa lịch học');
             } else {
-                $(this).find('.btn-action').html('Tạo');
+                $(this).find('#btn-action').html('Tạo');
+                $(this).find('.modal-title').html('Tạo lịch học');
             }
         });
 
