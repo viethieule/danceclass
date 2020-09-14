@@ -10,7 +10,12 @@
 
     this.showAlert = function (message, confirmHandler) {
         $('#mistake-modal-confirm .modal-body p').html(message);
-        $('.btn-mistake-modal-confirm').off('click').on('click', confirmHandler);
+        $('.btn-mistake-modal-confirm').off('click').on('click', async function (event) {
+            $(this).prop('disabled', true);
+            await confirmHandler(event);
+            $('#mistake-modal-confirm').modal('hide');
+            $(this).prop('disabled', false);
+        });
         $('#mistake-modal-confirm').modal('show');
     }
 }

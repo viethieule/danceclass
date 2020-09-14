@@ -16,7 +16,7 @@
 
         var alertStyle = alertStyleMap.find(s => s.name === style);
 
-        var $alert = this.find(alertStyle ? alertStyle.class : '.alert');
+        var $alert = this.find(alertStyle ? ('.' + alertStyle.class) : '.alert');
         if ($alert.length === 0 && isShow) {
             if (!alertStyle) {
                 alertStyle = alertStyleMap.find(s => s.name === 'info');

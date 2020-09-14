@@ -2,6 +2,10 @@
     padding: 7px 7px 7px 14px;
 }
 
+.dropdown-menu a {
+    cursor: pointer;
+}
+
 .alert ul {
     margin-bottom: 0px;
 }

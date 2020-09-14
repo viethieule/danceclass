@@ -301,11 +301,6 @@ namespace Services.Schedule
             return rs;
         }
 
-        public Task<UpdateScheduleRs> Delete(UpdateScheduleRq rq)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<DeleteScheduleRs> Delete(int id)
         {
             var rs = new DeleteScheduleRs();
@@ -320,8 +315,7 @@ namespace Services.Schedule
                 .SelectMany(x => x.Registrations)
                 .Select(x => x.UserId)
                 .GroupBy(x => x)
-                .Select(grp => new { UserId = grp.Key, Count = grp.Count() })
-                .ToDictionary(x => x.UserId, x => x.Count);
+                .ToDictionary(x => x.Key, x => x.Count());
 
             if (userAndCountRegistrationMap.Count() > 0)
             {

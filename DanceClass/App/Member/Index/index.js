@@ -112,5 +112,5 @@ function handleAjaxError(ex) {
 
 function showErrorMessage(message) {
     $('#global-error-message').empty().text(message);
-    $('.alert').show();
+    $('.alert-to-be-removed').show();
 }

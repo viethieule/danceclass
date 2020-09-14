@@ -146,6 +146,8 @@
             if (_self.selectedScheduleDetails &&
                 (registrations.some(r => r.isModified) || totalRegistered !== registrations.length)) {
                 _self.renderSchedule();
+            } else if (_self.selectedSchedule === null) {
+                _self.renderSchedule();
             }
         });
 
@@ -162,10 +164,19 @@
                 var $modalBody = $('#modal-manage .modal-body');
                 try {
                     var rs = await ApiService.del('/api/schedule/delete/' + _self.selectedSchedule.id);
-                    if (rs && rs.success && rs.isUserGetSessionBack) {
-                        $modalBody.alert(true, 'warning', 'Xóa thành công. Vui lòng thông báo học viên đã được hoàn lại buổi đã đăng ký sau khi xóa.');
-                    } else if (rs) {
-                        $modalBody.alert(true, 'success', 'Xóa thành công');
+                    if (rs) {
+                        var isClosedModal = false;
+                        if (rs.success && rs.isUserGetSessionBack) {
+                            $modalBody.alert(true, 'warning', 'Xóa thành công. Vui lòng thông báo học viên đã được hoàn lại buổi đã đăng ký sau khi xóa.');
+                        } else {
+                            $modalBody.alert(true, 'success', 'Xóa thành công');
+                            isClosedModal = true;
+                        }
+                        _self.selectedSchedule = null;
+                        _self.selectedScheduleDetails = null;
+                        if (isClosedModal) {
+                            setTimeout(function () { $('#modal-manage').modal('hide'); }, 1500);
+                        }
                     } else {
                         $modalBody.alert(true, 'danger', 'Xóa không thành công');
                     }
