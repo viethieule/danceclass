@@ -18,8 +18,8 @@ namespace Services.Schedule
         Task<GetDetailedScheduleRs> GetDetail(GetDetailedScheduleRq rq);
         Task<CreateScheduleRs> Create(CreateScheduleRq rq);
         Task<UpdateScheduleRs> Update(UpdateScheduleRq rq);
-        Task<DeleteScheduleRs> Delete(int id);
-        Task<bool> DeleteSession(int scheduleDetailId);
+        Task<DeleteScheduleSessionRs> Delete(int id);
+        Task<DeleteScheduleSessionRs> DeleteSession(int scheduleDetailId);
     }
 
     public class ScheduleService : BaseService, IScheduleService
@@ -301,9 +301,9 @@ namespace Services.Schedule
             return rs;
         }
 
-        public async Task<DeleteScheduleRs> Delete(int id)
+        public async Task<DeleteScheduleSessionRs> Delete(int id)
         {
-            var rs = new DeleteScheduleRs();
+            var rs = new DeleteScheduleSessionRs();
 
             var schedule = await _dbContext.Schedules.FirstOrDefaultAsync(s => s.Id == id);
             if (schedule == null)
@@ -317,17 +317,7 @@ namespace Services.Schedule
                 .GroupBy(x => x)
                 .ToDictionary(x => x.Key, x => x.Count());
 
-            if (userAndCountRegistrationMap.Count() > 0)
-            {
-                var registeredUserIds = userAndCountRegistrationMap.Keys;
-                var memberPackages = _dbContext.MemberPackages.Where(x => registeredUserIds.Contains(x.UserId) && x.IsActive);
-                foreach (var memberPackage in memberPackages)
-                {
-                    memberPackage.RemainingSessions += userAndCountRegistrationMap[memberPackage.UserId];
-                }
-
-                rs.IsUserGetSessionBack = true;
-            }
+            rs.IsUserGetSessionBack = ReturnSessionBackToRegisteredUser(userAndCountRegistrationMap);
 
             _dbContext.Schedules.Remove(schedule);
             await _dbContext.SaveChangesAsync();
@@ -336,9 +326,53 @@ namespace Services.Schedule
             return rs;
         }
 
-        public Task<bool> DeleteSession(int scheduleDetailId)
+        public async Task<DeleteScheduleSessionRs> DeleteSession(int scheduleDetailId)
         {
-            throw new NotImplementedException();
+            var session = await _dbContext.ScheduleDetails.FirstOrDefaultAsync(x => x.Id == scheduleDetailId);
+            if (session == null)
+            {
+                throw new Exception("Buổi học không tồn tại!");
+            }
+
+            if (session.SessionNo == 1)
+            {
+                return await this.Delete(session.ScheduleId);
+            }
+
+            var rs = new DeleteScheduleSessionRs();
+
+            var deletedSessions = _dbContext.ScheduleDetails
+                .Where(x => x.ScheduleId == session.ScheduleId && x.SessionNo >= session.SessionNo);
+
+            var userAndCountRegistrationMap = await deletedSessions
+                .SelectMany(x => x.Registrations)
+                .Select(x => x.UserId)
+                .GroupBy(x => x)
+                .ToDictionaryAsync(x => x.Key, x => x.Count());
+
+            rs.IsUserGetSessionBack = ReturnSessionBackToRegisteredUser(userAndCountRegistrationMap);
+
+            _dbContext.ScheduleDetails.RemoveRange(deletedSessions);
+
+            rs.Success = true;
+            return rs;
+        }
+
+        private bool ReturnSessionBackToRegisteredUser(Dictionary<int, int> userAndCountRegistrationMap)
+        {
+            if (userAndCountRegistrationMap.Count() == 0)
+            {
+                return false;
+            }
+
+            var registeredUserIds = userAndCountRegistrationMap.Keys;
+            var memberPackages = _dbContext.MemberPackages.Where(x => registeredUserIds.Contains(x.UserId) && x.IsActive);
+            foreach (var memberPackage in memberPackages)
+            {
+                memberPackage.RemainingSessions += userAndCountRegistrationMap[memberPackage.UserId];
+            }
+
+            return true;
         }
     }
 }

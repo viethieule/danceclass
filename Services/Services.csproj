@@ -126,7 +126,7 @@
     <Compile Include="Registration\RegistrationService.cs" />
     <Compile Include="Schedule\CreateScheduleRq.cs" />
     <Compile Include="Schedule\CreateScheduleRs.cs" />
-    <Compile Include="Schedule\DeleteScheduleRs.cs" />
+    <Compile Include="Schedule\DeleteScheduleSessionRs.cs" />
     <Compile Include="Schedule\GetDetailScheduleRq.cs" />
     <Compile Include="Schedule\GetDetailScheduleRs.cs" />
     <Compile Include="Schedule\ScheduleDetailDTO.cs" />

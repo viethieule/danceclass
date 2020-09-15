@@ -47,5 +47,14 @@ namespace DanceClass.Api
             var rs = await _scheduleService.Delete(id);
             return ApiJson(rs);
         }
+
+        [HttpDelete]
+        [Route("deleteSession/{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IHttpActionResult> DeleteSession(int id)
+        {
+            var rs = await _scheduleService.DeleteSession(id);
+            return ApiJson(rs);
+        }
     }
 }
