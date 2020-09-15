@@ -158,7 +158,7 @@
         $('.btn-schedule-delete-create').off('click').on('click', function (event) {
         });
 
-        $('.btn-schedule-delete').off('click').on('click', function (event) {
+        $('.btn-schedule-delete').off('click touchend').on('click touchend', function (event) {
             var message = 'Toàn bộ học viên có đăng ký các buổi thuộc lịch học này sẽ được hoàn lại buổi học sau khi xóa.<br />Bạn có chắc chắn muốn xóa lịch học này?';
             _self.showAlert(message, async function (event) {
                 var $modalBody = $('#modal-manage .modal-body');
