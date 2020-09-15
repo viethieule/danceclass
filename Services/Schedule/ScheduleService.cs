@@ -341,6 +341,9 @@ namespace Services.Schedule
 
             var rs = new DeleteScheduleSessionRs();
 
+            var schedule = await _dbContext.Schedules.FirstOrDefaultAsync(s => s.Id == session.ScheduleId);
+            schedule.Sessions = session.SessionNo - 1;
+
             var deletedSessions = _dbContext.ScheduleDetails
                 .Where(x => x.ScheduleId == session.ScheduleId && x.SessionNo >= session.SessionNo);
 
