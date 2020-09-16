@@ -171,26 +171,12 @@
 
             var message = pWarning.html() + ul.html() + pConfirm.html();
             _self.showAlert(message, async function (event) {
-                var $modalBody = $('#modal-manage .modal-body');
                 try {
                     var rs = await ApiService.del('/api/schedule/deleteSession/' + _self.selectedScheduleDetails.id);
-                    if (rs) {
-                        var isClosedModal = false;
-                        if (rs.success && rs.isUserGetSessionBack) {
-                            $modalBody.alert(true, 'warning', 'Xóa thành công. Vui lòng thông báo học viên đã được hoàn lại buổi đã đăng ký sau khi xóa.');
-                        } else {
-                            $modalBody.alert(true, 'success', 'Xóa thành công');
-                            isClosedModal = true;
-                        }
-                        _self.selectedSchedule = null;
-                        _self.selectedScheduleDetails = null;
-                        if (isClosedModal) {
-                            setTimeout(function () { $('#modal-manage').modal('hide'); }, 1500);
-                        }
-                    }
+                    handlePostDeleteScheduleSession(rs)
                 } catch (ex) {
                     console.log(ex);
-                    $modalBody.alert(true, 'danger', ex);
+                    $('#modal-manage .modal-body').alert(true, 'danger', ex);
                 }
             });
         });
@@ -198,31 +184,35 @@
         $('.btn-schedule-delete').off('click touchend').on('click touchend', function (event) {
             var message = 'Toàn bộ học viên có đăng ký các buổi thuộc lịch học này sẽ được hoàn lại buổi học sau khi xóa.<br />Bạn có chắc chắn muốn xóa lịch học này?';
             _self.showAlert(message, async function (event) {
-                var $modalBody = $('#modal-manage .modal-body');
                 try {
                     var rs = await ApiService.del('/api/schedule/delete/' + _self.selectedSchedule.id);
-                    if (rs) {
-                        var isClosedModal = false;
-                        if (rs.success && rs.isUserGetSessionBack) {
-                            $modalBody.alert(true, 'warning', 'Xóa thành công. Vui lòng thông báo học viên đã được hoàn lại buổi đã đăng ký sau khi xóa.');
-                        } else {
-                            $modalBody.alert(true, 'success', 'Xóa thành công');
-                            isClosedModal = true;
-                        }
-                        _self.selectedSchedule = null;
-                        _self.selectedScheduleDetails = null;
-                        if (isClosedModal) {
-                            setTimeout(function () { $('#modal-manage').modal('hide'); }, 1500);
-                        }
-                    } else {
-                        $modalBody.alert(true, 'danger', 'Xóa không thành công');
-                    }
+                    handlePostDeleteScheduleSession(rs);
                 } catch (ex) {
                     console.log(ex);
-                    $modalBody.alert(true, 'danger', ex);
+                    $('#modal-manage .modal-body').alert(true, 'danger', ex);
                 }                
             })
         });
+    }
+
+    function handlePostDeleteScheduleSession(rs) {
+        var $modalBody = $('#modal-manage .modal-body');
+        if (rs) {
+            var isClosedModal = false;
+            if (rs.success && rs.isUserGetSessionBack) {
+                $modalBody.alert(true, 'warning', 'Xóa thành công. Vui lòng thông báo học viên đã được hoàn lại buổi đã đăng ký sau khi xóa.');
+            } else {
+                $modalBody.alert(true, 'success', 'Xóa thành công');
+                isClosedModal = true;
+            }
+            _self.selectedSchedule = null;
+            _self.selectedScheduleDetails = null;
+            if (isClosedModal) {
+                setTimeout(function () { $('#modal-manage').modal('hide'); }, 1500);
+            }
+        } else {
+            $modalBody.alert(true, 'danger', 'Xóa không thành công');
+        }
     }
 
     function renderSessionInfoGroup(label, value) {

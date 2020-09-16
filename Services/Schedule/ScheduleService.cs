@@ -356,6 +356,7 @@ namespace Services.Schedule
             rs.IsUserGetSessionBack = ReturnSessionBackToRegisteredUser(userAndCountRegistrationMap);
 
             _dbContext.ScheduleDetails.RemoveRange(deletedSessions);
+            await _dbContext.SaveChangesAsync();
 
             rs.Success = true;
             return rs;
