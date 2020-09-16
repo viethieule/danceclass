@@ -23,6 +23,7 @@
 function ScheduleCreate() {
     var _self = this;
     var _editMode = false;
+    var _deleteCreateMode = false;
 
     this.initScheduleCreate = function () {
         if (!UserService.isAdmin()) {
@@ -37,8 +38,12 @@ function ScheduleCreate() {
         registerEvent();
     }
 
-    this.openScheduleCreateModal = function (isEdit, $triggerElement) {
-        _editMode = !!isEdit;
+    this.openScheduleCreateModal = function (mode, $triggerElement) {
+        if (mode === 'edit') {
+            _editMode = true;
+        } else if (mode === 'deleteCreate') {
+            _deleteCreateMode = true;
+        }
         $('#modal-create-schedule').modal('toggle', $triggerElement);
     }
 
@@ -123,10 +128,6 @@ function ScheduleCreate() {
                 $('.days-per-week input:checkbox[value="' + date.day() + '"]').prop('checked', true);
             } else if (_editMode && _self.selectedSchedule && $target.hasClass('btn-schedule-update')) {
                 // From edit button in manage schedule modal (also check not the create schedule button above calendar)
-                console.log(_editMode);
-                console.log(_self.selectedSchedule);
-                console.log(_self.selectedScheduleDetails);
-
                 var { selectedSchedule, selectedScheduleDetails } = _self;
                 var { classId, song, openingDate, startTime, daysPerWeek, sessions, trainerId, branch } = selectedSchedule;
 
@@ -145,11 +146,34 @@ function ScheduleCreate() {
                 $('#sessions').val(sessions);
                 $('#trainer').val(trainerId);
                 $('#branch').val(branch);
+            } else if (_deleteCreateMode && _self.selectedScheduleDetails && $target.hasClass('btn-schedule-delete-create')) {
+                var { selectedSchedule, selectedScheduleDetails } = _self;
+                var { classId, song, startTime, daysPerWeek, sessions, trainerId, branch } = selectedSchedule;
+                var { date } = selectedScheduleDetails;
+
+                daysPerWeek = daysPerWeek.split('');
+                $('#class').val(classId).trigger('change');
+                $('#song').val('');
+                $('#openingDate').datepicker('setDate', new Date(date));
+                $('#startTime').timepicker('setTime', startTime);
+                $('.days-per-week input:checkbox').each(function (i, e) {
+                    $(this).prop('checked', false);
+                    if (daysPerWeek.indexOf($(this).val()) !== -1) {
+                        $(this).prop('checked', true);
+                    };
+                });
+
+                $('#sessions').val('');
+                $('#trainer').val(trainerId);
+                $('#branch').val(branch);
             }
 
             if (_editMode) {
                 $(this).find('#btn-action').html('Sửa');
                 $(this).find('.modal-title').html('Sửa lịch học');
+            } else if (_deleteCreateMode) {
+                $(this).find('#btn-action').html('Xóa và tạo mới');
+                $(this).find('.modal-title').html('Xóa và tạo mới lịch học');
             } else {
                 $(this).find('#btn-action').html('Tạo');
                 $(this).find('.modal-title').html('Tạo lịch học');
@@ -158,6 +182,7 @@ function ScheduleCreate() {
 
         $('#modal-create-schedule').on('hide.bs.modal', function (e) {
             _editMode = false;
+            _deleteCreateMode = false;
         });
     }
 
@@ -245,6 +270,28 @@ function ScheduleCreate() {
                                 }
                                 $('#modal-manage .modal-body').alert(true, 'success', 'Sửa thành công', 2500);
                             }
+                        } else if (_deleteCreateMode) {
+                            var message = 'Bạn có chắc chắn muốn xóa và tạo mới lịch học?';
+                            _self.showAlert(message, function (event) {
+                                var deleteAjax = ApiService.del('/api/schedule/deleteSession/' + _self.selectedScheduleDetails.id);
+                                var createAjax = ApiService.post('api/schedule/create', { schedule });
+                                $.when(deleteAjax, createAjax).then(function (deleteRs, createRs) {
+                                    if (createRs && deleteRs && createRs[0] && deleteRs[0] && deleteRs[0].success) {
+                                        $('#modal-create-schedule .modal-body').alert(true, 'success', 'Xóa và tạo mới lịch học thành công');
+                                        _self.selectedScheduleDetails = null;
+                                        _self.selectedSchedule = null;
+                                        setTimeout(function () {
+                                            $('#modal-manage').modal('hide');
+                                            $('#modal-create-schedule').modal('hide');
+                                        }, 2000);
+                                    } else {
+                                        $('#modal-create-schedule .modal-body').alert(true, 'danger', 'Xóa hoặc tạo mới không thành công');
+                                    }
+                                }, function (jqXHR, textStatus, errorThrown) {
+                                    console.log(errorThrown);
+                                    $('#modal-create-schedule .modal-body').alert(true, 'danger', errorThrown);
+                                });
+                            });
                         } else {
                             await ApiService.post('api/schedule/create', { schedule });
                             _self.renderSchedule();

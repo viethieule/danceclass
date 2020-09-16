@@ -152,10 +152,11 @@
         });
 
         $('.btn-schedule-update').off('click').on('click', function (event) {
-            _self.openScheduleCreateModal(true, $(this));
+            _self.openScheduleCreateModal('edit', $(this));
         });
 
         $('.btn-schedule-delete-create').off('click').on('click', function (event) {
+            _self.openScheduleCreateModal('deleteCreate', $(this));
         });
 
         $('.btn-session-delete').off('click touchend').on('click touchend', function (event) {
