@@ -57,13 +57,15 @@
         $('#modal-manage').find('.modal-title').html(schedule.class.name + ' - ' + timeStart);
 
         const { song, branch, sessions: totalSessions } = schedule;
+        var songGridClass = 'col-xs-12 col-sm-12 col-md-12';
+        var gridClass = 'col-xs-6 col-sm-6 col-md-12';
         $('.session-general-info')
             .empty()
-            .append(renderSessionInfoGroup('Bài múa', song))
-            .append(renderSessionInfoGroup('Buổi', sessionNo + (totalSessions ? ' / ' + totalSessions : '')))
-            .append(renderSessionInfoGroup('Thời gian', timeStart))
-            .append(renderSessionInfoGroup('Địa điểm', branch))
-            .append(renderSessionInfoGroup('Số học viên đăng ký', totalRegistered + ' / 20'));
+            .append(renderSessionInfoGroup('Bài múa', song, songGridClass))
+            .append(renderSessionInfoGroup('Buổi', sessionNo + (totalSessions ? ' / ' + totalSessions : ''), gridClass))
+            .append(renderSessionInfoGroup('Thời gian', timeStart, gridClass))
+            .append(renderSessionInfoGroup('Địa điểm', branch, gridClass))
+            .append(renderSessionInfoGroup('Số học viên đăng ký', totalRegistered + ' / 20', gridClass));
 
         renderRegistrationList(registrations);
 
@@ -216,8 +218,8 @@
         }
     }
 
-    function renderSessionInfoGroup(label, value) {
-        return $('<div>', { class: 'session-info-group' })
+    function renderSessionInfoGroup(label, value, gridClass) {
+        return $('<div>', { class: 'session-info-group ' + gridClass })
             .append($('<p>', { class: 'session-info-label' }).text(label))
             .append($('<p>', { class: 'session-info' }).text(value));
     }

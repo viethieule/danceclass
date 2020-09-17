@@ -65,6 +65,21 @@
     }
 }
 
+@media screen and (max-width: 767px) {
+    .session-add-registration {
+        width: 46% !important;
+    }
+
+    .session-add-registration button {
+        padding-left: 9px;
+        padding-right: 9px;
+    }
+
+    .session-manage-registration {
+        margin-top: 8px;
+    }
+}
+
 @media screen and (max-width: 351px) {
     .calendar-day-selector {
         position: relative;

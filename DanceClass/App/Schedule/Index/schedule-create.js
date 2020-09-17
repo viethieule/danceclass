@@ -291,22 +291,17 @@ function ScheduleCreate() {
                                     console.log(errorThrown);
                                     $('#modal-create-schedule .modal-body').alert(true, 'danger', errorThrown);
                                 });
+
+                                postFormSubmit(isRerenderClass, isRerenderTrainer);
                             });
+                            return;
                         } else {
                             await ApiService.post('api/schedule/create', { schedule });
                             _self.renderSchedule();
                             $('#modal-create-schedule').modal('hide');
                         }
 
-                        if (isRerenderClass) {
-                            initClass();
-                        }
-
-                        if (isRerenderTrainer) {
-                            // TODO: initTrainer()
-                        }
-
-                        resetCreateForm();
+                        postFormSubmit(isRerenderClass, isRerenderTrainer);
                     } catch (ex) {
                         console.log(ex);
                         $('#modal-create-schedule .modal-body').alert(true, 'danger', ex);
@@ -315,6 +310,18 @@ function ScheduleCreate() {
                     }
                 }
             }))
+    }
+
+    function postFormSubmit(isRerenderClass, isRerenderTrainer) {
+        if (isRerenderClass) {
+            initClass();
+        }
+
+        if (isRerenderTrainer) {
+            // TODO: initTrainer()
+        }
+
+        resetCreateForm();
     }
 
     function resetCreateForm() {
