@@ -135,6 +135,7 @@
     <Compile Include="Schedule\UpdateScheduleRq.cs" />
     <Compile Include="Schedule\UpdateScheduleRs.cs" />
     <Compile Include="Trainer\TrainerDTO.cs" />
+    <Compile Include="Trainer\TrainerService.cs" />
     <Compile Include="Utils\EnumHelper.cs" />
     <Compile Include="Utils\StringHelper.cs" />
   </ItemGroup>

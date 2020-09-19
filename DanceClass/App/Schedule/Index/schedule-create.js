@@ -50,25 +50,19 @@ function ScheduleCreate() {
     async function initClass() {
         try {
             const classes = await ApiService.get('api/class/getAll');
-            if (classes) {
-                let select = $('#class');
-                select.empty();
-                classes.forEach((cls, i, a) => {
-                    let attr = { value: cls.id };
-                    if (i === 0) { attr.selected = 'selected' }
-                    $('<option>', attr).text(cls.name).appendTo(select);
-                });
-
-                select.select2(select2config);
-            }
+            $('#class').appendOptions(classes, 'id', 'name').select2(select2config);
         } catch (ex) {
             console.log(ex);
         }
     }
 
-    function initTrainer() {
-        let select = $('#trainer');
-        select.select2(select2config);
+    async function initTrainer() {
+        try {
+            const trainers = await ApiService.get('api/trainer/getAll');
+            $('#trainer').appendOptions(trainers, 'id', 'name').select2(select2config);
+        } catch (ex) {
+            console.log(ex);
+        }
     }
 
     function initDateTimePicker() {
@@ -144,7 +138,7 @@ function ScheduleCreate() {
                 });
 
                 $('#sessions').val(sessions);
-                $('#trainer').val(trainerId);
+                $('#trainer').val(trainerId).trigger('change');
                 $('#branch').val(branch);
             } else if (_deleteCreateMode && _self.selectedScheduleDetails && $target.hasClass('btn-schedule-delete-create')) {
                 var { selectedSchedule, selectedScheduleDetails } = _self;
@@ -318,7 +312,7 @@ function ScheduleCreate() {
         }
 
         if (isRerenderTrainer) {
-            // TODO: initTrainer()
+            initTrainer()
         }
 
         resetCreateForm();

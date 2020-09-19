@@ -140,7 +140,7 @@ namespace Services.Schedule
 
             var scheduleDetailDtos = await _dbContext.ScheduleDetails
                 .Where(x => !(DbFunctions.TruncateTime(x.Date) > end || DbFunctions.TruncateTime(x.Date) < start))
-                .ProjectTo<ScheduleDetailDTO>(_mappingConfig, dest => dest.Registrations.Select(r => r.User), dest => dest.Schedule.Class)
+                .ProjectTo<ScheduleDetailDTO>(_mappingConfig, dest => dest.Registrations.Select(r => r.User), dest => dest.Schedule.Class, dest => dest.Schedule.Trainer)
                 .ToListAsync();
 
             var isMember = HttpContext.Current.User.Identity.IsAuthenticated && HttpContext.Current.User.IsInRole("Member");
@@ -197,6 +197,32 @@ namespace Services.Schedule
                 {
                     throw new Exception("Không thể thay đổi ngày bắt đầu của lớp học đã bắt đầu");
                 }
+            }
+
+            if (!string.IsNullOrEmpty(scheduleDto.TrainerName))
+            {
+                currentSchedule.Trainer.Schedules.Remove(currentSchedule);
+                currentSchedule.Trainer = new DataAccess.Entities.Trainer
+                {
+                    Name = scheduleDto.TrainerName
+                };
+            }
+            else if (updatedSchedule.TrainerId != null && currentSchedule.TrainerId != updatedSchedule.TrainerId)
+            {
+                currentSchedule.TrainerId = updatedSchedule.TrainerId;
+            }
+
+            if (!string.IsNullOrEmpty(scheduleDto.ClassName))
+            {
+                currentSchedule.Class.Schedules.Remove(currentSchedule);
+                currentSchedule.Class = new DataAccess.Entities.Class
+                {
+                    Name = scheduleDto.ClassName
+                };
+            }
+            else if (updatedSchedule.ClassId != null && currentSchedule.ClassId != updatedSchedule.ClassId)
+            {
+                currentSchedule.ClassId = updatedSchedule.ClassId;
             }
 
             if (updatedSchedule.StartTime != currentSchedule.StartTime)
@@ -286,6 +312,7 @@ namespace Services.Schedule
             }
 
             _mapper.Map(updatedSchedule, currentSchedule);
+
             await _dbContext.SaveChangesAsync();
 
             rs.Schedule = await _dbContext.Schedules.ProjectTo<ScheduleDTO>(_mappingConfig).FirstOrDefaultAsync(s => s.Id == currentSchedule.Id);

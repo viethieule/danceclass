@@ -230,6 +230,7 @@
     <Compile Include="Api\PackageController.cs" />
     <Compile Include="Api\RegistrationController.cs" />
     <Compile Include="Api\ScheduleController.cs" />
+    <Compile Include="Api\TrainerController.cs" />
     <Compile Include="Api\UserController.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />

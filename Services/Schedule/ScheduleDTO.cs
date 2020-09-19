@@ -4,6 +4,7 @@ using Services.Registration;
 using Services.Trainer;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Services.Schedule
 {
@@ -18,6 +19,24 @@ namespace Services.Schedule
         public int? Sessions { get; set; }
         public int? SessionsPerWeek { get; set; }
         public string DaysPerWeek { get; set; }
+        public string DaysPerWeekString
+        {
+            get
+            {
+                var days = DaysPerWeek.Select(d =>
+                {
+                    int day = int.Parse(d.ToString());
+                    if (day == (int)DayOfWeek.Sunday)
+                    {
+                        return "Chủ nhật";
+                    }
+
+                    return "Thứ " + (day + 1).ToString();
+                });
+
+                return string.Join(", ", days);
+            }
+        }
         public string Branch { get; set; }
         
         public int? ClassId { get; set; }

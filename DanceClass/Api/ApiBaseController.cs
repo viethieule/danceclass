@@ -5,6 +5,7 @@ using System.Web.Http.Results;
 
 namespace DanceClass.Api
 {
+    [RoutePrefix("/api/trainer")]
     public class ApiBaseController : ApiController
     {
         protected JsonResult<T> ApiJson<T>(T content)

@@ -47,4 +47,20 @@
 
         return this;
     }
+
+    $.fn.appendOptions = function (data, valueProp, textProp) {
+        if (data && data.length === 0) {
+            return this;
+        }
+
+        var $this = this;
+        $this.empty();
+        data.forEach(function (item, i, a) {
+            var attr = { value: item[valueProp] };
+            if (i === 0) { attr.selected = 'selected' }
+            $('<option>', attr).text(item[textProp]).appendTo($this);
+        });
+
+        return $this;
+    }
 }(jQuery));

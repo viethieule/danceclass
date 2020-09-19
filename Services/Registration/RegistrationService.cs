@@ -26,6 +26,8 @@ namespace Services.Registration
     {
         private readonly IConfigurationProvider _mappingConfig;
 
+        public const int MAX_MEMBERS_PER_SESSION = 20;
+
         public RegistrationService(DanceClassDbContext dbContext, IMapper mapper, IConfigurationProvider mappingConfig) : base(dbContext, mapper)
         {
             _mappingConfig = mappingConfig;
@@ -89,7 +91,12 @@ namespace Services.Registration
 
             if (memberPackage.RemainingSessions <= 0)
             {
-                throw new Exception("Bạn đã dùng hết gói tập hiện tại. Vui lòng đăng ký gói mới!");
+                throw new Exception("Bạn đã dùng hết số buổi của gói tập hiện tại.");
+            }
+
+            if (memberPackage.ExpiryDate < DateTime.Now)
+            {
+                throw new Exception("Gói tập của bạn đã hết hạn.");
             }
 
             memberPackage.RemainingSessions--;
@@ -97,11 +104,23 @@ namespace Services.Registration
             // Add registration
             DataAccess.Entities.Registration registration = _mapper.Map<DataAccess.Entities.Registration>(rq.Registration);
 
+            var session = await _dbContext.ScheduleDetails.FirstOrDefaultAsync(x => x.Id == registration.ScheduleDetailId);
+
+            if (session == null)
+            {
+                throw new Exception("Buổi học không tồn tại");
+            }
+
+            bool isAdmin = HttpContext.Current.User.IsInRole("Admin");
+            if (!isAdmin && session.Registrations.Count() > MAX_MEMBERS_PER_SESSION)
+            {
+                throw new Exception("Buổi học đã đủ số lượng người đăng ký rồi.<br />Bạn có thể liên hệ với admin qua facebook: <a href=\"https://www.facebook.com/mistake.dance\" target=\"_blank\">Mistake Dance Studio</a> hoặc số điện thoại 0943619526 để được xem xét đăng ký buổi học");
+            }
+
             registration.Status = RegistrationStatus.Registered;
             registration.DateRegistered = DateTime.Now;
 
             _dbContext.Registrations.Add(registration);
-
             await _dbContext.SaveChangesAsync();
 
             var registrationDTO = await _dbContext.Registrations
