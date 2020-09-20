@@ -13,6 +13,7 @@
             let $modal = $(this);
             let modalTitle = $modal.find('.modal-title');
             let modalBodyInfo = $modal.find('.modal-body-info');
+            let modalMessage = $('.modal-body-message');
             let btnAction = $modal.find('#btn-action');
             let user = _self.currentUser;
 
@@ -20,7 +21,6 @@
             modalBodyInfo.empty();
             btnAction.off('click');
 
-            $('.modal-body-message').empty();
             $('.modal-body-remaining-sessions').html(user && user.activePackage ? user.activePackage.remainingSessions : 0);
 
             const scheduleDetail = _self.scheduleDetails.find(x => x.id === parseInt(id));
@@ -32,12 +32,14 @@
             if (isCurrentUserRegistered && currentUserRegistration && currentUserRegistration.status.value === 0) {
                 modalTitle.text('Hủy đăng ký');
                 modalBodyInfo.text('Bạn có chắc muốn hủy đăng ký?');
+                modalMessage.text('Bạn sẽ được hoàn lại 1 buổi trong gói tập hiện tại sau khi hủy').css('color', '#00a65a');
                 btnAction.html('Hủy');
                 btnAction.on('click', function (e) {
                     handleUnregisterScheduleClick(currentUserRegistration.id, $modal)
                 });
             } else {
                 modalTitle.text('Bạn có chắc chắn muốn đăng ký?');
+                modalMessage.text('Lưu ý: Bạn sẽ dùng 1 buổi trong gói tập hiện tại sau khi đăng ký').css('color', '#dd4b39');
 
                 $('<p>').text('Lớp: ' + scheduleDetail.schedule.class.name).appendTo(modalBodyInfo);
                 $('<p>').text('Bài: ' + scheduleDetail.schedule.song).appendTo(modalBodyInfo).appendTo(modalBodyInfo);
