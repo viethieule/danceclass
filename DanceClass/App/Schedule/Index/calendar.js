@@ -224,6 +224,7 @@ function CalendarManager() {
             if (isPast) {
                 div.removeAttr('data-toggle').removeAttr('data-target');
                 div.off('mouseenter mouseleave');
+                div.addClass('mistake-event-past');
             }
 
             let isDisabled = isPast && !isAttended;
