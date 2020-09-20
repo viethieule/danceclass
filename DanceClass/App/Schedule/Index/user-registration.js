@@ -16,6 +16,7 @@
             let btnAction = $modal.find('#btn-action');
             let user = _self.currentUser;
 
+            $modal.find('.modal-body').alert(false);
             modalBodyInfo.empty();
             btnAction.off('click');
 
@@ -52,9 +53,10 @@
     }
 
     async function handleUnregisterScheduleClick(registrationId, $modal) {
+        var $modalBody = $modal.find('.modal-body');
         try {
             await _self.unregisterSchedule(registrationId);
-            $('.modal-body-message').css('color', 'green').text('Hủy thành công');
+            $modalBody.alert(true, 'success', 'Hủy thành công', 1000);
             setTimeout(function () {
                 $modal.modal('hide');
                 updateUserRemainingSessions(false);
@@ -62,15 +64,16 @@
             }, 1000);
         } catch (ex) {
             console.log(ex);
-            $('.modal-body-message').css('color', 'red').text(ex.responseJSON ? ex.responseJSON.ExceptionMessage : 'Đã có lỗi xảy ra!');
+            $modalBody.alert(true, 'danger', ex);
         }
     }
 
     async function handleRegisterScheduleClick(scheduleDetail, $modal) {
+        var $modalBody = $modal.find('.modal-body');
         try {
             const rs = await _self.registerSchedule(scheduleDetail.id, _self.currentUser.id);
             if (rs && rs.registration) {
-                $('.modal-body-message').css('color', 'green').text('Đăng ký thành công');
+                $modalBody.alert(true, 'success', 'Đăng ký thành công', 1000);
                 setTimeout(async function () {
                     $modal.modal('hide');
                     updateUserRemainingSessions(true);
@@ -79,7 +82,7 @@
             }
         } catch (ex) {
             console.log(ex);
-            $('.modal-body-message').css('color', 'red').text(ex.responseJSON ? ex.responseJSON.ExceptionMessage : 'Đã có lỗi xảy ra!');
+            $modalBody.alert(true, 'danger', ex);
         }
     }
 

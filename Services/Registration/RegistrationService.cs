@@ -112,7 +112,7 @@ namespace Services.Registration
             }
 
             bool isAdmin = HttpContext.Current.User.IsInRole("Admin");
-            if (!isAdmin && session.Registrations.Count() > MAX_MEMBERS_PER_SESSION)
+            if (!isAdmin && session.Registrations.Count() == MAX_MEMBERS_PER_SESSION)
             {
                 throw new Exception("Buổi học đã đủ số lượng người đăng ký rồi.<br />Bạn có thể liên hệ với admin qua facebook: <a href=\"https://www.facebook.com/mistake.dance\" target=\"_blank\">Mistake Dance Studio</a> hoặc số điện thoại 0943619526 để được xem xét đăng ký buổi học");
             }
