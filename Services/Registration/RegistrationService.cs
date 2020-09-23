@@ -67,7 +67,7 @@ namespace Services.Registration
             var memberPackage = _dbContext.MemberPackages.FirstOrDefault(x => x.UserId == registration.UserId && x.IsActive);
             if (memberPackage == null)
             {
-                throw new Exception("Học viên chưa đăng ký gói tập nào!");
+                throw new Exception("Học viên chưa đăng ký gói tập");
             }
             else if (memberPackage.RemainingSessions >= memberPackage.Package.NumberOfSessions)
             {
@@ -75,6 +75,14 @@ namespace Services.Registration
             }
 
             memberPackage.RemainingSessions++;
+
+            var membership = await _dbContext.Memberships.FirstOrDefaultAsync(x => x.UserId == registration.UserId);
+            if (membership == null)
+            {
+                throw new Exception("Học viên chưa đăng ký gói tập");
+            }
+
+            membership.RemainingSessions++;
 
             return await _dbContext.SaveChangesAsync();
         }
@@ -86,7 +94,7 @@ namespace Services.Registration
             var memberPackage = _dbContext.MemberPackages.FirstOrDefault(x => x.UserId == userId && x.IsActive);
             if (memberPackage == null)
             {
-                throw new Exception("Học viên chưa đăng ký gói tập!");
+                throw new Exception("Học viên chưa đăng ký gói tập");
             }
 
             if (memberPackage.RemainingSessions <= 0)
@@ -100,6 +108,14 @@ namespace Services.Registration
             }
 
             memberPackage.RemainingSessions--;
+
+            var membership = await _dbContext.Memberships.FirstOrDefaultAsync(x => x.UserId == userId);
+            if (membership == null)
+            {
+                throw new Exception("Học viên chưa đăng ký gói tập");
+            }
+
+            membership.RemainingSessions--;
 
             // Add registration
             DataAccess.Entities.Registration registration = _mapper.Map<DataAccess.Entities.Registration>(rq.Registration);

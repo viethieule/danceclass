@@ -290,6 +290,8 @@ namespace Services.Schedule
                             {
                                 var memberPackage = await _dbContext.MemberPackages.FirstOrDefaultAsync(m => m.UserId == registration.UserId && m.IsActive);
                                 memberPackage.RemainingSessions++;
+                                var membership = await _dbContext.Memberships.FirstOrDefaultAsync(x => x.UserId == registration.UserId);
+                                membership.RemainingSessions++;
                             }
 
                             deletedSessionWithRegistrationNumbers.Add(deletedSession.SessionNo);
@@ -401,6 +403,12 @@ namespace Services.Schedule
             foreach (var memberPackage in memberPackages)
             {
                 memberPackage.RemainingSessions += userAndCountRegistrationMap[memberPackage.UserId];
+            }
+
+            var memberships = _dbContext.Memberships.Where(x => registeredUserIds.Contains(x.UserId));
+            foreach (var membership in memberships)
+            {
+                membership.RemainingSessions += userAndCountRegistrationMap[membership.UserId];
             }
 
             return true;

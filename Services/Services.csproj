@@ -105,7 +105,10 @@
     <Compile Include="Common\AutoMapper\EntityToEntityMappingProfile.cs" />
     <Compile Include="Common\BaseService.cs" />
     <Compile Include="Common\GetEntityRequestBase.cs" />
+    <Compile Include="MemberPackage\CreateMemberPackageRq.cs" />
+    <Compile Include="MemberPackage\CreateMemberPackageRs.cs" />
     <Compile Include="MemberPackage\MemberPackageDTO.cs" />
+    <Compile Include="MemberPackage\MemberPackageService.cs" />
     <Compile Include="Members\CreateMemberRq.cs" />
     <Compile Include="Members\CreateMemberRs.cs" />
     <Compile Include="Members\GetMemberRq.cs" />

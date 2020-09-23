@@ -10,6 +10,7 @@ namespace Services.MemberPackage
 {
     public class MemberPackageDTO
     {
+        public int Id { get; set; }
         public int UserId { get; set; }
 
         public MemberDTO User { get; set; }
