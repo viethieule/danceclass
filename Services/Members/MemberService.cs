@@ -72,13 +72,21 @@ namespace Services.Members
                 }
 
                 ApplicationUser user = await _dbContext.Users.FirstOrDefaultAsync(x => x.UserName == member.UserName);
+                DateTime expiryDate = DateTime.Now.AddMonths(package.Months);
                 _dbContext.MemberPackages.Add(new DataAccess.Entities.MemberPackage
                 {
                     UserId = user.Id,
                     PackageId = package.Id,
-                    ExpiryDate = DateTime.Now.AddMonths(package.Months),
+                    ExpiryDate = expiryDate,
                     RemainingSessions = package.NumberOfSessions,
                     IsActive = true
+                });
+
+                _dbContext.Memberships.Add(new Membership
+                {
+                    UserId = user.Id,
+                    ExpiryDate = expiryDate,
+                    RemainingSessions = package.NumberOfSessions
                 });
 
                 await _userManager.AddToRoleAsync(user.Id, "Member");

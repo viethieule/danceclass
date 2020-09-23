@@ -32,7 +32,9 @@ namespace DataAccess.Entities
     {
         public string FullName { get; set; }
         public DateTime Birthdate { get; set; }
-
+        public int MembershipId { get; set; }
+        [ForeignKey("MembershipId")]
+        public virtual Membership Membership { get; set; }
         public virtual ICollection<Registration> Registrations { get; set; }
         public virtual ICollection<MemberPackage> MemberPackages { get; set; }
 

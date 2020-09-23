@@ -6,15 +6,14 @@ namespace DataAccess.Entities
 {
     public class MemberPackage
     {
-        [Key, Column(Order = 1)]
+        public int Id { get; set; }
         public int UserId { get; set; }
 
         [ForeignKey("UserId")]
         public virtual ApplicationUser User { get; set; }
 
-        [Key, Column(Order = 2)]
         public int PackageId { get; set; }
-        
+
         [ForeignKey("PackageId")]
         public virtual Package Package { get; set; }
 
