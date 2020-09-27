@@ -82,7 +82,7 @@ namespace Services.Members
                     IsActive = true
                 });
 
-                _dbContext.Memberships.Add(new Membership
+                _dbContext.Memberships.Add(new DataAccess.Entities.Membership
                 {
                     UserId = user.Id,
                     ExpiryDate = expiryDate,

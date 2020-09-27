@@ -15,7 +15,7 @@ namespace Services.MemberPackage
 
         public MemberDTO User { get; set; }
 
-        public int PackageId { get; set; }
+        public int? PackageId { get; set; }
 
         public PackageDTO Package { get; set; }
 

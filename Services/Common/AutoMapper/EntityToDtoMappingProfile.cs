@@ -3,6 +3,7 @@ using DataAccess.Enums;
 using Services.Class;
 using Services.MemberPackage;
 using Services.Members;
+using Services.Membership;
 using Services.Package;
 using Services.Registration;
 using Services.Schedule;
@@ -44,6 +45,9 @@ namespace Services.Common.AutoMapper
             CreateMap<DataAccess.Entities.MemberPackage, MemberPackageDTO>()
                 .ForMember(x => x.User, opt => opt.ExplicitExpansion())
                 .ForMember(x => x.Package, opt => opt.ExplicitExpansion());
+
+            CreateMap<DataAccess.Entities.Membership, MembershipDTO>()
+                .ForMember(x => x.User, opt => opt.ExplicitExpansion());
 
             CreateMap<DataAccess.Entities.UserRole, UserRoleDTO>();
 

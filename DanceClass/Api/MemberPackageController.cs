@@ -21,10 +21,10 @@ namespace DanceClass.Api
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        [Route("create")]
-        public async Task<IHttpActionResult> Create(CreateMemberPackageRq rq)
+        [Route("add")]
+        public async Task<IHttpActionResult> AddForMember(CreateMemberPackageRq rq)
         {
-            var rs = await _memberPackageService.Create(rq);
+            var rs = await _memberPackageService.AddForMember(rq);
             return ApiJson(rs);
         }
     }
