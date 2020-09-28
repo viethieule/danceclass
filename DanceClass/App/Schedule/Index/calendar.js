@@ -30,8 +30,8 @@ function CalendarManager() {
 
     this.renderUserRemainingSessions = function () {
         let user = _self.currentUser;
-        if (user && user.activePackage) {
-            let remainingSessions = user.activePackage.remainingSessions;
+        if (user && user.membership) {
+            let remainingSessions = user.membership.remainingSessions;
             $('.calendar-remaining-sessions').html(formatRemainingSessions(remainingSessions));
         } else if (user && user.roleNames.includes("Member")) {
             $('.calendar-remaining-sessions').html(0);

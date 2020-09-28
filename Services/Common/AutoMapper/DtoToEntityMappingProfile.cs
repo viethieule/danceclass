@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
-using Services.Members;
 using Services.Package;
+using Services.Members;
 using Services.Registration;
 using Services.Schedule;
+using Services.Membership;
 
 namespace Services.Common.AutoMapper
 {

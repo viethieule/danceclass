@@ -27,16 +27,31 @@
                 context.SaveChanges();
             }
 
+            if (!context.DefaultPackages.Any())
+            {
+                context.DefaultPackages.AddRange(new List<DefaultPackage>
+                {
+                    new DefaultPackage { NumberOfSessions = 8, Price = 600000, Months = 2 },
+                    new DefaultPackage { NumberOfSessions = 16, Price = 1000000, Months = 3 },
+                    new DefaultPackage { NumberOfSessions = 24, Price = 1450000, Months = 5 },
+                    new DefaultPackage { NumberOfSessions = 50, Price = 3000000, Months = 8 },
+                });
+
+                context.SaveChanges();
+            }
+
             if (!context.Users.Any(x => x.UserName == "admin"))
             {
                 var userStore = new ApplicationUserStore(context);
-                var userManager = new ApplicationUserManager(userStore);
-                var admin = new ApplicationUser { UserName = "admin", Birthdate = DateTime.Now };
-
-                var result = userManager.CreateAsync(admin, "P@ssw0rd").Result;
-                if (result.Succeeded)
+                using (var userManager = new ApplicationUserManager(userStore))
                 {
-                    userManager.AddToRole(admin.Id, "Admin");
+                    var admin = new ApplicationUser { UserName = "admin", Birthdate = DateTime.Now };
+
+                    var result = userManager.CreateAsync(admin, "P@ssw0rd").Result;
+                    if (result.Succeeded)
+                    {
+                        userManager.AddToRole(admin.Id, "Admin");
+                    }
                 }
 
                 context.SaveChanges();
@@ -45,16 +60,43 @@
             if (!context.Users.Any(x => x.UserName == "member.test"))
             {
                 var userStore = new ApplicationUserStore(context);
-                var userManager = new ApplicationUserManager(userStore);
-                var member = new ApplicationUser { UserName = "member.test", FullName = "Test Member", Birthdate = DateTime.Now };
-
-                var result = userManager.CreateAsync(member, "123456").Result;
-                if (result.Succeeded)
+                using (var userManager = new ApplicationUserManager(userStore))
                 {
-                    userManager.AddToRole(member.Id, "Member");
-                }
+                    var defaultPackage = context.DefaultPackages.FirstOrDefault();
+                    var member = new ApplicationUser
+                    {
+                        UserName = "member.test",
+                        FullName = "Test Member",
+                        Birthdate = DateTime.Now,
+                        PhoneNumber = "01234567890",
+                        Membership = new Membership
+                        {
+                            RemainingSessions = defaultPackage.NumberOfSessions - 1, // will add registration later
+                            ExpiryDate = DateTime.Now.AddMonths(defaultPackage.Months)
+                        },
+                        Packages = new List<Package>
+                        {
+                            new Package
+                            {
+                                DefaultPackageId = defaultPackage.Id,
+                                ExpiryDate = DateTime.Now.AddMonths(defaultPackage.Months),
+                                Price = defaultPackage.Price,
+                                Months = defaultPackage.Months,
+                                NumberOfSessions = defaultPackage.NumberOfSessions,
+                                IsActive = true,
+                                RemainingSessions = defaultPackage.NumberOfSessions - 1 // will add registration later
+                            }
+                        }
+                    };
 
-                context.SaveChanges();
+                    var result = userManager.CreateAsync(member, "123456").Result;
+                    if (result.Succeeded)
+                    {
+                        userManager.AddToRole(member.Id, "Member");
+                    }
+
+                    context.SaveChanges();
+                }
             }
 
             if (!context.Classes.Any())
@@ -179,19 +221,6 @@
 
                     context.SaveChanges();
                 }
-            }
-
-            if (!context.Packages.Any())
-            {
-                context.Packages.AddRange(new List<Package>
-                {
-                    new Package { NumberOfSessions = 8, Price = 600000, Months = 2, IsDefault = true },
-                    new Package { NumberOfSessions = 16, Price = 1000000, Months = 3, IsDefault = true },
-                    new Package { NumberOfSessions = 24, Price = 1450000, Months = 5, IsDefault = true },
-                    new Package { NumberOfSessions = 50, Price = 3000000, Months = 8, IsDefault = true },
-                });
-
-                context.SaveChanges();
             }
         }
     }

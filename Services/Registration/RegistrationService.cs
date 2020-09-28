@@ -64,17 +64,13 @@ namespace Services.Registration
             _dbContext.Registrations.Remove(registration);
 
             // Increase remaining sessions of the user
-            var memberPackage = _dbContext.MemberPackages.FirstOrDefault(x => x.UserId == registration.UserId && x.IsActive);
-            if (memberPackage == null)
+            var activePackage = _dbContext.Packages.FirstOrDefault(x => x.UserId == registration.UserId && x.IsActive);
+            if (activePackage == null)
             {
-                throw new Exception("Học viên chưa đăng ký gói tập");
-            }
-            else if (memberPackage.RemainingSessions >= memberPackage.Package.NumberOfSessions)
-            {
-                throw new Exception("Không thể hủy. Bạn vẫn chưa đăng ký buổi học nào mà!");
+                throw new Exception("Học viên chưa đăng ký gói tập hoặc các gói đã hết hạn");
             }
 
-            memberPackage.RemainingSessions++;
+            activePackage.RemainingSessions++;
 
             var membership = await _dbContext.Memberships.FirstOrDefaultAsync(x => x.UserId == registration.UserId);
             if (membership == null)
@@ -91,29 +87,29 @@ namespace Services.Registration
         {
             int userId = rq.Registration.UserId;
             // Decrease remaining sessions of the user
-            var memberPackage = _dbContext.MemberPackages.FirstOrDefault(x => x.UserId == userId && x.IsActive);
-            if (memberPackage == null)
+            var package = _dbContext.Packages.FirstOrDefault(x => x.UserId == userId && x.IsActive);
+            if (package == null)
             {
-                throw new Exception("Học viên chưa đăng ký gói tập");
+                throw new Exception("Học viên chưa đăng ký gói tập hoặc các gói hiện tại đã hết hạn");
             }
-
-            if (memberPackage.RemainingSessions <= 0)
-            {
-                throw new Exception("Bạn đã dùng hết số buổi của gói tập hiện tại.");
-            }
-
-            if (memberPackage.ExpiryDate < DateTime.Now)
-            {
-                throw new Exception("Gói tập của bạn đã hết hạn.");
-            }
-
-            memberPackage.RemainingSessions--;
 
             var membership = await _dbContext.Memberships.FirstOrDefaultAsync(x => x.UserId == userId);
             if (membership == null)
             {
                 throw new Exception("Học viên chưa đăng ký gói tập");
             }
+
+            if (membership.RemainingSessions <= 0)
+            {
+                throw new Exception("Bạn đã dùng hết số buổi của gói tập hiện tại.");
+            }
+
+            if (membership.ExpiryDate < DateTime.Now)
+            {
+                throw new Exception("Gói tập của bạn đã hết hạn.");
+            }
+
+            package.RemainingSessions--;
 
             membership.RemainingSessions--;
 

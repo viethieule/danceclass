@@ -3,7 +3,6 @@ using AutoMapper.QueryableExtensions;
 using DataAccess;
 using Microsoft.AspNet.Identity;
 using Services.Common;
-using Services.Registration;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -286,11 +285,17 @@ namespace Services.Schedule
                     {
                         if (deletedSession.Registrations.Any())
                         {
-                            foreach (var registration in deletedSession.Registrations)
+                            var registeredUserIds = deletedSession.Registrations.Select(r => r.UserId).ToList();
+                            var relatedPackages = await _dbContext.Packages.Where(p => p.IsActive && registeredUserIds.Contains(p.UserId)).ToListAsync();
+                            var relatedMemberships = await _dbContext.Memberships.Where(m => registeredUserIds.Contains(m.UserId)).ToListAsync();
+
+                            foreach (var package in relatedPackages)
                             {
-                                var memberPackage = await _dbContext.MemberPackages.FirstOrDefaultAsync(m => m.UserId == registration.UserId && m.IsActive);
-                                memberPackage.RemainingSessions++;
-                                var membership = await _dbContext.Memberships.FirstOrDefaultAsync(x => x.UserId == registration.UserId);
+                                package.RemainingSessions++;
+                            }
+
+                            foreach (var membership in relatedMemberships)
+                            {
                                 membership.RemainingSessions++;
                             }
 
@@ -399,7 +404,7 @@ namespace Services.Schedule
             }
 
             var registeredUserIds = userAndCountRegistrationMap.Keys;
-            var memberPackages = _dbContext.MemberPackages.Where(x => registeredUserIds.Contains(x.UserId) && x.IsActive);
+            var memberPackages = _dbContext.Packages.Where(x => registeredUserIds.Contains(x.UserId) && x.IsActive);
             foreach (var memberPackage in memberPackages)
             {
                 memberPackage.RemainingSessions += userAndCountRegistrationMap[memberPackage.UserId];

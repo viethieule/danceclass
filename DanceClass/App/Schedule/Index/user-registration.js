@@ -21,7 +21,7 @@
             modalBodyInfo.empty();
             btnAction.off('click');
 
-            $('.modal-body-remaining-sessions').html(user && user.activePackage ? user.activePackage.remainingSessions : 0);
+            $('.modal-body-remaining-sessions').html(user && user.membership ? user.membership.remainingSessions : 0);
 
             const scheduleDetail = _self.scheduleDetails.find(x => x.id === parseInt(id));
             if (!scheduleDetail) {
@@ -90,12 +90,12 @@
 
     function updateUserRemainingSessions(isRegistration) {
         var user = _self.currentUser;
-        if (user && user.activePackage) {
+        if (user && user.membership) {
             if (isRegistration) {
-                user.activePackage.remainingSessions--;
+                user.membership.remainingSessions--;
             }
             else {
-                user.activePackage.remainingSessions++;
+                user.membership.remainingSessions++;
             }
             _self.renderUserRemainingSessions();
         }

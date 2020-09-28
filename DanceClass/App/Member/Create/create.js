@@ -20,7 +20,6 @@ function initDatePicker() {
 async function populatePackages() {
     try {
         m_packages = await getPackages();
-        console.log(m_packages);
 
         var select = $('#package');
         m_packages.forEach(package => {
@@ -42,7 +41,7 @@ async function getPackages() {
     return $.ajax({
         method: 'GET',
         async: true,
-        url: '/api/package/getAll'
+        url: '/api/package/getDefaults'
     })
 }
 
@@ -127,7 +126,9 @@ function registerEvent() {
                             phoneNumber: formData['phone'],
                             email: formData['email']
                         },
-                        package: package || {
+                        package: package ? {
+                            defaultPackageId: package.id
+                        } : {
                             months: formData['expired'],
                             numberOfSessions: formData['sessions'],
                             price: formData['price'],

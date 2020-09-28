@@ -81,10 +81,10 @@
     <Compile Include="DanceClassDbContext.cs" />
     <Compile Include="Entities\ApplicationUser.cs" />
     <Compile Include="Entities\Class.cs" />
-    <Compile Include="Entities\MemberPackage.cs" />
+    <Compile Include="Entities\Package.cs" />
     <Compile Include="Entities\Membership.cs" />
     <Compile Include="Entities\Registration.cs" />
-    <Compile Include="Entities\Package.cs" />
+    <Compile Include="Entities\DefaultPackage.cs" />
     <Compile Include="Entities\Promotion.cs" />
     <Compile Include="Entities\Schedule.cs" />
     <Compile Include="Entities\ScheduleDetail.cs" />
@@ -150,6 +150,10 @@
     <Compile Include="Migrations\202009110334482_AddScheduleDetailDateBeforeUpdated.designer.cs">
       <DependentUpon>202009110334482_AddScheduleDetailDateBeforeUpdated.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202009281611295_RefactorPackageStructure.cs" />
+    <Compile Include="Migrations\202009281611295_RefactorPackageStructure.designer.cs">
+      <DependentUpon>202009281611295_RefactorPackageStructure.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -199,6 +203,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202009110334482_AddScheduleDetailDateBeforeUpdated.resx">
       <DependentUpon>202009110334482_AddScheduleDetailDateBeforeUpdated.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009281611295_RefactorPackageStructure.resx">
+      <DependentUpon>202009281611295_RefactorPackageStructure.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

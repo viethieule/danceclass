@@ -29,7 +29,7 @@ namespace Services.Members
 
     public class MemberService : BaseService, IMemberService
     {
-        private ApplicationUserManager _userManager;
+        private readonly ApplicationUserManager _userManager;
         private readonly IConfigurationProvider _mappingConfig;
         private const string DEFAULT_PASSWORD = "P@ssw0rd";
 
@@ -57,39 +57,44 @@ namespace Services.Members
                     throw new Exception("Cannot create new member. " + string.Join(" ", result.Errors));
                 }
 
-                DataAccess.Entities.Package package = _mapper.Map<DataAccess.Entities.Package>(rq.Package);
-                if (rq.Package.Id != null)
+                var user = await _dbContext.Users.SingleOrDefaultAsync(x => x.UserName == member.UserName);
+                await _userManager.AddToRoleAsync(user.Id, "Member");
+
+                var package = new DataAccess.Entities.Package
                 {
-                    if (!_dbContext.Packages.Any(p => p.Id == rq.Package.Id && p.IsDefault))
+                    UserId = user.Id,
+                    IsActive = true
+                };
+
+                if (rq.Package.DefaultPackageId.HasValue)
+                {
+                    var defaultPackageId = rq.Package.DefaultPackageId.Value;
+                    var defaultPackage = await _dbContext.DefaultPackages.FirstOrDefaultAsync(p => p.Id == defaultPackageId);
+                    if (defaultPackage == null)
                     {
-                        throw new Exception("Selected package not exist");
+                        throw new Exception("Gói tập đang chọn không tồn tại");
                     }
+                    package.DefaultPackageId = defaultPackageId;
+                    package.NumberOfSessions = defaultPackage.NumberOfSessions;
+                    package.Months = defaultPackage.Months;
+                    package.Price = defaultPackage.Price;
+                    package.RemainingSessions = defaultPackage.NumberOfSessions;
                 }
                 else
                 {
-                    _dbContext.Packages.Add(package);
-                    await _dbContext.SaveChangesAsync();
+                    package.NumberOfSessions = rq.Package.NumberOfSessions;
+                    package.Months = rq.Package.Months;
+                    package.Price = rq.Package.Price;
+                    package.RemainingSessions = rq.Package.NumberOfSessions;
                 }
 
-                ApplicationUser user = await _dbContext.Users.FirstOrDefaultAsync(x => x.UserName == member.UserName);
-                DateTime expiryDate = DateTime.Now.AddMonths(package.Months);
-                _dbContext.MemberPackages.Add(new DataAccess.Entities.MemberPackage
-                {
-                    UserId = user.Id,
-                    PackageId = package.Id,
-                    ExpiryDate = expiryDate,
-                    RemainingSessions = package.NumberOfSessions,
-                    IsActive = true
-                });
-
+                _dbContext.Packages.Add(package);
                 _dbContext.Memberships.Add(new DataAccess.Entities.Membership
                 {
                     UserId = user.Id,
-                    ExpiryDate = expiryDate,
+                    ExpiryDate = DateTime.Now.AddMonths(package.Months),
                     RemainingSessions = package.NumberOfSessions
                 });
-
-                await _userManager.AddToRoleAsync(user.Id, "Member");
 
                 await _dbContext.SaveChangesAsync();
                 scope.Complete();
@@ -172,7 +177,7 @@ namespace Services.Members
 
                 var user = await _dbContext.Users
                     .Where(x => x.Id == userId)
-                    .ProjectTo<MemberDTO>(_mappingConfig, dest => dest.MemberPackages)
+                    .ProjectTo<MemberDTO>(_mappingConfig, dest => dest.Membership)
                     .FirstOrDefaultAsync();
 
                 if (user != null)

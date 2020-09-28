@@ -1,9 +1,7 @@
-﻿using Services.MemberPackage;
+﻿using Services.Membership;
+using Services.Package;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Services.Members
 {
@@ -17,7 +15,8 @@ namespace Services.Members
         public string UserName { get; set; }
         public ICollection<UserRoleDTO> Roles { get; set; }
         public List<string> RoleNames { get; set; }
-        public List<MemberPackageDTO> MemberPackages { get; set; }
-        public MemberPackageDTO ActivePackage { get; set; }
+        public List<PackageDTO> Packages { get; set; }
+        public PackageDTO ActivePackage { get; set; }
+        public MembershipDTO Membership { get; set; }
     }
 }

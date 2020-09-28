@@ -227,7 +227,7 @@
   <ItemGroup>
     <Compile Include="Api\ApiBaseController.cs" />
     <Compile Include="Api\ClassController.cs" />
-    <Compile Include="Api\MemberPackageController.cs" />
+    <Compile Include="Api\MembershipController.cs" />
     <Compile Include="Api\PackageController.cs" />
     <Compile Include="Api\RegistrationController.cs" />
     <Compile Include="Api\ScheduleController.cs" />

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using DataAccess.Enums;
 using Services.Class;
-using Services.MemberPackage;
+using Services.DefaultPackage;
 using Services.Members;
 using Services.Membership;
 using Services.Package;
@@ -36,15 +36,17 @@ namespace Services.Common.AutoMapper
                 .ForMember(x => x.ScheduleDetail, opt => opt.ExplicitExpansion())
                 .ForMember(x => x.User, opt => opt.ExplicitExpansion());
 
-            CreateMap<DataAccess.Entities.Package, PackageDTO>();
+            CreateMap<DataAccess.Entities.DefaultPackage, DefaultPackageDTO>()
+                .ForMember(x => x.Packages, opt => opt.ExplicitExpansion());
 
             CreateMap<DataAccess.Entities.ApplicationUser, MemberDTO>()
-                .ForMember(x => x.MemberPackages, opt => opt.ExplicitExpansion())
-                .ForMember(x => x.ActivePackage, opt => opt.MapFrom(x => x.MemberPackages.FirstOrDefault(m => m.IsActive)));
+                .ForMember(x => x.Packages, opt => opt.ExplicitExpansion())
+                .ForMember(x => x.Membership, opt => opt.ExplicitExpansion())
+                .ForMember(x => x.ActivePackage, opt => opt.MapFrom(x => x.Packages.FirstOrDefault(m => m.IsActive)));
 
-            CreateMap<DataAccess.Entities.MemberPackage, MemberPackageDTO>()
+            CreateMap<DataAccess.Entities.Package, PackageDTO>()
                 .ForMember(x => x.User, opt => opt.ExplicitExpansion())
-                .ForMember(x => x.Package, opt => opt.ExplicitExpansion());
+                .ForMember(x => x.DefaultPackage, opt => opt.ExplicitExpansion());
 
             CreateMap<DataAccess.Entities.Membership, MembershipDTO>()
                 .ForMember(x => x.User, opt => opt.ExplicitExpansion());

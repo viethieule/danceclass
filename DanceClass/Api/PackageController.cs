@@ -1,9 +1,5 @@
-﻿using Services.Package;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+﻿using Services.DefaultPackage;
+using Services.Package;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -13,17 +9,38 @@ namespace DanceClass.Api
     public class PackageController : ApiBaseController
     {
         private readonly IPackageService _packageService;
-        public PackageController(IPackageService packageService)
+        private readonly IDefaultPackageService _defaultPackageService;
+
+        public PackageController(IPackageService packageService, IDefaultPackageService defaultPackageService)
         {
             _packageService = packageService;
+            _defaultPackageService = defaultPackageService;
         }
 
         [HttpGet]
-        [Route("getall")]
-        public async Task<IHttpActionResult> GetAll()
+        [Route("getDefaults")]
+        public async Task<IHttpActionResult> GetDefaults()
         {
-            var packages = await _packageService.GetAll(true);
+            var packages = await _defaultPackageService.GetAll(true);
             return ApiJson(packages);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [Route("add")]
+        public async Task<IHttpActionResult> AddForMember(CreatePackageRq rq)
+        {
+            var rs = await _packageService.AddForMember(rq);
+            return ApiJson(rs);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [Route("edit")]
+        public async Task<IHttpActionResult> Edit(EditPackageRq rq)
+        {
+            var rs = await _packageService.Edit(rq);
+            return ApiJson(rs);
         }
     }
 }
