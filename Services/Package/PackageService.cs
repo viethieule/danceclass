@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using DataAccess;
+using Microsoft.AspNet.Identity;
 using Services.Common;
 using Services.Membership;
 using System;
@@ -8,6 +10,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Services.Package
 {
@@ -15,6 +18,7 @@ namespace Services.Package
     {
         Task<CreatePackageRs> AddForMember(CreatePackageRq rq);
         Task<EditPackageRs> Edit(EditPackageRq rq);
+        Task<GetPackagesRs> GetByUserId(GetPackagesRq rq);
     }
 
     public class PackageService : BaseService, IPackageService
@@ -52,6 +56,7 @@ namespace Services.Package
             }
             else
             {
+                package.RemainingSessions = rq.NumberOfSessions;
                 package.NumberOfSessions = rq.NumberOfSessions;
                 package.Price = rq.Price;
                 package.Months = rq.Months;
@@ -79,8 +84,10 @@ namespace Services.Package
 
             _dbContext.Packages.Add(package);
             await _dbContext.SaveChangesAsync();
+            _dbContext.Entry(membership).State = EntityState.Detached;
 
             var rs = new CreatePackageRs();
+            rs.Membership = _mapper.Map<MembershipDTO>(membership);
             return rs;
         }
 
@@ -144,6 +151,26 @@ namespace Services.Package
                 Package = _mapper.Map<PackageDTO>(package)
             };
             return rs;
+        }
+
+        public async Task<GetPackagesRs> GetByUserId(GetPackagesRq rq)
+        {
+            if (!(await _dbContext.Users.AnyAsync(u => u.Id == rq.UserId)))
+            {
+                throw new Exception("Hội viên không tồn tại");
+            }
+
+            bool isAdmin = HttpContext.Current.User.IsInRole("Admin");
+            var currentUserId = HttpContext.Current.User.Identity.GetUserId();
+
+            if (!isAdmin && rq.UserId.ToString() != currentUserId)
+            {
+                throw new Exception("Không đủ quyền");
+            }
+
+            var packages = await _dbContext.Packages.Where(p => p.UserId == rq.UserId).ProjectTo<PackageDTO>(_mappingConfig).ToListAsync();
+
+            return new GetPackagesRs { Packages = packages };
         }
     }
 }

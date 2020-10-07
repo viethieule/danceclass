@@ -260,6 +260,10 @@
     <Content Include="App\Common\js\formUtils.js" />
     <Content Include="App\Common\js\plugins.js" />
     <Content Include="App\Common\js\utils.js" />
+    <Content Include="App\Member\Index\member-index-create-package.js" />
+    <Content Include="App\Member\Index\member-index-edit-package.js" />
+    <Content Include="App\Member\Index\member-index-user-info.js" />
+    <Content Include="App\Member\Index\member-index.js" />
     <Content Include="App\Schedule\Index\calendar.js" />
     <Content Include="App\Schedule\Index\registration.js" />
     <Content Include="App\Schedule\Index\user-registration.js" />

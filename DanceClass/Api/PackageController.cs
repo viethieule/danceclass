@@ -42,5 +42,14 @@ namespace DanceClass.Api
             var rs = await _packageService.Edit(rq);
             return ApiJson(rs);
         }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin, Member")]
+        [Route("getByUserId")]
+        public async Task<IHttpActionResult> GetByUserId(GetPackagesRq rq)
+        {
+            var rs = await _packageService.GetByUserId(rq);
+            return ApiJson(rs);
+        }
     }
 }

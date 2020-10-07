@@ -112,6 +112,8 @@
     <Compile Include="Package\CreatePackageRs.cs" />
     <Compile Include="Package\EditPackageRq.cs" />
     <Compile Include="Package\EditPackageRs.cs" />
+    <Compile Include="Package\GetPackagesRq.cs" />
+    <Compile Include="Package\GetPackagesRs.cs" />
     <Compile Include="Package\PackageDTO.cs" />
     <Compile Include="Package\PackageService.cs" />
     <Compile Include="Membership\MembershipDTO.cs" />

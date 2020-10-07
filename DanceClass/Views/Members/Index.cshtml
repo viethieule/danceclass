@@ -5,6 +5,8 @@
 
 @section Styles {
     @Styles.Render("~/Content/dataTables")
+    @Styles.Render("~/Content/bootstrap-datepicker")
+    <link href="~/App/Common/css/form.css" rel="stylesheet" />
 }
 
 <section class="content-header">
@@ -15,6 +17,9 @@
     <div class="row">
         <div class="col-md-3">
             <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Thông tin hội viên</h3>
+                </div>
                 <div class="box-body">
                     <div class="form-group">
                         <p>Tên đăng nhập</p>
@@ -27,6 +32,27 @@
                     <div class="form-group">
                         <p>Số điện thoại</p>
                         <label id="phoneNumber"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Gói tập</h3>
+                </div>
+                <div class="box-body">
+                    <div class="form-group">
+                        <p>Số buổi còn lại</p>
+                        <label id="remainingSessions"></label>
+                    </div>
+                    <div class="form-group">
+                        <p>Ngày hết hạn</p>
+                        <label id="expiryDate"></label>
+                    </div>
+                </div>
+                <div class="box-footer">
+                    <div class="pull-right">
+                        <button id="editPackage" type="button" data-toggle="modal" data-target="#modal-edit-package" class="btn btn-primary">Sửa</button>
+                        <button id="addPackage" type="button" data-toggle="modal" data-target="#modal-create-package" class="btn btn-primary">Thêm</button>
                     </div>
                 </div>
             </div>
@@ -44,11 +70,125 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="modal-edit-package" style="display: none;">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title">Thông tin các gói tập</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="remainingSessions" class="col-sm-3 control-label">Số buổi còn lại</label>
+                            <div class="col-sm-5">
+                                <input type="number" class="form-control form-edit" name="remainingSessions" id="membership-remaining-sessions" />
+                            </div>
+                            <div class="col-sm-1">
+                                <button class="btn btn-success btn-edit" type="button"><i class="fa fa-pencil"></i></button>
+                            </div>
+                            <div class="col-sm-1" style="display: none">
+                                <button class="btn btn-success btn-save-edit" type="button"><i class="fa fa-check"></i></button>
+                            </div>
+                            <div class="col-sm-1" style="display: none">
+                                <button class="btn btn-danger btn-cancel-edit" type="button"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                    </form>
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="expiryDate" class="col-sm-3 control-label">Ngày hết hạn</label>
+                            <div class="col-sm-5">
+                                <div class="input-group date">
+                                    <input id="membership-expiry-date" name="expiryDate" type="text" class="form-control form-edit form-edit-datepicker">
+                                </div>
+                            </div>
+                            <div class="col-sm-1">
+                                <button class="btn btn-success btn-edit" type="button"><i class="fa fa-pencil"></i></button>
+                            </div>
+                            <div class="col-sm-1" style="display: none">
+                                <button class="btn btn-success btn-save-edit" type="button"><i class="fa fa-check"></i></button>
+                            </div>
+                            <div class="col-sm-1" style="display: none">
+                                <button class="btn btn-danger btn-cancel-edit" type="button"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                    </form>
+                    <div>
+                        <div>
+                            Gói tập hiện tại
+                        </div>
+                        <div>
+                            <table class="list-packages" style="width: 100%"></table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Thoát</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <div class="modal fade" id="modal-create-package" style="display: none;">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title">Thêm gói tập</h4>
+                </div>
+                <form id="createPackage">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="required" for="package">Gói tập</label>
+                            <select class="form-control" id="package" name="package">
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="expired">Hạn (tháng)</label>
+                            <input type="text" class="form-control" id="expired" name="expired">
+                        </div>
+                        <div class="form-group">
+                            <label for="sessions">Số buổi</label>
+                            <input type="number" class="form-control" id="sessions" name="sessions">
+                        </div>
+                        <div class="form-group">
+                            <label for="price">Giá</label>
+                            <input type="number" class="form-control" id="price" name="price">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Thoát</button>
+                        <button type="submit" id="btn-create-package" class="btn btn-primary">Thêm</button>
+                    </div>
+                </form>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
 </section>
 
 @section Scripts {
+    @Scripts.Render("~/bundles/inputMask")
     @Scripts.Render("~/bundles/moment")
+    @Scripts.Render("~/bundles/bootstrap-datepicker")
     @Scripts.Render("~/bundles/dataTables")
-    <script src="~/App/Member/Index/index.js"></script>
+    <script src="~/App/Common/js/formUtils.js"></script>
+    <script src="~/App/Member/Index/member-index.js"></script>
+    <script src="~/App/Member/Index/member-index-user-info.js"></script>
+    <script src="~/App/Member/Index/member-index-create-package.js"></script>
+    <script src="~/App/Member/Index/member-index-edit-package.js"></script>
+    <script>
+        $(function () {
+            var ctrl = new MemberIndexController();
+            ctrl.initialize();
+        })
+    </script>
 }
 

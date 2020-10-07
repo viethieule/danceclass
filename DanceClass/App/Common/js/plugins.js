@@ -11,7 +11,9 @@
         if (typeof error === 'string' || error instanceof String) {
             message = error;
         } else if (error) {
-            message = error.responseJSON ? error.responseJSON.ExceptionMessage : (error.Message || error.Message || 'Đã có lỗi xảy ra');
+            message = error.responseJSON ?
+                (error.responseJSON.ExceptionMessage || error.responseJSON.Message) :
+                (error.Message || 'Đã có lỗi xảy ra');
         }
 
         var alertStyle = alertStyleMap.find(s => s.name === style);
@@ -60,7 +62,20 @@
             if (i === 0) { attr.selected = 'selected' }
             $('<option>', attr).text(item[textProp]).appendTo($this);
         });
-
+            
         return $this;
+    }
+
+    $.fn.loading = function (loading) {
+        var currentIcon = this.find('i').not('.fa .fa-circle-o-notch .fa-spin');
+        if (loading) {
+            this.prop('disabled', true);
+            currentIcon.hide();
+            this.prepend($('<i>', { class: 'fa fa-circle-o-notch fa-spin' }));
+        } else {
+            this.prop('disbled', false);
+            this.find('.fa.fa-circle-o-notch.fa-spin').remove();
+            currentIcon.show();
+        }
     }
 }(jQuery));

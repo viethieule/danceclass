@@ -108,9 +108,16 @@ namespace Services.Members
 
         public async Task<GetMemberRs> Get(GetMemberRq rq)
         {
+            bool isAdmin = HttpContext.Current.User.IsInRole("Admin");
+            string currentUserName = HttpContext.Current.User.Identity.GetUserName();
+            if (!isAdmin && currentUserName != rq.UserName)
+            {
+                throw new Exception("Not found");
+            }
+
             GetMemberRs rs = new GetMemberRs();
 
-            var query = _dbContext.Users.ProjectTo<MemberDTO>(_mappingConfig);
+            var query = _dbContext.Users.ProjectTo<MemberDTO>(_mappingConfig, dest => dest.Membership);
             if (!string.IsNullOrEmpty(rq.UserName))
             {
                 rs.Member = await query.FirstOrDefaultAsync(u => u.UserName == rq.UserName);

@@ -12,13 +12,18 @@ async function populateUserInfo() {
         m_user = await UserService.get({ username });
         if (m_user) {
             console.log(m_user);
-            const { userName, birthdate, fullName, phoneNumber } = m_user;
+            const { userName, birthdate, fullName, phoneNumber, membership } = m_user;
             $('#username').text(userName);
             $('#fullName').text(fullName);
             $('#birthdate').text(moment(birthdate).format('DD/MM/YYYY'));
             $('#phoneNumber').text(phoneNumber);
+
+            if (membership) {
+                $('#remainingSessions').text(membership.remainingSessions);
+                $('#expiryDate').text(moment(membership.expiryDate).format('DD/MM/YYYY'));
+            }
         } else {
-            showErrorMessage('Không tìm thấy!');
+            $('.content-header').alert(true, 'danger', 'Không tìm thấy');
         }
     } catch (ex) {
         handleAjaxError(ex);

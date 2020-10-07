@@ -40,6 +40,7 @@ namespace Services.Membership
             }
 
             await _dbContext.SaveChangesAsync();
+            _dbContext.Entry(membership).State = EntityState.Detached;
 
             var rs = new UpdateMembershipRs();
             rs.Membership = _mapper.Map<MembershipDTO>(membership);
