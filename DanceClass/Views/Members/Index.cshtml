@@ -7,6 +7,7 @@
     @Styles.Render("~/Content/dataTables")
     @Styles.Render("~/Content/bootstrap-datepicker")
     <link href="~/App/Common/css/form.css" rel="stylesheet" />
+    <link href="~/App/Member/Index/member-index.css" rel="stylesheet" />
 }
 
 <section class="content-header">
@@ -80,49 +81,46 @@
                     <h4 class="modal-title">Thông tin các gói tập</h4>
                 </div>
                 <div class="modal-body">
-                    <form class="form-horizontal">
-                        <div class="form-group">
-                            <label for="remainingSessions" class="col-sm-3 control-label">Số buổi còn lại</label>
-                            <div class="col-sm-5">
-                                <input type="number" class="form-control form-edit" name="remainingSessions" id="membership-remaining-sessions" />
-                            </div>
-                            <div class="col-sm-1">
-                                <button class="btn btn-success btn-edit" type="button"><i class="fa fa-pencil"></i></button>
-                            </div>
-                            <div class="col-sm-1" style="display: none">
-                                <button class="btn btn-success btn-save-edit" type="button"><i class="fa fa-check"></i></button>
-                            </div>
-                            <div class="col-sm-1" style="display: none">
-                                <button class="btn btn-danger btn-cancel-edit" type="button"><i class="fa fa-times"></i></button>
-                            </div>
-                        </div>
-                    </form>
-                    <form class="form-horizontal">
-                        <div class="form-group">
-                            <label for="expiryDate" class="col-sm-3 control-label">Ngày hết hạn</label>
-                            <div class="col-sm-5">
-                                <div class="input-group date">
-                                    <input id="membership-expiry-date" name="expiryDate" type="text" class="form-control form-edit form-edit-datepicker">
+                    <div class="membership-container">
+                        <form class="form-horizontal">
+                            <div class="form-group">
+                                <label for="remainingSessions" class="col-sm-4 control-label">Số buổi còn lại</label>
+                                <div class="col-sm-4">
+                                    <input type="number" class="form-control form-edit" name="remainingSessions" id="membership-remaining-sessions" />
+                                </div>
+                                <div class="col-edit-membership col-sm-1">
+                                    <button class="btn btn-success btn-edit" type="button"><i class="fa fa-pencil"></i></button>
+                                </div>
+                                <div class="col-edit-membership col-sm-1" style="display: none">
+                                    <button class="btn btn-success btn-save-edit" type="button"><i class="fa fa-check"></i></button>
+                                </div>
+                                <div class="col-edit-membership col-sm-1" style="display: none">
+                                    <button class="btn btn-danger btn-cancel-edit" type="button"><i class="fa fa-times"></i></button>
                                 </div>
                             </div>
-                            <div class="col-sm-1">
-                                <button class="btn btn-success btn-edit" type="button"><i class="fa fa-pencil"></i></button>
+                        </form>
+                        <form class="form-horizontal">
+                            <div class="form-group">
+                                <label for="expiryDate" class="col-sm-4 control-label">Ngày hết hạn</label>
+                                <div class="col-sm-4">
+                                    <div class="input-group date" style="width: 100%">
+                                        <input id="membership-expiry-date" name="expiryDate" type="text" class="form-control form-edit form-edit-datepicker">
+                                    </div>
+                                </div>
+                                <div class="col-edit-membership col-sm-1">
+                                    <button class="btn btn-success btn-edit" type="button"><i class="fa fa-pencil"></i></button>
+                                </div>
+                                <div class="col-edit-membership col-sm-1" style="display: none">
+                                    <button class="btn btn-success btn-save-edit" type="button"><i class="fa fa-check"></i></button>
+                                </div>
+                                <div class="col-edit-membership col-sm-1" style="display: none">
+                                    <button class="btn btn-danger btn-cancel-edit" type="button"><i class="fa fa-times"></i></button>
+                                </div>
                             </div>
-                            <div class="col-sm-1" style="display: none">
-                                <button class="btn btn-success btn-save-edit" type="button"><i class="fa fa-check"></i></button>
-                            </div>
-                            <div class="col-sm-1" style="display: none">
-                                <button class="btn btn-danger btn-cancel-edit" type="button"><i class="fa fa-times"></i></button>
-                            </div>
-                        </div>
-                    </form>
-                    <div>
-                        <div>
-                            Gói tập hiện tại
-                        </div>
-                        <div>
-                            <table class="list-packages" style="width: 100%"></table>
-                        </div>
+                        </form>
+                    </div>
+                    <div class="list-packages-container">
+                        <table id="list-packages" class="table table-bordered table-hover" style="width: 100%"></table>
                     </div>
                 </div>
                 <div class="modal-footer">

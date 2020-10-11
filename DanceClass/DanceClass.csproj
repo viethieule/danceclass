@@ -263,6 +263,7 @@
     <Content Include="App\Member\Index\member-index-create-package.js" />
     <Content Include="App\Member\Index\member-index-edit-package.js" />
     <Content Include="App\Member\Index\member-index-user-info.js" />
+    <Content Include="App\Member\Index\member-index.css" />
     <Content Include="App\Member\Index\member-index.js" />
     <Content Include="App\Schedule\Index\calendar.js" />
     <Content Include="App\Schedule\Index\registration.js" />

@@ -50,7 +50,7 @@
         return this;
     }
 
-    $.fn.appendOptions = function (data, valueProp, textProp) {
+    $.fn.appendOptions = function (data, valueProp, textProp, defaultValue) {
         if (data && data.length === 0) {
             return this;
         }
@@ -59,7 +59,13 @@
         $this.empty();
         data.forEach(function (item, i, a) {
             var attr = { value: item[valueProp] };
-            if (i === 0) { attr.selected = 'selected' }
+            if (defaultValue) {
+                if (attr.value == defaultValue) {
+                    attr.selected = 'selected';
+                }
+            } else if (i === 0) {
+                attr.selected = 'selected'
+            }
             $('<option>', attr).text(item[textProp]).appendTo($this);
         });
             
