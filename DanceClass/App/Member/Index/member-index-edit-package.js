@@ -140,10 +140,9 @@
                     }
                 }
             });
+        } else {
+            $('#list-packages').DataTable().ajax.reload();
         }
-        //else {
-        //    $('#list-packages').DataTable().ajax.reload();
-        //}
     }
 
     function initExpiryDatePicker() {

@@ -168,7 +168,7 @@ namespace Services.Package
                 throw new Exception("Không đủ quyền");
             }
 
-            var packages = await _dbContext.Packages.Where(p => p.UserId == rq.UserId).ProjectTo<PackageDTO>(_mappingConfig).ToListAsync();
+            var packages = await _dbContext.Packages.Where(p => p.UserId == rq.UserId).OrderByDescending(p => p.Id).ProjectTo<PackageDTO>(_mappingConfig).ToListAsync();
 
             return new GetPackagesRs { Packages = packages };
         }
