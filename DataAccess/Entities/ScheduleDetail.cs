@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace DataAccess.Entities
 {
-    public class ScheduleDetail
+    public class ScheduleDetail : EntityBase
     {
         public ScheduleDetail()
         {

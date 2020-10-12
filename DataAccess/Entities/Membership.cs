@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DataAccess.Entities
 {
-    public class Membership
+    public class Membership : EntityBase
     {
         [Key]
         [ForeignKey("User")]

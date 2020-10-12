@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataAccess.Entities
 {
-    public class Package
+    public class Package : EntityBase
     {
         public int Id { get; set; }
 

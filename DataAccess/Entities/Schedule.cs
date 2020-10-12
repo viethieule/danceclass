@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace DataAccess.Entities
 {
-    public class Schedule
+    public class Schedule : EntityBase
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

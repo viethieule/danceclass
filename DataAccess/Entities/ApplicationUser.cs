@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.Identity;
+﻿using DataAccess.Interfaces;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
@@ -28,13 +29,18 @@ namespace DataAccess.Entities
         public Role(string name) { Name = name; }
     }
 
-    public class ApplicationUser : IdentityUser<int, UserLogin, UserRole, UserClaim>
+    public class ApplicationUser : IdentityUser<int, UserLogin, UserRole, UserClaim>, IAuditable
     {
         public string FullName { get; set; }
         public DateTime Birthdate { get; set; }
         public virtual Membership Membership { get; set; }
         public virtual ICollection<Registration> Registrations { get; set; }
         public virtual ICollection<Package> Packages { get; set; }
+
+        public DateTime CreatedDate { get; set; }
+        public DateTime UpdatedDate { get; set; }
+        public string CreatedBy { get; set; }
+        public string UpdatedBy { get; set; }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser, int> manager)
         {

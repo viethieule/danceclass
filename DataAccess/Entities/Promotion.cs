@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DataAccess.Entities
 {
-    public class Promotion
+    public class Promotion : EntityBase
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

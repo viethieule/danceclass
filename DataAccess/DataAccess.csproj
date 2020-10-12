@@ -81,6 +81,7 @@
     <Compile Include="DanceClassDbContext.cs" />
     <Compile Include="Entities\ApplicationUser.cs" />
     <Compile Include="Entities\Class.cs" />
+    <Compile Include="Entities\EntityBase.cs" />
     <Compile Include="Entities\Package.cs" />
     <Compile Include="Entities\Membership.cs" />
     <Compile Include="Entities\Registration.cs" />
@@ -94,6 +95,7 @@
     <Compile Include="IdentityAccessor\ApplicationSignInManager.cs" />
     <Compile Include="IdentityAccessor\ApplicationUserManager.cs" />
     <Compile Include="IdentityAccessor\ApplicationUserStore.cs" />
+    <Compile Include="Interfaces\IAuditable.cs" />
     <Compile Include="Migrations\202006071554165_InitialCreate.cs" />
     <Compile Include="Migrations\202006071554165_InitialCreate.designer.cs">
       <DependentUpon>202006071554165_InitialCreate.cs</DependentUpon>
@@ -154,6 +156,10 @@
     <Compile Include="Migrations\202009281611295_RefactorPackageStructure.designer.cs">
       <DependentUpon>202009281611295_RefactorPackageStructure.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202010121705589_AddAuditable.cs" />
+    <Compile Include="Migrations\202010121705589_AddAuditable.designer.cs">
+      <DependentUpon>202010121705589_AddAuditable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -206,6 +212,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202009281611295_RefactorPackageStructure.resx">
       <DependentUpon>202009281611295_RefactorPackageStructure.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202010121705589_AddAuditable.resx">
+      <DependentUpon>202010121705589_AddAuditable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

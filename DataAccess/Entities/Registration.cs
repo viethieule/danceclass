@@ -5,7 +5,7 @@ using DataAccess.Enums;
 
 namespace DataAccess.Entities
 {
-    public class Registration
+    public class Registration : EntityBase
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

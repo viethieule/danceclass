@@ -1,6 +1,11 @@
 ﻿using DataAccess.Entities;
+using DataAccess.Interfaces;
 using Microsoft.AspNet.Identity.EntityFramework;
+using System;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DataAccess
 {
@@ -16,6 +21,26 @@ namespace DataAccess
         public static DanceClassDbContext Create()
         {
             return new DanceClassDbContext();
+        }
+
+        public override Task<int> SaveChangesAsync()
+        {
+            var modifieds = ChangeTracker.Entries().Where(e => e.State == EntityState.Modified || e.State == EntityState.Added);
+
+            foreach (DbEntityEntry item in modifieds)
+            {
+                var changedOrAddedItem = item.Entity as IAuditable;
+                if (changedOrAddedItem != null)
+                {
+                    if (item.State == EntityState.Added)
+                    {
+                        changedOrAddedItem.CreatedDate = DateTime.Now;
+                    }
+                    changedOrAddedItem.UpdatedDate = DateTime.Now;
+                }
+            }
+
+            return base.SaveChangesAsync();
         }
 
         public DbSet<Class> Classes { get; set; }
