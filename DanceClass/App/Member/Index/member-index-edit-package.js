@@ -160,6 +160,7 @@
     function adjustInterfaceBasedOnRole() {
         if (!UserService.isAdmin()) {
             $('.membership-container').remove();
+            $('#editPackage').removeClass('btn-primary').addClass('btn-link').html('Xem tất cả gói tập')
         }
     }
 
