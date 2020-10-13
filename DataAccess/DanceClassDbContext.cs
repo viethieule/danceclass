@@ -25,6 +25,18 @@ namespace DataAccess
 
         public override Task<int> SaveChangesAsync()
         {
+            AuditEntity();
+            return base.SaveChangesAsync();
+        }
+
+        public override int SaveChanges()
+        {
+            AuditEntity();
+            return base.SaveChanges();
+        }
+
+        private void AuditEntity()
+        {
             var modifieds = ChangeTracker.Entries().Where(e => e.State == EntityState.Modified || e.State == EntityState.Added);
 
             foreach (DbEntityEntry item in modifieds)
@@ -39,8 +51,6 @@ namespace DataAccess
                     changedOrAddedItem.UpdatedDate = DateTime.Now;
                 }
             }
-
-            return base.SaveChangesAsync();
         }
 
         public DbSet<Class> Classes { get; set; }

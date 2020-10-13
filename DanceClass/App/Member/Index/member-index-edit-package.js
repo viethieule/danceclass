@@ -4,6 +4,7 @@
 
     this.initEditPackage = function () {
         initExpiryDatePicker();
+        adjustInterfaceBasedOnRole();
         registerEvent();
     }
 
@@ -154,6 +155,12 @@
             .inputmask('dd/mm/yyyy', {
                 'placeholder': 'dd/mm/yyyy'
             });
+    }
+
+    function adjustInterfaceBasedOnRole() {
+        if (!UserService.isAdmin()) {
+            $('.membership-container').remove();
+        }
     }
 
     function registerEvent() {

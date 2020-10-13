@@ -1,9 +1,6 @@
-﻿.list-packages-container {
-    margin-top: 35px;
-}
-
-.membership-container {
+﻿.membership-container {
     margin-top: 25px;
+    margin-bottom: 35px;
 }
 
 input.form-control.list-package-cell.list-package-months {
