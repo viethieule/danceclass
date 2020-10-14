@@ -22,11 +22,26 @@ namespace Services.Common.AutoMapper
             base.Load(builder);
             var assembliesToScan = this.assembliesToScan as Assembly[] ?? this.assembliesToScan.ToArray();
 
-            var allTypes = assembliesToScan
-                          .Where(a => !a.IsDynamic && a.GetName().Name != nameof(AutoMapper))
-                          .Distinct() // avoid AutoMapper.DuplicateTypeMapConfigurationException
-                          .SelectMany(a => a.DefinedTypes)
-                          .ToArray();
+            TypeInfo[] allTypes;
+            try
+            {
+                allTypes = assembliesToScan
+                             .Where(a => !a.IsDynamic && a.GetName().Name != nameof(AutoMapper))
+                             .Distinct() // avoid AutoMapper.DuplicateTypeMapConfigurationException
+                             .SelectMany(a => a.DefinedTypes)
+                             .ToArray();
+            }
+            catch (ReflectionTypeLoadException ex)
+            {
+                List<string> messages = new List<string>();
+                foreach (var item in ex.LoaderExceptions)
+                {
+                    messages.Add(item.Message);
+                }
+
+                throw new Exception(string.Join(". ", messages), ex);
+            }
+            
 
             var openTypes = new[] {
                             typeof(IValueResolver<,,>),
