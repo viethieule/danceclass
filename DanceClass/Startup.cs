@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Autofac.Integration.Mvc;
 using Autofac.Integration.WebApi;
+using DanceClass.Utils;
 using DataAccess;
 using DataAccess.Entities;
 using DataAccess.IdentityAccessor;
@@ -10,6 +11,7 @@ using Microsoft.Owin.Security.DataProtection;
 using Owin;
 using Services.Common.AutoMapper;
 using Services.Members;
+using System.CodeDom;
 using System.Reflection;
 using System.Web;
 using System.Web.Http;
@@ -47,6 +49,11 @@ namespace DanceClass
                 .Where(t => t.Name.EndsWith("Service"))
                 .AsImplementedInterfaces()
                 .InstancePerRequest();
+
+            // Register filter with DI
+            builder.Register(c => new ChangePasswordPromptFilterAttribute(c.Resolve<IMemberService>())).AsActionFilterFor<Controller>().InstancePerRequest();
+
+            builder.RegisterFilterProvider();
 
             IContainer container = builder.Build();
 

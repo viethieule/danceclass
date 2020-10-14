@@ -36,6 +36,7 @@ namespace DataAccess.Entities
         public virtual Membership Membership { get; set; }
         public virtual ICollection<Registration> Registrations { get; set; }
         public virtual ICollection<Package> Packages { get; set; }
+        public bool IsNeedToChangePassword { get; set; }
 
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }

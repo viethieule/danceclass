@@ -25,6 +25,7 @@ namespace Services.Members
         Task<CreateMemberRs> Create(CreateMemberRq rq);
         Task<GetMemberRs> Get(GetMemberRq rq);
         Task<GetMemberRs> GetCurrentUser();
+        bool IsNeedToChangePassword(int userId);
     }
 
     public class MemberService : BaseService, IMemberService
@@ -51,6 +52,8 @@ namespace Services.Members
                 member.UserName = await GenerateUserName(member.FullName, _dbContext);
 
                 ApplicationUser appUser = _mapper.Map<ApplicationUser>(member);
+                appUser.IsNeedToChangePassword = true;
+
                 var result = await _userManager.CreateAsync(appUser, DEFAULT_PASSWORD);
                 if (!result.Succeeded)
                 {
@@ -201,6 +204,12 @@ namespace Services.Members
             }
 
             return rs;
+        }
+
+        public bool IsNeedToChangePassword(int userId)
+        {
+            var user = _dbContext.Users.FirstOrDefault(u => u.Id == userId);
+            return user != null && user.IsNeedToChangePassword;
         }
     }
 }

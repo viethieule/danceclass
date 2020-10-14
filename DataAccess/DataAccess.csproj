@@ -160,6 +160,10 @@
     <Compile Include="Migrations\202010121705589_AddAuditable.designer.cs">
       <DependentUpon>202010121705589_AddAuditable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202010140638378_AddIsNeedToChangePassword.cs" />
+    <Compile Include="Migrations\202010140638378_AddIsNeedToChangePassword.designer.cs">
+      <DependentUpon>202010140638378_AddIsNeedToChangePassword.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -215,6 +219,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202010121705589_AddAuditable.resx">
       <DependentUpon>202010121705589_AddAuditable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202010140638378_AddIsNeedToChangePassword.resx">
+      <DependentUpon>202010140638378_AddIsNeedToChangePassword.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

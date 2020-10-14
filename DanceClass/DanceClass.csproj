@@ -250,6 +250,7 @@
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Utils\ChangePasswordPromptFilterAttribute.cs" />
     <Compile Include="Utils\EnumToKeyValuePairConverter.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -389,6 +390,7 @@
     <Content Include="Views\Members\Index.cshtml" />
     <Content Include="Views\Members\Create.cshtml" />
     <Content Include="Views\Schedule\Index.cshtml" />
+    <Content Include="Views\Shared\_LoginLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
