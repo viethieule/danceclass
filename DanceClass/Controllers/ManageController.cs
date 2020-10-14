@@ -238,6 +238,8 @@ namespace DanceClass.Controllers
                 var user = await UserManager.FindByIdAsync(User.Identity.GetUserId<int>());
                 if (user != null)
                 {
+                    user.IsNeedToChangePassword = false;
+                    await UserManager.UpdateAsync(user);
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                 }
                 return RedirectToAction("Index", new { Message = ManageMessageId.ChangePasswordSuccess });

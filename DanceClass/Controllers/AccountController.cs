@@ -231,9 +231,9 @@ namespace DanceClass.Controllers
         //
         // GET: /Account/ResetPassword
         [AllowAnonymous]
-        public ActionResult ResetPassword()
+        public ActionResult ResetPassword(string code)
         {
-            return View();
+            return code == null ? View("Error") : View();
         }
 
         //

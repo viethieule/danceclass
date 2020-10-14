@@ -26,9 +26,9 @@ namespace DanceClass.Utils
             if (principal.Identity.IsAuthenticated && !isAdmin)
             {
                 string userId = principal.Identity.GetUserId();
-                if (_memberService.IsNeedToChangePassword(int.Parse(userId)) && filterContext.HttpContext.Request.RawUrl != "/Account/ResetPassword")
+                if (_memberService.IsNeedToChangePassword(int.Parse(userId)) && filterContext.HttpContext.Request.RawUrl != "/Manage/ChangePassword")
                 {
-                    filterContext.Result = new RedirectResult("/Account/ResetPassword");
+                    filterContext.Result = new RedirectResult("/Manage/ChangePassword");
                     return;
                 }
             }
