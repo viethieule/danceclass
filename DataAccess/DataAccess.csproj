@@ -82,8 +82,8 @@
     <Compile Include="Entities\ApplicationUser.cs" />
     <Compile Include="Entities\Class.cs" />
     <Compile Include="Entities\EntityBase.cs" />
-    <Compile Include="Entities\Package.cs" />
     <Compile Include="Entities\Membership.cs" />
+    <Compile Include="Entities\Package.cs" />
     <Compile Include="Entities\Registration.cs" />
     <Compile Include="Entities\DefaultPackage.cs" />
     <Compile Include="Entities\Promotion.cs" />

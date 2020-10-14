@@ -4,7 +4,7 @@
 
     this.initCreatePackage = async function () {
         await initSelectPackages();
-
+        adjustInterfaceBasedOnRole();
         registerEvent();
     }
 
@@ -25,6 +25,12 @@
 
         } catch (err) {
             console.log(err);
+        }
+    }
+
+    function adjustInterfaceBasedOnRole() {
+        if (!UserService.isAdmin()) {
+            $('#addPackage').remove();
         }
     }
 
