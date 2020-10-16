@@ -16,8 +16,10 @@ namespace DataAccess.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
+        [Index]
         public DateTime Date { get; set; }
 
+        [Index]
         public int ScheduleId { get; set; }
         [ForeignKey("ScheduleId")]
         public virtual Schedule Schedule { get; set; }
