@@ -5,6 +5,7 @@ using Microsoft.AspNet.Identity;
 using Services.Common;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
@@ -135,10 +136,10 @@ namespace Services.Schedule
         public async Task<GetDetailedScheduleRs> GetDetail(GetDetailedScheduleRq rq)
         {
             DateTime start = rq.Start.Date;
-            DateTime end = rq.Start.AddDays(6).Date;
+            DateTime end = rq.Start.AddDays(7).AddSeconds(-1).Date;
 
-            var scheduleDetailDtos = await _dbContext.ScheduleDetails
-                .Where(x => !(DbFunctions.TruncateTime(x.Date) > end || DbFunctions.TruncateTime(x.Date) < start))
+            List<ScheduleDetailDTO> scheduleDetailDtos = await _dbContext.ScheduleDetails
+                .Where(x => x.Date <= end && x.Date >= start)
                 .ProjectTo<ScheduleDetailDTO>(_mappingConfig, dest => dest.Registrations.Select(r => r.User), dest => dest.Schedule.Class, dest => dest.Schedule.Trainer)
                 .ToListAsync();
 

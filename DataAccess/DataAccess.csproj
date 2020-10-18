@@ -164,6 +164,14 @@
     <Compile Include="Migrations\202010140638378_AddIsNeedToChangePassword.designer.cs">
       <DependentUpon>202010140638378_AddIsNeedToChangePassword.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202010150950326_AddIndexScheduleDetail.cs" />
+    <Compile Include="Migrations\202010150950326_AddIndexScheduleDetail.designer.cs">
+      <DependentUpon>202010150950326_AddIndexScheduleDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202010160823478_AddIndexesForScheduleQuery.cs" />
+    <Compile Include="Migrations\202010160823478_AddIndexesForScheduleQuery.designer.cs">
+      <DependentUpon>202010160823478_AddIndexesForScheduleQuery.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -222,6 +230,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202010140638378_AddIsNeedToChangePassword.resx">
       <DependentUpon>202010140638378_AddIsNeedToChangePassword.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202010150950326_AddIndexScheduleDetail.resx">
+      <DependentUpon>202010150950326_AddIndexScheduleDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202010160823478_AddIndexesForScheduleQuery.resx">
+      <DependentUpon>202010160823478_AddIndexesForScheduleQuery.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

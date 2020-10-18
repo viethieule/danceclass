@@ -11,10 +11,12 @@ namespace DataAccess.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
+        [Index]
         public int ScheduleDetailId { get; set; }
         [ForeignKey("ScheduleDetailId")]
         public virtual ScheduleDetail ScheduleDetail { get; set; }
 
+        [Index]
         public int UserId { get; set; }
         [ForeignKey("UserId")]
         public virtual ApplicationUser User { get; set; }
