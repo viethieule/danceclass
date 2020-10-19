@@ -217,8 +217,9 @@ namespace DanceClass.Controllers
 
         //
         // GET: /Manage/ChangePassword
-        public ActionResult ChangePassword()
+        public ActionResult ChangePassword(int? isDefaultPwd)
         {
+            ViewBag.IsDefaultPwd = isDefaultPwd == 1;
             return View();
         }
 
@@ -242,7 +243,7 @@ namespace DanceClass.Controllers
                     await UserManager.UpdateAsync(user);
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                 }
-                return RedirectToAction("Index", new { Message = ManageMessageId.ChangePasswordSuccess });
+                return RedirectToAction("Index", "Schedule");
             }
             AddErrors(result);
             return View(model);
