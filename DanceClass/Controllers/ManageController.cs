@@ -217,9 +217,13 @@ namespace DanceClass.Controllers
 
         //
         // GET: /Manage/ChangePassword
-        public ActionResult ChangePassword(int? isDefaultPwd)
+        public ActionResult ChangePassword(int? isDefaultPwd, int? userId)
         {
             ViewBag.IsDefaultPwd = isDefaultPwd == 1;
+            if (User.IsInRole("Admin") && userId.HasValue)
+            {
+                ViewBag.UserId = userId.Value;
+            }
             return View();
         }
 
@@ -233,18 +237,40 @@ namespace DanceClass.Controllers
             {
                 return View(model);
             }
-            var result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId<int>(), model.OldPassword, model.NewPassword);
+
+            int userId = User.Identity.GetUserId<int>();
+            IdentityResult result;
+
+            if (User.IsInRole("Admin") && model.UserId.HasValue)
+            {
+                userId = model.UserId.Value;
+                result = await UserManager.ChangePasswordAsync(userId, model.NewPassword);
+            }
+            else
+            {
+                result = await UserManager.ChangePasswordAsync(userId, model.OldPassword, model.NewPassword);
+            }
+
             if (result.Succeeded)
             {
-                var user = await UserManager.FindByIdAsync(User.Identity.GetUserId<int>());
+                var currentUserId = User.Identity.GetUserId<int>();
+                var user = await UserManager.FindByIdAsync(currentUserId);
                 if (user != null)
                 {
-                    user.IsNeedToChangePassword = false;
-                    await UserManager.UpdateAsync(user);
-                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                    if (user.IsNeedToChangePassword)
+                    {
+                        user.IsNeedToChangePassword = false;
+                        await UserManager.UpdateAsync(user);
+                    }
+
+                    if (currentUserId == userId)
+                    {
+                        await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                    }
                 }
                 return RedirectToAction("Index", "Schedule");
             }
+
             AddErrors(result);
             return View(model);
         }

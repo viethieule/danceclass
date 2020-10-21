@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Web;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 
@@ -39,9 +40,8 @@ namespace DanceClass.Models
         public string ConfirmPassword { get; set; }
     }
 
-    public class ChangePasswordViewModel
+    public class ChangePasswordViewModel : IValidatableObject
     {
-        [Required]
         [DataType(DataType.Password)]
         [Display(Name = "Current password")]
         public string OldPassword { get; set; }
@@ -56,6 +56,16 @@ namespace DanceClass.Models
         [Display(Name = "Confirm new password")]
         [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+
+        public int? UserId { get; set; }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (!HttpContext.Current.User.IsInRole("Admin") && string.IsNullOrEmpty(OldPassword))
+            {
+                yield return new ValidationResult("Vui lòng nhập mật khẩu hiện tại");
+            }
+        }
     }
 
     public class AddPhoneNumberViewModel

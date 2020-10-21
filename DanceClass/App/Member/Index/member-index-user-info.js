@@ -17,6 +17,11 @@
                 $('#fullName').text(fullName);
                 $('#birthdate').text(moment(birthdate).format('DD/MM/YYYY'));
                 $('#phoneNumber').text(phoneNumber);
+                if (UserService.isAdmin()) {
+                    $('#changePassword').attr('href', '/Manage/ChangePassword?userId=' + _self.member.id);
+                } else {
+                    $('#changePassword').attr('href', '/Manage/ChangePassword');
+                }
 
                 _self.loadMembershipData();
                 _self.loadMemberPackages();

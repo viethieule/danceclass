@@ -61,6 +61,39 @@ namespace DataAccess.IdentityAccessor
             }
             return manager;
         }
+
+        public async Task<IdentityResult> ChangePasswordAsync(int userId, string newPassword)
+        {
+            var user = await this.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return await Task.FromResult(IdentityResult.Failed("Hội viên không tồn tại"));
+            }
+
+            var store = this.Store as IUserPasswordStore<ApplicationUser, int>;
+            if (store == null)
+            {
+                var errors = new string[] { "Current UserStore doesn't implement IUserPasswordStore" };
+
+                return await Task.FromResult(IdentityResult.Failed(errors));
+            }
+
+            if (PasswordValidator != null)
+            {
+                var result = await PasswordValidator.ValidateAsync(newPassword);
+                if (!result.Succeeded)
+                {
+                    return result;
+                }
+            }
+
+            var newPasswordHash = this.PasswordHasher.HashPassword(newPassword);
+
+            await store.SetPasswordHashAsync(user, newPasswordHash);
+            await store.UpdateAsync(user);
+
+            return await Task.FromResult(IdentityResult.Success);
+        }
     }
 
     public class EmailService : IIdentityMessageService
