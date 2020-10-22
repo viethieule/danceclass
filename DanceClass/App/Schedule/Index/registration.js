@@ -41,13 +41,13 @@
         });
     }
 
-    function handleShowingModalManage(scheduleDetailId, alertType, message) {
+    async function handleShowingModalManage(scheduleDetailId, alertType, message) {
         if (message) {
             $('#modal-manage .modal-body').alert(true, alertType, message);
         }
 
         _self.selectedScheduleDetails = _self.scheduleDetails.find(x => x.id === scheduleDetailId);
-        const { schedule, registrations, date, totalRegistered, sessionNo } = _self.selectedScheduleDetails;
+        const { schedule, date, totalRegistered, sessionNo } = _self.selectedScheduleDetails;
         _self.selectedSchedule = schedule;
 
         let [hour, minute, ...rest] = schedule.startTime.split(':');
@@ -69,6 +69,7 @@
             .append(renderSessionInfoGroup('Giáo viên', trainer ? trainer.name : '', gridClass))
             .append(renderSessionInfoGroup('Số học viên đăng ký', totalRegistered + ' / 20', gridClass));
 
+        var registrations = await ApiService.post('api/registration/getbyscheduledetail', { '': scheduleDetailId });
         renderRegistrationList(registrations);
 
         $('.session-user-search-result').hide();

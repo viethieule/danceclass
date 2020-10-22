@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using DataAccess;
 using Microsoft.AspNet.Identity;
 using Services.Common;
+using Services.Registration;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -140,7 +141,7 @@ namespace Services.Schedule
 
             List<ScheduleDetailDTO> scheduleDetailDtos = await _dbContext.ScheduleDetails
                 .Where(x => x.Date <= end && x.Date >= start)
-                .ProjectTo<ScheduleDetailDTO>(_mappingConfig, dest => dest.Registrations.Select(r => r.User), dest => dest.Schedule.Class, dest => dest.Schedule.Trainer)
+                .ProjectTo<ScheduleDetailDTO>(_mappingConfig, dest => dest.Schedule.Class, dest => dest.Schedule.Trainer)
                 .ToListAsync();
 
             var isMember = HttpContext.Current.User.Identity.IsAuthenticated && HttpContext.Current.User.IsInRole("Member");
@@ -148,7 +149,7 @@ namespace Services.Schedule
             if (isMember)
             {
                 int userId = int.Parse(HttpContext.Current.User.Identity.GetUserId());
-                AppendCurrentUserRegistrationToDtos(scheduleDetailDtos);
+                await AppendCurrentUserRegistrationToDtos(scheduleDetailDtos);
             }
 
             GetDetailedScheduleRs rs = new GetDetailedScheduleRs
@@ -159,7 +160,7 @@ namespace Services.Schedule
             return rs;
         }
 
-        private void AppendCurrentUserRegistrationToDtos(List<ScheduleDetailDTO> dtos)
+        private async Task AppendCurrentUserRegistrationToDtos(List<ScheduleDetailDTO> dtos)
         {
             string userId = HttpContext.Current.User.Identity.GetUserId();
             if (string.IsNullOrEmpty(userId))
@@ -167,9 +168,15 @@ namespace Services.Schedule
                 return;
             }
 
+            var scheduleDetailIds = dtos.Select(d => d.Id);
+            var currentUserRegistrations = await _dbContext.Registrations
+                .Where(r => scheduleDetailIds.Contains(r.ScheduleDetailId) && r.UserId.ToString() == userId)
+                .ProjectTo<RegistrationDTO>(_mappingConfig)
+                .ToListAsync();
+
             dtos.ForEach(dto =>
             {
-                var currentUserRegistration = dto.Registrations.FirstOrDefault(r => r.UserId.ToString() == userId);
+                var currentUserRegistration = currentUserRegistrations.FirstOrDefault(r => r.ScheduleDetailId == dto.Id);
                 if (currentUserRegistration != null)
                 {
                     dto.CurrentUserRegistration = currentUserRegistration;
