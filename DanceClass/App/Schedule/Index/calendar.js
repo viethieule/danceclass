@@ -41,6 +41,7 @@ function CalendarManager() {
     }
 
     this.renderSchedule = async function () {
+        $('.spinner').show();
         $('#calendarBody').empty();
 
         const eventsByTime = await getSchedule();
@@ -96,6 +97,7 @@ function CalendarManager() {
         });
 
         adaptUI();
+        $('.spinner').hide();
     }
 
     function formatRemainingSessions(remainingSessions) {
