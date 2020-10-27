@@ -29,3 +29,9 @@ input.form-control.list-package-cell.list-package-price {
     border-color: #dd4b39 !important;
     box-shadow: none !important;
 }
+
+@media screen and (max-width: 480px) {
+    .col-edit-membership {
+        width: 14%;
+    }
+}
