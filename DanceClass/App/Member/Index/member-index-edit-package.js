@@ -2,6 +2,8 @@
     var _self = this;
     var _defaultPackages = [];
 
+    var LIST_PACKAGES_ACTION_COLUMN_INDEX = 1;
+
     this.initEditPackage = function () {
         initExpiryDatePicker();
         adjustInterfaceBasedOnRole();
@@ -59,6 +61,19 @@
                 columns: [
                     { title: '', data: 'id', visible: false },
                     {
+                        title: '',
+                        data: 'id',
+                        render: function (data, type, row, meta) {
+                            //var btnEdit = $('<button>', { class: 'btn btn-xs btn-package btn-success btn-package-edit', 'data-package-id': data }).append($('<i>', { class: 'fa fa-pencil' }));
+                            var btnSave = $('<button>', { class: 'btn btn-xs btn-package btn-success btn-package-save', 'data-package-id': data }).append($('<i>', { class: 'fa fa-check' }));
+                            var btnCancel = $('<button>', { class: 'btn btn-xs btn-package btn-danger btn-package-cancel', 'data-package-id': data }).append($('<i>', { class: 'fa fa-times' }));
+                            var div = $('<div>', { class: 'list-package-actions', style: 'display: none' }).append(btnSave).append(btnCancel);
+                            return div.wrap('<div></div>').parent().html();
+                        },
+                        visible: false,
+                        width: '6%'
+                    },
+                    {
                         title: 'Gói tập',
                         data: 'defaultPackageId',
                         render: function (data, type, row, meta) {
@@ -111,20 +126,8 @@
                     },
                     { title: 'Số buổi còn lại', data: 'remainingSessions', width: '12%' },
                     { title: 'Trạng thái', data: 'status', width: '10%' },
-                    {
-                        title: '',
-                        data: 'id',
-                        render: function (data, type, row, meta) {
-                            //var btnEdit = $('<button>', { class: 'btn btn-xs btn-package btn-success btn-package-edit', 'data-package-id': data }).append($('<i>', { class: 'fa fa-pencil' }));
-                            var btnSave = $('<button>', { class: 'btn btn-xs btn-package btn-success btn-package-save', 'data-package-id': data }).append($('<i>', { class: 'fa fa-check' }));
-                            var btnCancel = $('<button>', { class: 'btn btn-xs btn-package btn-danger btn-package-cancel', 'data-package-id': data }).append($('<i>', { class: 'fa fa-times' }));
-                            var div = $('<div>', { class: 'list-package-actions', style: 'display: none' }).append(btnSave).append(btnCancel);
-                            return div.wrap('<div></div>').parent().html();
-                        },
-                        visible: false,
-                        width: '10%'
-                    }
                 ],
+                scrollX: true,
                 ordering: false,
                 pageLength: 3,
                 lengthChange: false,
@@ -165,6 +168,11 @@
     }
 
     function registerEvent() {
+        $('#modal-edit-package').on('shown.bs.modal', function () {
+            $($.fn.dataTable.tables(true)).DataTable()
+                .columns.adjust();
+        });
+
         if (UserService.isAdmin()) {
             registerAdminEvent();
         }
@@ -258,7 +266,7 @@
             var package = table.row(row).data();
             var dbDefaultPackageId = package.defaultPackageId;
 
-            var actionsColumn = table.column(7);
+            var actionsColumn = table.column(LIST_PACKAGES_ACTION_COLUMN_INDEX);
             if (dbDefaultPackageId && dbDefaultPackageId === parseInt(this.value)) {
                 toggleActionButtons(actionsColumn, row, false);
             } else {
@@ -291,7 +299,7 @@
                 }
 
                 var table = $('#list-packages').DataTable();
-                toggleActionButtons(table.column(7), row, true);
+                toggleActionButtons(table.column(LIST_PACKAGES_ACTION_COLUMN_INDEX), row, true);
             }
         )
 
@@ -370,7 +378,7 @@
                 }
             }
 
-            toggleActionButtons(table.column(7), row, false);
+            toggleActionButtons(table.column(LIST_PACKAGES_ACTION_COLUMN_INDEX), row, false);
         });
 
         $('#list-packages').on('click', '.btn-package-cancel', function (event) {
@@ -411,7 +419,7 @@
                 row.find('.list-package-price').val(package.price).prop('disabled', isDefaultPackage);
             }
 
-            toggleActionButtons(table.column(7), row, false);
+            toggleActionButtons(table.column(LIST_PACKAGES_ACTION_COLUMN_INDEX), row, false);
         }
     }
 }

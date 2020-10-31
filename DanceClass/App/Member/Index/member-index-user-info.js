@@ -85,6 +85,7 @@
                         { title: "Chi nhánh", orderable: false, width: '11%' },
                         { title: "Trạng thái", orderable: false, width: '11%' }
                     ],
+                    scrollX: true,
                     order: [[4, 'desc']],
                     autoWidth: false,
                     lengthMenu: [10, 20, 30],

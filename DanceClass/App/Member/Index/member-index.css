@@ -3,16 +3,20 @@
     margin-bottom: 35px;
 }
 
+.list-package-default-package {
+    width: 64px;
+}
+
 input.form-control.list-package-cell.list-package-months {
-    width: 45px;
+    width: 44px;
 }
 
 input.form-control.list-package-cell.list-package-numberOfSessions {
-    width: 50px;
+    width: 44px;
 }
 
 input.form-control.list-package-cell.list-package-price {
-    width: 88px;
+    width: 77px;
 }
 
 .btn-package {
