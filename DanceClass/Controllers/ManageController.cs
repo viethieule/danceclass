@@ -241,7 +241,8 @@ namespace DanceClass.Controllers
             int userId = User.Identity.GetUserId<int>();
             IdentityResult result;
 
-            if (User.IsInRole("Admin") && model.UserId.HasValue)
+            // Admin can change other user's pwd
+            if (User.IsInRole("Admin") && model.UserId.HasValue && model.UserId.Value != userId)
             {
                 userId = model.UserId.Value;
                 result = await UserManager.ChangePasswordAsync(userId, model.NewPassword);

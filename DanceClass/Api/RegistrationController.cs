@@ -15,6 +15,7 @@ namespace DanceClass.Api
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin, Receptionist")]
         [Route("create")]
         public async Task<IHttpActionResult> Create(CreateRegistrationRq rq)
         {
@@ -23,6 +24,7 @@ namespace DanceClass.Api
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin, Receptionist")]
         [Route("cancel")]
         public async Task<IHttpActionResult> Cancel(CancelRegistrationRq rq)
         {
@@ -31,6 +33,7 @@ namespace DanceClass.Api
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin, Receptionist")]
         [Route("getbyscheduledetail")]
         public async Task<IHttpActionResult> GetByScheduleDetail([FromBody]int scheduleDetailId)
         {
@@ -40,7 +43,7 @@ namespace DanceClass.Api
 
         [HttpPut]
         [Route("confirmAttendance/{registrationId}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Receptionist")]
         public async Task ConfirmAttendance(int registrationId)
         {
             await _registrationService.ConfirmAttendance(registrationId);
@@ -48,7 +51,7 @@ namespace DanceClass.Api
 
         [HttpPost]
         [Route("getByUser")]
-        [Authorize(Roles = "Member,Admin")]
+        [Authorize]
         public async Task<IHttpActionResult> GetByUser(GetRegistrationsRq rq)
         {
             var rs = await _registrationService.GetByUser(rq);

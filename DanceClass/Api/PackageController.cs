@@ -26,7 +26,7 @@ namespace DanceClass.Api
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Receptionist")]
         [Route("add")]
         public async Task<IHttpActionResult> AddForMember(CreatePackageRq rq)
         {
@@ -44,7 +44,7 @@ namespace DanceClass.Api
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin, Member")]
+        [Authorize]
         [Route("getByUserId")]
         public async Task<IHttpActionResult> GetByUserId(GetPackagesRq rq)
         {

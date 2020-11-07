@@ -5,7 +5,7 @@ using System.Web.Http;
 namespace DanceClass.Api
 {
     [RoutePrefix("api/membership")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, Receptionist")]
     public class MembershipController : ApiBaseController
     {
         private readonly IMembershipService _membershipService;

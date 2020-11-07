@@ -61,7 +61,9 @@ namespace DanceClass.Models
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (!HttpContext.Current.User.IsInRole("Admin") && string.IsNullOrEmpty(OldPassword))
+            bool isAdmin = HttpContext.Current.User.IsInRole("Admin");
+            bool isAdminChangeAdminPwd = isAdmin && !UserId.HasValue;
+            if ((!isAdmin || isAdminChangeAdminPwd) && string.IsNullOrEmpty(OldPassword))
             {
                 yield return new ValidationResult("Vui lòng nhập mật khẩu hiện tại");
             }

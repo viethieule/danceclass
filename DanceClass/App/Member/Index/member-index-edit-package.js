@@ -162,8 +162,7 @@
 
     function adjustInterfaceBasedOnRole() {
         if (!UserService.isAdmin()) {
-            $('.membership-container').remove();
-            $('#editPackage').removeClass('btn btn-primary').addClass('btn-link').html('Xem tất cả gói tập').parent().removeClass('pull-right');
+            $('#editPackage').removeClass('btn btn-primary').addClass('btn-link').html('Xem tất cả gói tập').css('margin-top', '4px').parent().removeClass('pull-right');
         }
     }
 

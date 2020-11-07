@@ -23,6 +23,7 @@
             {
                 context.Roles.Add(new Role { Name = "Admin" });
                 context.Roles.Add(new Role { Name = "Member" });
+                context.Roles.Add(new Role { Name = "Receptionist" });
 
                 context.SaveChanges();
             }

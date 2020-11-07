@@ -155,11 +155,12 @@ function CalendarManager() {
         const { schedule } = event;
         const isMember = UserService.isMember();
         const isAdmin = UserService.isAdmin();
+        const isReceptionist = UserService.isReceptionist();
 
         var div = $('<div></div>', {
             'class': 'mistake-event mistake-event-' + schedule.branch.toLowerCase(),
             'data-toggle': 'modal',
-            'data-target': isAdmin ? '#modal-manage' : isMember ? '#modal-register' : '',
+            'data-target': (isAdmin || isReceptionist) ? '#modal-manage' : isMember ? '#modal-register' : '',
             'data-id': event.id
         });
 
@@ -188,7 +189,7 @@ function CalendarManager() {
             .prepend($('<li>', { class: 'fa fa-calendar' }))
             .appendTo(infoDiv);
 
-        if (isAdmin) {
+        if ((isAdmin || isReceptionist)) {
             $('<span></span>', { class: 'mistake-event-info' })
                 .html(`&nbsp; ${event.totalRegistered}/20`)
                 .prepend($('<li>', { class: 'fa fa-user' }))

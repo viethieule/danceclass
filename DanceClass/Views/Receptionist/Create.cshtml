@@ -1,0 +1,55 @@
+﻿
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    @Styles.Render("~/Content/bootstrap-datepicker")
+    <link href="~/App/Common/css/form.css" rel="stylesheet" />
+}
+
+<section class="content-header">
+    <h1>
+        Tạo lễ tân
+    </h1>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="col-md-9">
+            <div class="box box-primary">
+                <form id="createReceptionist">
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label class="required" for="name">Tên</label>
+                            <input type="text" class="form-control" id="name" name="name">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="email@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label class="required" for="phone">Điện thoại</label>
+                            <input type="number" class="form-control" name="phone" id="phone">
+                        </div>
+                    </div>
+                    <div class="box-footer">
+                        <button type="submit" class="btn btn-primary pull-right">Tạo</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="~/App/Common/js/formUtils.js"></script>
+    <script src="~/App/Receptionist/Create/create.js"></script>
+    <script>
+        var ctrl = new CreateReceptionistController();
+        ctrl.initialize();
+    </script>
+}
+
+

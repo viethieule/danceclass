@@ -15,6 +15,7 @@ namespace DanceClass.Api
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         [Route("getAll")]
         public async Task<IHttpActionResult> GetAll()
         {

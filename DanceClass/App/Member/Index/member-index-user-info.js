@@ -17,10 +17,13 @@
                 $('#fullName').text(fullName);
                 $('#birthdate').text(moment(birthdate).format('DD/MM/YYYY'));
                 $('#phoneNumber').text(phoneNumber);
-                if (UserService.isAdmin()) {
+
+                if (_self.member.id === _self.currentUser.id) {
+                    $('#changePassword').attr('href', '/Manage/ChangePassword');
+                } else if (UserService.isAdmin()) {
                     $('#changePassword').attr('href', '/Manage/ChangePassword?userId=' + _self.member.id);
                 } else {
-                    $('#changePassword').attr('href', '/Manage/ChangePassword');
+                    $('#changePassword').parent().remove();
                 }
 
                 _self.loadMembershipData();

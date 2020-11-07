@@ -14,7 +14,7 @@ namespace DanceClass.Api
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Receptionist")]
         [Route("create")]
         public async Task<IHttpActionResult> Create(CreateMemberRq rq)
         {
@@ -23,6 +23,7 @@ namespace DanceClass.Api
         }
 
         [HttpPost]
+        [Authorize]
         [Route("get")]
         public async Task<IHttpActionResult> Get(GetMemberRq rq)
         {

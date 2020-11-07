@@ -229,6 +229,7 @@
     <Compile Include="Api\ClassController.cs" />
     <Compile Include="Api\MembershipController.cs" />
     <Compile Include="Api\PackageController.cs" />
+    <Compile Include="Api\ReceptionistController.cs" />
     <Compile Include="Api\RegistrationController.cs" />
     <Compile Include="Api\ScheduleController.cs" />
     <Compile Include="Api\TrainerController.cs" />
@@ -242,6 +243,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MembersController.cs" />
+    <Compile Include="Controllers\ReceptionistController.cs" />
     <Compile Include="Controllers\ScheduleController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -266,6 +268,7 @@
     <Content Include="App\Member\Index\member-index-user-info.js" />
     <Content Include="App\Member\Index\member-index.css" />
     <Content Include="App\Member\Index\member-index.js" />
+    <Content Include="App\Receptionist\Create\create.js" />
     <Content Include="App\Schedule\Index\calendar.js" />
     <Content Include="App\Schedule\Index\registration.js" />
     <Content Include="App\Schedule\Index\user-registration.js" />
@@ -391,6 +394,7 @@
     <Content Include="Views\Members\Create.cshtml" />
     <Content Include="Views\Schedule\Index.cshtml" />
     <Content Include="Views\Shared\_LoginLayout.cshtml" />
+    <Content Include="Views\Receptionist\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -56,7 +56,10 @@
                 <div class="box-footer">
                     <div class="pull-right">
                         <button id="editPackage" type="button" data-toggle="modal" data-target="#modal-edit-package" class="btn btn-primary">Sửa</button>
-                        <button id="addPackage" type="button" data-toggle="modal" data-target="#modal-create-package" class="btn btn-primary">Thêm</button>
+                        @if (Request.IsAuthenticated && !User.IsInRole("Member"))
+                        {
+                            <button id="addPackage" type="button" data-toggle="modal" data-target="#modal-create-package" class="btn btn-primary">Thêm</button>
+                        }
                     </div>
                 </div>
             </div>
@@ -84,44 +87,47 @@
                     <h4 class="modal-title">Thông tin các gói tập</h4>
                 </div>
                 <div class="modal-body">
-                    <div class="membership-container">
-                        <form class="form-horizontal">
-                            <div class="form-group">
-                                <label for="remainingSessions" class="col-xs-4 col-sm-4 control-label">Số buổi còn lại</label>
-                                <div class="col-xs-4 col-sm-4">
-                                    <input type="number" class="form-control form-edit" name="remainingSessions" id="membership-remaining-sessions" />
-                                </div>
-                                <div class="col-edit-membership col-xs-1 col-sm-1">
-                                    <button class="btn btn-success btn-edit" type="button"><i class="fa fa-pencil"></i></button>
-                                </div>
-                                <div class="col-edit-membership col-xs-1 col-sm-1" style="display: none">
-                                    <button class="btn btn-success btn-save-edit" type="button"><i class="fa fa-check"></i></button>
-                                </div>
-                                <div class="col-edit-membership col-xs-1 col-sm-1" style="display: none">
-                                    <button class="btn btn-danger btn-cancel-edit" type="button"><i class="fa fa-times"></i></button>
-                                </div>
-                            </div>
-                        </form>
-                        <form class="form-horizontal">
-                            <div class="form-group">
-                                <label for="expiryDate" class="col-xs-4 col-sm-4 control-label">Ngày hết hạn</label>
-                                <div class="col-xs-4 col-sm-4">
-                                    <div class="input-group date" style="width: 100%">
-                                        <input id="membership-expiry-date" name="expiryDate" type="text" class="form-control form-edit form-edit-datepicker">
+                    @if (Request.IsAuthenticated && User.IsInRole("Admin"))
+                    {
+                        <div class="membership-container">
+                            <form class="form-horizontal">
+                                <div class="form-group">
+                                    <label for="remainingSessions" class="col-xs-4 col-sm-4 control-label">Số buổi còn lại</label>
+                                    <div class="col-xs-4 col-sm-4">
+                                        <input type="number" class="form-control form-edit" name="remainingSessions" id="membership-remaining-sessions" />
+                                    </div>
+                                    <div class="col-edit-membership col-xs-1 col-sm-1">
+                                        <button class="btn btn-success btn-edit" type="button"><i class="fa fa-pencil"></i></button>
+                                    </div>
+                                    <div class="col-edit-membership col-xs-1 col-sm-1" style="display: none">
+                                        <button class="btn btn-success btn-save-edit" type="button"><i class="fa fa-check"></i></button>
+                                    </div>
+                                    <div class="col-edit-membership col-xs-1 col-sm-1" style="display: none">
+                                        <button class="btn btn-danger btn-cancel-edit" type="button"><i class="fa fa-times"></i></button>
                                     </div>
                                 </div>
-                                <div class="col-edit-membership col-xs-1 col-sm-1">
-                                    <button class="btn btn-success btn-edit" type="button"><i class="fa fa-pencil"></i></button>
+                            </form>
+                            <form class="form-horizontal">
+                                <div class="form-group">
+                                    <label for="expiryDate" class="col-xs-4 col-sm-4 control-label">Ngày hết hạn</label>
+                                    <div class="col-xs-4 col-sm-4">
+                                        <div class="input-group date" style="width: 100%">
+                                            <input id="membership-expiry-date" name="expiryDate" type="text" class="form-control form-edit form-edit-datepicker">
+                                        </div>
+                                    </div>
+                                    <div class="col-edit-membership col-xs-1 col-sm-1">
+                                        <button class="btn btn-success btn-edit" type="button"><i class="fa fa-pencil"></i></button>
+                                    </div>
+                                    <div class="col-edit-membership col-xs-1 col-sm-1" style="display: none">
+                                        <button class="btn btn-success btn-save-edit" type="button"><i class="fa fa-check"></i></button>
+                                    </div>
+                                    <div class="col-edit-membership col-xs-1 col-sm-1" style="display: none">
+                                        <button class="btn btn-danger btn-cancel-edit" type="button"><i class="fa fa-times"></i></button>
+                                    </div>
                                 </div>
-                                <div class="col-edit-membership col-xs-1 col-sm-1" style="display: none">
-                                    <button class="btn btn-success btn-save-edit" type="button"><i class="fa fa-check"></i></button>
-                                </div>
-                                <div class="col-edit-membership col-xs-1 col-sm-1" style="display: none">
-                                    <button class="btn btn-danger btn-cancel-edit" type="button"><i class="fa fa-times"></i></button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+                            </form>
+                        </div>
+                    }
                     <div class="list-packages-container">
                         <table id="list-packages" class="table table-bordered table-hover" style="width: 100%"></table>
                     </div>

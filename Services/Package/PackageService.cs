@@ -160,10 +160,10 @@ namespace Services.Package
                 throw new Exception("Hội viên không tồn tại");
             }
 
-            bool isAdmin = HttpContext.Current.User.IsInRole("Admin");
+            bool isMember = HttpContext.Current.User.IsInRole("Member");
             var currentUserId = HttpContext.Current.User.Identity.GetUserId();
 
-            if (!isAdmin && rq.UserId.ToString() != currentUserId)
+            if (isMember && rq.UserId.ToString() != currentUserId)
             {
                 throw new Exception("Không đủ quyền");
             }

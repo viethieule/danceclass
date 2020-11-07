@@ -41,10 +41,10 @@ namespace Services.Registration
                 throw new Exception("Đăng ký không tồn tại!");
             }
 
-            bool isAdmin = HttpContext.Current.User.IsInRole("Admin");
+            bool isMember = HttpContext.Current.User.IsInRole("Member");
             var currentUserId = HttpContext.Current.User.Identity.GetUserId();
 
-            if (registration.UserId.ToString() != currentUserId && !isAdmin)
+            if (registration.UserId.ToString() != currentUserId && isMember)
             {
                 throw new Exception("Không đủ quyền hủy đăng ký!");
             }
@@ -56,7 +56,7 @@ namespace Services.Registration
             }
 
             DateTime dateAttending = scheduleDetail.Date.Add(scheduleDetail.Schedule.StartTime);
-            if (!isAdmin && (DateTime.Now >= dateAttending || (dateAttending - DateTime.Now).TotalHours < 1))
+            if (isMember && (DateTime.Now >= dateAttending || (dateAttending - DateTime.Now).TotalHours < 1))
             {
                 throw new Exception("Chỉ có thể hủy đăng ký ít nhất 1 tiếng trước khi tập!");
             }
@@ -173,10 +173,10 @@ namespace Services.Registration
         {
             var rs = new GetRegistrationsRs();
 
-            bool isAdmin = HttpContext.Current.User.IsInRole("Admin");
+            bool isMember = HttpContext.Current.User.IsInRole("Member");
             var currentUserId = HttpContext.Current.User.Identity.GetUserId();
 
-            if (rq.UserId.ToString() != currentUserId && !isAdmin)
+            if (isMember && rq.UserId.ToString() != currentUserId)
             {
                 return rs;
             }

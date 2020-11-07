@@ -32,7 +32,7 @@ namespace Services.Members
     {
         private readonly ApplicationUserManager _userManager;
         private readonly IConfigurationProvider _mappingConfig;
-        private const string DEFAULT_PASSWORD = "P@ssw0rd";
+        private const string DEFAULT_PASSWORD = "Mistake1234";
 
         public MemberService(
             ApplicationUserManager userManager,
@@ -111,9 +111,9 @@ namespace Services.Members
 
         public async Task<GetMemberRs> Get(GetMemberRq rq)
         {
-            bool isAdmin = HttpContext.Current.User.IsInRole("Admin");
+            bool isMember = HttpContext.Current.User.IsInRole("Member");
             string currentUserName = HttpContext.Current.User.Identity.GetUserName();
-            if (!isAdmin && currentUserName != rq.UserName)
+            if (isMember && currentUserName != rq.UserName)
             {
                 throw new Exception("Not found");
             }

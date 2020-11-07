@@ -30,7 +30,7 @@
 
     function adjustInterfaceBasedOnRole() {
         if (!UserService.isAdmin()) {
-            $('#addPackage').remove();
+            $('#addPackage').addClass('pull-right');
         }
     }
 
