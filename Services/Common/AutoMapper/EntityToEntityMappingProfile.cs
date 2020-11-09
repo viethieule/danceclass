@@ -12,7 +12,9 @@ namespace Services.Common.AutoMapper
                 .ForMember(x => x.Trainer, opt => opt.Ignore())
                 .ForMember(x => x.TrainerId, opt => opt.Ignore())
                 .ForMember(x => x.Class, opt => opt.Ignore())
-                .ForMember(x => x.ClassId, opt => opt.Ignore());
+                .ForMember(x => x.ClassId, opt => opt.Ignore())
+                .ForMember(x => x.CreatedDate, opt => opt.Ignore())
+                .ForMember(x => x.UpdatedDate, opt => opt.Ignore());
         }
     }
 }
