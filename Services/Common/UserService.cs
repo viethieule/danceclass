@@ -15,11 +15,17 @@ namespace Services.Common
     public class UserService : BaseService
     {
         protected readonly ApplicationUserManager _userManager;
+        protected readonly IConfigurationProvider _mappingConfig;
         protected const string DEFAULT_PASSWORD = "Mistake1234";
 
-        public UserService(ApplicationUserManager userManager, DanceClassDbContext dbContext, IMapper mapper) : base(dbContext, mapper)
+        public UserService(
+            ApplicationUserManager userManager,
+            DanceClassDbContext dbContext,
+            IMapper mapper,
+            IConfigurationProvider mappingConfig) : base(dbContext, mapper)
         {
             _userManager = userManager;
+            _mappingConfig = mappingConfig;
         }
 
         protected async Task<string> GenerateUserName(string fullName)
@@ -36,7 +42,14 @@ namespace Services.Common
             {
                 string userName = names[0];
 
-                int numberOfExistingUsernames = await _dbContext.Users.CountAsync(u => u.UserName.StartsWith(userName) && u.UserName.Length == userName.Length);
+                List<string> existingUsernames = await GetUsernamesStartWith(userName);
+                int numberOfExistingUsernames = existingUsernames.Count(u =>
+                {
+                    string[] part = u.Split('.');
+                    return part[0] == userName && 
+                        (part.Length == 1 || (part.Length == 2 && int.TryParse(part[1], out _)));
+                });
+
                 if (numberOfExistingUsernames == 0)
                 {
                     return userName;
@@ -50,7 +63,13 @@ namespace Services.Common
             {
                 string userName = names[names.Length - 1] + "." + names[0];
 
-                int numberOfExistingUsernames = await _dbContext.Users.CountAsync(u => u.UserName.StartsWith(userName));
+                List<string> existingUsernames = await GetUsernamesStartWith(userName);
+                int numberOfExistingUsernames = existingUsernames.Count(u =>
+                {
+                    string[] part = u.Split('.');
+                    return part[0] + "." + part[1] == userName;
+                });
+
                 if (numberOfExistingUsernames == 0)
                 {
                     return userName;
@@ -60,6 +79,14 @@ namespace Services.Common
                     return userName + "." + numberOfExistingUsernames;
                 }
             }
+        }
+
+        private async Task<List<string>> GetUsernamesStartWith(string start)
+        {
+            return await _dbContext.Users
+                .Where(u => u.UserName.StartsWith(start))
+                .Select(u => u.UserName)
+                .ToListAsync();
         }
     }
 }

@@ -125,8 +125,9 @@
                             }
                         });
 
+                    let userLink = $('<a>', { href: '/member/' + user.userName, target: '_blank' }).html(user.fullName);
                     let searchResult = $('<tr>')
-                        .append($('<td>').text(user.fullName))
+                        .append($('<td>').append(userLink))
                         .append($('<td>').text(user.userName))
                         .append($('<td>').text(user.phoneNumber))
                         .append($('<td>').append(registerBtn));
@@ -238,7 +239,8 @@
 
     function renderRegistrationRow(registration, index, registrations) {
         let tdNo = $('<td>').html(index + 1);
-        let tdName = $('<td>').html(registration.user.fullName);
+        let userLink = $('<a>', { href: '/member/' + registration.user.userName, target: '_blank' }).html(registration.user.fullName);
+        let tdName = $('<td>').append(userLink);
         let confirmBtn = $('<button>', { class: 'btn btn-success btn-xs btn-label' })
             .html('Đến lớp')
             .on('click', { registration }, handleConfirmRegistration);

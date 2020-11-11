@@ -23,7 +23,7 @@ namespace Services.Receptionist
             ApplicationUserManager userManager,
             DanceClassDbContext dbContext,
             IMapper mapper,
-            IConfigurationProvider mappingConfig) : base(userManager, dbContext, mapper)
+            IConfigurationProvider mappingConfig) : base(userManager, dbContext, mapper, mappingConfig)
         {
             
         }

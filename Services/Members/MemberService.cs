@@ -28,20 +28,14 @@ namespace Services.Members
         bool IsNeedToChangePassword(int userId);
     }
 
-    public class MemberService : BaseService, IMemberService
+    public class MemberService : UserService, IMemberService
     {
-        private readonly ApplicationUserManager _userManager;
-        private readonly IConfigurationProvider _mappingConfig;
-        private const string DEFAULT_PASSWORD = "Mistake1234";
-
         public MemberService(
             ApplicationUserManager userManager,
             DanceClassDbContext dbContext,
             IMapper mapper,
-            IConfigurationProvider mappingConfig) : base(dbContext, mapper)
+            IConfigurationProvider mappingConfig) : base(userManager, dbContext, mapper, mappingConfig)
         {
-            _userManager = userManager;
-            _mappingConfig = mappingConfig;
         }
 
         public async Task<CreateMemberRs> Create(CreateMemberRq rq)
@@ -49,7 +43,7 @@ namespace Services.Members
             using (TransactionScope scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
                 MemberDTO member = rq.Member;
-                member.UserName = await GenerateUserName(member.FullName, _dbContext);
+                member.UserName = await GenerateUserName(member.FullName);
 
                 ApplicationUser appUser = _mapper.Map<ApplicationUser>(member);
                 appUser.IsNeedToChangePassword = true;
@@ -131,46 +125,6 @@ namespace Services.Members
             }
 
             return rs;
-        }
-
-        private async Task<string> GenerateUserName(string fullName, DanceClassDbContext dbContext)
-        {
-            if (string.IsNullOrWhiteSpace(fullName))
-            {
-                return string.Empty;
-            }
-
-            fullName = StringHelper.ConverToUnsignedString(fullName.Trim());
-            string[] names = Regex.Split(fullName.ToLower(), @"\s+");
-
-            if (names.Length == 1)
-            {
-                string userName = names[0];
-
-                int numberOfExistingUsernames = await dbContext.Users.CountAsync(u => u.UserName.StartsWith(userName) && u.UserName.Length == userName.Length);
-                if (numberOfExistingUsernames == 0)
-                {
-                    return userName;
-                }
-                else
-                {
-                    return userName + "." + numberOfExistingUsernames;
-                }
-            }
-            else
-            {
-                string userName = names[names.Length - 1] + "." + names[0];
-
-                int numberOfExistingUsernames = await dbContext.Users.CountAsync(u => u.UserName.StartsWith(userName));
-                if (numberOfExistingUsernames == 0)
-                {
-                    return userName;
-                }
-                else
-                {
-                    return userName + "." + numberOfExistingUsernames;
-                }
-            }
         }
 
         public async Task<GetMemberRs> GetCurrentUser()
