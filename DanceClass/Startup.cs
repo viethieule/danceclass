@@ -51,7 +51,7 @@ namespace DanceClass
                 .InstancePerRequest();
 
             // Register filter with DI
-            builder.Register(c => new ChangePasswordPromptFilterAttribute(c.Resolve<IMemberService>())).AsActionFilterFor<Controller>().InstancePerRequest();
+            // builder.Register(c => new ChangePasswordPromptFilterAttribute(c.Resolve<IMemberService>())).AsActionFilterFor<Controller>().InstancePerRequest();
 
             builder.RegisterFilterProvider();
 
