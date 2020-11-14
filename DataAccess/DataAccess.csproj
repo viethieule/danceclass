@@ -176,6 +176,10 @@
     <Compile Include="Migrations\202010180637514_Merge.designer.cs">
       <DependentUpon>202010180637514_Merge.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202011141241570_NullableBirthdate.cs" />
+    <Compile Include="Migrations\202011141241570_NullableBirthdate.designer.cs">
+      <DependentUpon>202011141241570_NullableBirthdate.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -244,6 +248,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202010180637514_Merge.resx">
       <DependentUpon>202010180637514_Merge.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202011141241570_NullableBirthdate.resx">
+      <DependentUpon>202011141241570_NullableBirthdate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

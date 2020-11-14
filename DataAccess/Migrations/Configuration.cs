@@ -48,7 +48,7 @@
                 {
                     var admin = new ApplicationUser { UserName = "admin", Birthdate = DateTime.Now };
 
-                    var result = userManager.CreateAsync(admin, "P@ssw0rd").Result;
+                    var result = userManager.CreateAsync(admin, "Mistake1234").Result;
                     if (result.Succeeded)
                     {
                         userManager.AddToRole(admin.Id, "Admin");
@@ -57,6 +57,8 @@
 
                 context.SaveChanges();
             }
+
+            return;
 
             if (!context.Users.Any(x => x.UserName == "member.test"))
             {

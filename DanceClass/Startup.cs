@@ -53,7 +53,7 @@ namespace DanceClass
             // Register filter with DI
             // builder.Register(c => new ChangePasswordPromptFilterAttribute(c.Resolve<IMemberService>())).AsActionFilterFor<Controller>().InstancePerRequest();
 
-            builder.RegisterFilterProvider();
+            // builder.RegisterFilterProvider();
 
             IContainer container = builder.Build();
 

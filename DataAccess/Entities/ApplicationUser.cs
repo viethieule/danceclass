@@ -32,7 +32,7 @@ namespace DataAccess.Entities
     public class ApplicationUser : IdentityUser<int, UserLogin, UserRole, UserClaim>, IAuditable
     {
         public string FullName { get; set; }
-        public DateTime Birthdate { get; set; }
+        public DateTime? Birthdate { get; set; }
         public virtual Membership Membership { get; set; }
         public virtual ICollection<Registration> Registrations { get; set; }
         public virtual ICollection<Package> Packages { get; set; }
