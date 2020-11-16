@@ -19,6 +19,8 @@
 
         protected override void Seed(DataAccess.DanceClassDbContext context)
         {
+            return;
+
             if (!context.Roles.Any())
             {
                 context.Roles.Add(new Role { Name = "Admin" });
@@ -57,8 +59,6 @@
 
                 context.SaveChanges();
             }
-
-            return;
 
             if (!context.Users.Any(x => x.UserName == "member.test"))
             {

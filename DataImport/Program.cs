@@ -78,46 +78,33 @@ namespace DataImport
                         int numberOfSessions = int.Parse(values[i, 5].ToString());
                         int months = int.Parse(values[i, 6].ToString());
                         DateTime createdDate = DateTime.FromOADate((double)values[i, 7]);
+                        Console.WriteLine(createdDate);
                         DateTime expiryDate = DateTime.FromOADate((double)values[i, 8]);
                         int remainingSessions = int.Parse(values[i, 10].ToString());
                         double price = (double)values[i, 11];
 
-                        ApplicationUser user = users.FirstOrDefault(u => u.PhoneNumber == phoneNumber);
-                        Membership membership = memberships.FirstOrDefault(m => m.User.PhoneNumber == phoneNumber);
-
-                        if (user == null)
+                        ApplicationUser user = new ApplicationUser
                         {
-                            user = new ApplicationUser
-                            {
-                                FullName = fullName,
-                                UserName = GenerateUserName(users, fullName),
-                                PhoneNumber = phoneNumber,
-                                Birthdate = dob,
-                                CreatedBy = "Imported",
-                                UpdatedBy = "Imported",
-                                CreatedDate = createdDate,
-                                UpdatedDate = createdDate
-                            };
+                            FullName = fullName,
+                            UserName = GenerateUserName(users, fullName),
+                            PhoneNumber = phoneNumber,
+                            Birthdate = dob,
+                            CreatedBy = "Imported",
+                            UpdatedBy = "Imported",
+                            CreatedDate = createdDate,
+                            UpdatedDate = createdDate
+                        };
 
-                            membership = new Membership
-                            {
-                                User = user,
-                                RemainingSessions = remainingSessions,
-                                ExpiryDate = expiryDate,
-                                CreatedBy = "Imported",
-                                UpdatedBy = "Imported",
-                                CreatedDate = createdDate,
-                                UpdatedDate = createdDate
-                            };
-
-                            users.Add(user);
-                            memberships.Add(membership);
-                        }
-                        else
+                        Membership membership = new Membership
                         {
-                            membership.RemainingSessions += remainingSessions;
-                            membership.ExpiryDate = membership.ExpiryDate > expiryDate ? membership.ExpiryDate : expiryDate;
-                        }
+                            User = user,
+                            RemainingSessions = remainingSessions,
+                            ExpiryDate = expiryDate,
+                            CreatedBy = "Imported",
+                            UpdatedBy = "Imported",
+                            CreatedDate = createdDate,
+                            UpdatedDate = createdDate
+                        };
 
                         DefaultPackage defaultPackage = defaultPackages.FirstOrDefault(p => p.NumberOfSessions == numberOfSessions);
                         Package package = new Package
@@ -134,6 +121,9 @@ namespace DataImport
                             UpdatedDate = createdDate,
                             ExpiryDate = expiryDate
                         };
+
+                        users.Add(user);
+                        memberships.Add(membership);
                         packages.Add(package);
                     }
 
