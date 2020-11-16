@@ -38,5 +38,14 @@ namespace DanceClass.Api
             GetMemberRs rs = await _memberService.GetCurrentUser();
             return ApiJson(rs);
         }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin, Receptionist")]
+        [Route("searchMember")]
+        public async Task<IHttpActionResult> SearchMember(SearchMemberRq rq)
+        {
+            SearchMemberRs rs = await _memberService.Search(rq);
+            return ApiJson(rs);
+        }
     }
 }

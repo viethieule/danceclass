@@ -109,6 +109,8 @@
     <Compile Include="Membership\MembershipService.cs" />
     <Compile Include="Membership\UpdateMembershipRq.cs" />
     <Compile Include="Membership\UpdateMembershipRs.cs" />
+    <Compile Include="Members\SearchMemberRq.cs" />
+    <Compile Include="Members\SearchMemberRs.cs" />
     <Compile Include="Receptionist\CreateReceptionistRq.cs" />
     <Compile Include="Receptionist\CreateReceptionistRs.cs" />
     <Compile Include="Receptionist\ReceptionistService.cs" />

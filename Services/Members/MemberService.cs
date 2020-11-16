@@ -26,6 +26,7 @@ namespace Services.Members
         Task<GetMemberRs> Get(GetMemberRq rq);
         Task<GetMemberRs> GetCurrentUser();
         bool IsNeedToChangePassword(int userId);
+        Task<SearchMemberRs> Search(SearchMemberRq rq);
     }
 
     public class MemberService : UserService, IMemberService
@@ -164,6 +165,28 @@ namespace Services.Members
         {
             var user = _dbContext.Users.FirstOrDefault(u => u.Id == userId);
             return user != null && user.IsNeedToChangePassword;
+        }
+
+        public async Task<SearchMemberRs> Search(SearchMemberRq rq)
+        {
+            string query = rq.Query;
+            if (string.IsNullOrEmpty(query) || query.Length < 2 || (query.Length < 5 && query.All(char.IsDigit)))
+            {
+                return new SearchMemberRs
+                {
+                    Members = new List<MemberDTO>()
+                };
+            }
+
+            var results = await _dbContext.Users
+                .Where(u => u.FullName.Contains(query) || u.PhoneNumber.Contains(query) || u.UserName.Contains(query))
+                .ProjectTo<MemberDTO>(_mappingConfig, u => u.Membership)
+                .ToListAsync();
+
+            return new SearchMemberRs
+            {
+                Members = results
+            };
         }
     }
 }
