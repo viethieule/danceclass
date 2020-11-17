@@ -14,10 +14,10 @@
 
                 members.forEach(function (member) {
                     $('<tr>')
-                        .append($('<td>').text(member.fullName))
+                        .append($('<td>').append($('<a>', { href: '/member/' + member.userName }).html(member.fullName)))
                         .append($('<td>').text(member.phoneNumber))
                         .append($('<td>').text(member.membership.remainingSessions))
-                        .append($('<td>').text(member.membership.expiryDate))
+                        .append($('<td>').text(moment(member.membership.expiryDate).format('DD/MM/YYYY')))
                         .appendTo($('#members'))
                 });
             } else {

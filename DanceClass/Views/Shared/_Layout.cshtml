@@ -66,31 +66,35 @@ desired effect
                 <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
                     <span class="sr-only">Toggle navigation</span>
                 </a>
-                <div class="navbar-current-page visible-xs-inline-block visible-sm-inline-block">
-                    <h5 class="navbar-current-page-title"></h5>
-                </div>
-                <!-- Navbar Right Menu -->
-                @if (User.IsInRole("Admin") || User.IsInRole("Receptionist"))
-                {
-                    using (Html.BeginForm("Search", "Members", FormMethod.Get, new { @class = "sidebar-form" }))
-                    {
-                        <div class="input-group">
-                            <input type="text" name="search" class="form-control" placeholder="Tìm hội viên...">
-                            <span class="input-group-btn">
-                                <button type="submit" id="search-btn" class="btn btn-flat">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            </span>
-                        </div>
-                    }
-                }
-                <div class="navbar-custom-menu">
-                    <ul class="nav navbar-nav">
-                        <!-- User Account Menu -->
-                        <li class="dropdown user user-menu">
-                            @Html.Partial("_LoginPartial")
-                        </li>
-                    </ul>
+                <div class="navbar-main">
+                    <div class="navbar-current-page visible-xs-inline-block visible-sm-inline-block">
+                        <h5 class="navbar-current-page-title"></h5>
+                    </div>
+                    <!-- Navbar Right Menu -->
+                    <div class="navbar-search">
+                        @if (User.IsInRole("Admin") || User.IsInRole("Receptionist"))
+                        {
+                            using (Html.BeginForm("Search", "Members", FormMethod.Get, new { @class = "search-form" }))
+                            {
+                                <div class="input-group">
+                                    <input type="text" name="search" class="form-control" placeholder="Tìm hội viên...">
+                                    <span class="input-group-btn">
+                                        <button type="submit" id="search-btn" class="btn btn-flat">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                    </span>
+                                </div>
+                            }
+                        }
+                    </div>
+                    <div class="navbar-custom-menu">
+                        <ul class="nav navbar-nav">
+                            <!-- User Account Menu -->
+                            <li class="dropdown user user-menu">
+                                @Html.Partial("_LoginPartial")
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </nav>
         </header>
