@@ -15,7 +15,7 @@
                 const { userName, birthdate, fullName, phoneNumber, membership } = _self.member;
                 $('#username').text(userName);
                 $('#fullName').text(fullName);
-                $('#birthdate').text(moment(birthdate).format('DD/MM/YYYY'));
+                $('#birthdate').text(birthdate ? moment(birthdate).format('DD/MM/YYYY') : '');
                 $('#phoneNumber').text(phoneNumber);
 
                 if (_self.member.id === _self.currentUser.id) {

@@ -55,9 +55,6 @@ function registerEvent() {
                 name: {
                     required: true
                 },
-                dob: {
-                    required: true
-                },
                 phone: {
                     required: true
                 },
@@ -117,7 +114,9 @@ function registerEvent() {
                     var package = m_packages.find(p => p.id.toString() === formData['package']);
 
                     let dob = $('#dob').datepicker('getDate');
-                    dob = moment(dob).format('MM-DD-YYYY');
+                    if (dob) {
+                        dob = moment(dob).format('MM-DD-YYYY');
+                    }
 
                     const data = await createMember({
                         member: {
