@@ -6,6 +6,7 @@ using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace DataAccess
 {
@@ -38,6 +39,7 @@ namespace DataAccess
         private void AuditEntity()
         {
             var modifieds = ChangeTracker.Entries().Where(e => e.State == EntityState.Modified || e.State == EntityState.Added);
+            var currentUser = HttpContext.Current.User.Identity.Name;
 
             foreach (DbEntityEntry item in modifieds)
             {
@@ -47,8 +49,10 @@ namespace DataAccess
                     if (item.State == EntityState.Added)
                     {
                         changedOrAddedItem.CreatedDate = DateTime.Now;
+                        changedOrAddedItem.CreatedBy = currentUser;
                     }
                     changedOrAddedItem.UpdatedDate = DateTime.Now;
+                    changedOrAddedItem.UpdatedBy = currentUser;
                 }
             }
         }
