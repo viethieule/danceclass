@@ -158,13 +158,15 @@ function CalendarManager() {
         const isReceptionist = UserService.isReceptionist();
 
         var div = $('<div></div>', {
-            'class': 'mistake-event mistake-event-' + schedule.branch.toLowerCase(),
-            'data-toggle': 'modal',
-            'data-target': (isAdmin || isReceptionist) ? '#modal-manage' : isMember ? '#modal-register' : '',
-            'data-id': event.id
+            'class': 'mistake-event mistake-event-' + schedule.branch.toLowerCase()
         });
 
-        div.hover(function () { $(this).css('cursor', 'pointer') });
+        if (isAdmin || isReceptionist) {
+            div.attr('data-toggle', 'modal');
+            div.attr('data-target', '#modal-manage');
+            div.attr('data-id', event.id);
+            div.hover(function () { $(this).css('cursor', 'pointer') });
+        }
 
         let $class = $('<p></p>', { class: 'mistake-event-class' })
             .text(schedule.class.name)
@@ -204,39 +206,46 @@ function CalendarManager() {
         infoDiv.appendTo(div);
 
         if (isMember) {
-            let btnLabel = '';
-            let btnClass = '';
-
-            let { currentUserRegistration } = event;
-            let isRegistered = event.isCurrentUserRegistered && currentUserRegistration && currentUserRegistration.status.value === REGISTRATION_STATUS.REGISTERED;
-            let isAttended = event.isCurrentUserRegistered && currentUserRegistration && currentUserRegistration.status.value === REGISTRATION_STATUS.ATTENDED;
-
-            if (isRegistered) {
-                btnLabel = 'Hủy đăng ký';
-                btnClass = 'btn-danger';
-            } else if (isAttended) {
-                btnLabel = 'Đã đến lớp';
-                btnClass = 'btn-primary';
-                div.removeAttr('data-toggle').removeAttr('data-target');
-                div.off('mouseenter mouseleave');
-            } else {
-                btnLabel = 'Đăng ký';
-                btnClass = 'btn-success';
-            }
-
-            if (isPast) {
-                div.removeAttr('data-toggle').removeAttr('data-target');
-                div.off('mouseenter mouseleave');
-                div.addClass('mistake-event-past');
-            }
-
-            let isDisabled = isPast && !isAttended;
-            $('<div>', { class: 'mistake-event-action' })
-                .append($('<button>', { class: 'btn btn-xs ' + btnClass }).html(btnLabel).prop('disabled', isDisabled))
-                .appendTo(div);
+            // pending feature
+            // renderUserRegisterButton(div, event, isPast);
         }
 
         return div;
+    }
+
+    function renderUserRegisterButton(div, event, isPast) {
+        if (!UserService.isMember) {
+            return;
+        }
+
+        let btnLabel = '';
+        let btnClass = '';
+        let { currentUserRegistration } = event;
+        let isRegistered = event.isCurrentUserRegistered && currentUserRegistration && currentUserRegistration.status.value === REGISTRATION_STATUS.REGISTERED;
+        let isAttended = event.isCurrentUserRegistered && currentUserRegistration && currentUserRegistration.status.value === REGISTRATION_STATUS.ATTENDED;
+        if (isRegistered) {
+            btnLabel = 'Hủy đăng ký';
+            btnClass = 'btn-danger';
+        }
+        else if (isAttended) {
+            btnLabel = 'Đã đến lớp';
+            btnClass = 'btn-primary';
+            div.removeAttr('data-toggle').removeAttr('data-target');
+            div.off('mouseenter mouseleave');
+        }
+        else {
+            btnLabel = 'Đăng ký';
+            btnClass = 'btn-success';
+        }
+        if (isPast) {
+            div.removeAttr('data-toggle').removeAttr('data-target');
+            div.off('mouseenter mouseleave');
+            div.addClass('mistake-event-past');
+        }
+        let isDisabled = isPast && !isAttended;
+        $('<div>', { class: 'mistake-event-action' })
+            .append($('<button>', { class: 'btn btn-xs ' + btnClass }).html(btnLabel).prop('disabled', isDisabled))
+            .appendTo(div);
     }
 
     async function getSchedule() {
