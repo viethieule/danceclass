@@ -16,6 +16,10 @@
     background-color: #fd7e14;
 }
 
+.mistake-event-lvs {
+    background-color: #00a65a;
+}
+
 .header-calendar-control .calendar-create-schedule,
 .header-calendar-control .calendar-remaining-sessions-area {
     float: right;
