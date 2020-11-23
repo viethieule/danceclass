@@ -27,7 +27,7 @@
 
     this.loadMemberPackages = async function () {
         _defaultPackages = (_defaultPackages && _defaultPackages.length > 0) ? _defaultPackages : await ApiService.get('/api/package/getDefaults');
-        var isAdmin = UserService.isAdmin();
+        var isAdminOrCollab = UserService.isAdmin() || UserService.isCollaborator();
 
         var packageCellRenderer = function (data, type, row, classSuffix, template) {
             if (type !== 'display') {
@@ -35,7 +35,7 @@
             }
 
             var html = data;
-            if (isAdmin) {
+            if (isAdminOrCollab) {
                 var input = $('<input>', { type: 'text', class: 'form-control list-package-cell list-package-' + classSuffix, value: data });
                 if (row.defaultPackageId) {
                     input.prop('disabled', true);
@@ -97,7 +97,7 @@
 
                             return select.wrap('<div></div>').parent().html();
                         },
-                        visible: isAdmin,
+                        visible: isAdminOrCollab,
                         width: '10%'
                     },
                     {
@@ -161,7 +161,7 @@
     }
 
     function adjustInterfaceBasedOnRole() {
-        if (!UserService.isAdmin()) {
+        if (!UserService.isAdmin() && !UserService.isCollaborator()) {
             $('#editPackage').removeClass('btn btn-primary').addClass('btn-link').html('Xem tất cả gói tập').css('margin-top', '4px').parent().removeClass('pull-right');
         }
     }
@@ -172,7 +172,7 @@
                 .columns.adjust();
         });
 
-        if (UserService.isAdmin()) {
+        if (UserService.isAdmin() || UserService.isCollaborator()) {
             registerAdminEvent();
         }
     }

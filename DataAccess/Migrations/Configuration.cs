@@ -19,6 +19,28 @@
 
         protected override void Seed(DataAccess.DanceClassDbContext context)
         {
+            if (!context.Roles.Any(r => r.Name == "Collaborator"))
+            {
+                context.Roles.Add(new Role { Name = "Collaborator" });
+            }
+
+            if (!context.Users.Any(x => x.UserName == "collaborator"))
+            {
+                var userStore = new ApplicationUserStore(context);
+                using (var userManager = new ApplicationUserManager(userStore))
+                {
+                    var collaborator = new ApplicationUser { UserName = "collaborator" };
+
+                    var result = userManager.CreateAsync(collaborator, "Mistake1234").Result;
+                    if (result.Succeeded)
+                    {
+                        userManager.AddToRole(collaborator.Id, "Collaborator");
+                    }
+                }
+
+                context.SaveChanges();
+            }
+
             return;
 
             if (!context.Roles.Any())

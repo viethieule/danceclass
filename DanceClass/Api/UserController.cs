@@ -1,4 +1,5 @@
-﻿using Services.Members;
+﻿using DanceClass.Utils;
+using Services.Members;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -14,7 +15,7 @@ namespace DanceClass.Api
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin, Receptionist")]
+        [HierarchicalAuthorize(AuthorizationLevel = AuthorizationLevel.ReceptionistAndHigher)]
         [Route("create")]
         public async Task<IHttpActionResult> Create(CreateMemberRq rq)
         {
@@ -40,7 +41,7 @@ namespace DanceClass.Api
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin, Receptionist")]
+        [HierarchicalAuthorize(AuthorizationLevel = AuthorizationLevel.ReceptionistAndHigher)]
         [Route("searchMember")]
         public async Task<IHttpActionResult> SearchMember(SearchMemberRq rq)
         {

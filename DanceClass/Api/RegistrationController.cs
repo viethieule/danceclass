@@ -1,4 +1,5 @@
-﻿using Services.Registration;
+﻿using DanceClass.Utils;
+using Services.Registration;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -15,7 +16,7 @@ namespace DanceClass.Api
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin, Receptionist")]
+        [HierarchicalAuthorize(AuthorizationLevel = AuthorizationLevel.ReceptionistAndHigher)]
         [Route("create")]
         public async Task<IHttpActionResult> Create(CreateRegistrationRq rq)
         {
@@ -24,7 +25,7 @@ namespace DanceClass.Api
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin, Receptionist")]
+        [HierarchicalAuthorize(AuthorizationLevel = AuthorizationLevel.ReceptionistAndHigher)]
         [Route("cancel")]
         public async Task<IHttpActionResult> Cancel(CancelRegistrationRq rq)
         {
@@ -33,7 +34,7 @@ namespace DanceClass.Api
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin, Receptionist")]
+        [HierarchicalAuthorize(AuthorizationLevel = AuthorizationLevel.ReceptionistAndHigher)]
         [Route("getbyscheduledetail")]
         public async Task<IHttpActionResult> GetByScheduleDetail([FromBody]int scheduleDetailId)
         {
@@ -43,7 +44,7 @@ namespace DanceClass.Api
 
         [HttpPut]
         [Route("confirmAttendance/{registrationId}")]
-        [Authorize(Roles = "Admin, Receptionist")]
+        [HierarchicalAuthorize(AuthorizationLevel = AuthorizationLevel.ReceptionistAndHigher)]
         public async Task ConfirmAttendance(int registrationId)
         {
             await _registrationService.ConfirmAttendance(registrationId);

@@ -26,7 +26,7 @@ function ScheduleCreate() {
     var _deleteCreateMode = false;
 
     this.initScheduleCreate = function () {
-        if (!UserService.isAdmin()) {
+        if (!UserService.isAdmin() && !UserService.isCollaborator()) {
             return;
         }
 

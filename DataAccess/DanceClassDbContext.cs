@@ -39,7 +39,11 @@ namespace DataAccess
         private void AuditEntity()
         {
             var modifieds = ChangeTracker.Entries().Where(e => e.State == EntityState.Modified || e.State == EntityState.Added);
-            var currentUser = HttpContext.Current.User.Identity.Name;
+            var currentUser = string.Empty;
+            if (HttpContext.Current != null && HttpContext.Current.User != null && HttpContext.Current.User.Identity != null)
+            {
+                currentUser = currentUser = HttpContext.Current.User.Identity.Name;
+            }
 
             foreach (DbEntityEntry item in modifieds)
             {

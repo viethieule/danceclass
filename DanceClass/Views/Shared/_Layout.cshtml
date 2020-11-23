@@ -72,7 +72,7 @@ desired effect
                     </div>
                     <!-- Navbar Right Menu -->
                     <div class="navbar-search">
-                        @if (User.IsInRole("Admin") || User.IsInRole("Receptionist"))
+                        @if (User.IsInRole("Admin") || User.IsInRole("Collaborator") || User.IsInRole("Receptionist"))
                         {
                             using (Html.BeginForm("Search", "Members", FormMethod.Get, new { @class = "search-form" }))
                             {
@@ -107,7 +107,7 @@ desired effect
                 <ul class="sidebar-menu" data-widget="tree">
                     <!-- Optionally, you can add icons to the links -->
                     <li class="active"><a href="/"><i class="fa fa-calendar" aria-hidden="true"></i> <span>Lịch học</span></a></li>
-                    @if (Request.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("Receptionist")))
+                    @if (Request.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("Collaborator") || User.IsInRole("Receptionist")))
                     {
                         <li class="treeview">
                             <a href="#">
@@ -119,7 +119,7 @@ desired effect
                             </a>
                             <ul class="treeview-menu">
                                 <li><a href="/members/create"><i class="fa fa-users" aria-hidden="true"></i> <span>Hội viên</span></a></li>
-                                @if (User.IsInRole("Admin"))
+                                @if (User.IsInRole("Admin") || User.IsInRole("Collaborator"))
                                 {
                                     <li><a href="/receptionist/create"><i class="fa fa-users" aria-hidden="true"></i> <span>Lễ tân</span></a></li>
                                 }

@@ -29,6 +29,10 @@
         return isInRole('Receptionist');
     }
 
+    function isCollaborator() {
+        return isInRole('Collaborator');
+    }
+
     function isInRole(roleName) {
         return user && user.roleNames.includes(roleName);
     }
@@ -53,6 +57,7 @@
         isAdmin: isAdmin,
         isMember: isMember,
         isReceptionist: isReceptionist,
+        isCollaborator: isCollaborator,
         get: get
     }
 })();

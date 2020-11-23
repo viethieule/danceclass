@@ -254,6 +254,7 @@
     <Compile Include="Startup.cs" />
     <Compile Include="Utils\ChangePasswordPromptFilterAttribute.cs" />
     <Compile Include="Utils\EnumToKeyValuePairConverter.cs" />
+    <Compile Include="Utils\HierarchicalAuthorizeAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App\Common\constants.js" />

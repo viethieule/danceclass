@@ -1,4 +1,5 @@
-﻿using Services.Class;
+﻿using DanceClass.Utils;
+using Services.Class;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace DanceClass.Api
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [HierarchicalAuthorize(AuthorizationLevel = AuthorizationLevel.CollaboratorAndHigher)]
         [Route("getAll")]
         public async Task<IHttpActionResult> GetAll()
         {

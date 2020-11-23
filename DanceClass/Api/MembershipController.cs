@@ -1,11 +1,12 @@
-﻿using Services.Membership;
+﻿using DanceClass.Utils;
+using Services.Membership;
 using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace DanceClass.Api
 {
     [RoutePrefix("api/membership")]
-    [Authorize(Roles = "Admin, Receptionist")]
+    [HierarchicalAuthorize(AuthorizationLevel = AuthorizationLevel.CollaboratorAndHigher)]
     public class MembershipController : ApiBaseController
     {
         private readonly IMembershipService _membershipService;

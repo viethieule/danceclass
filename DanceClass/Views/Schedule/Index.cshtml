@@ -167,7 +167,7 @@
                 <div class="modal-footer">
                     <div class="dropup">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Thoát</button>
-                        @if (Request.IsAuthenticated && User.IsInRole("Admin"))
+                        @if (Request.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("Collaborator")))
                         {
                             <button type="button" class="btn btn-primary btn-schedule-update">Sửa</button>
                             <button type="button" class="btn btn-primary btn-schedule-delete-create">Xóa và tạo mới</button>

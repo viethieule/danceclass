@@ -73,7 +73,7 @@ function CalendarManager() {
                         tdEvents.addClass('calendar-today');
                     }
 
-                    if (UserService.isAdmin()) {
+                    if (UserService.isAdmin() || UserService.isCollaborator()) {
                         tdEvents
                             .attr('data-toggle', 'modal')
                             .attr('data-target', '#modal-create-schedule')
@@ -156,12 +156,13 @@ function CalendarManager() {
         const isMember = UserService.isMember();
         const isAdmin = UserService.isAdmin();
         const isReceptionist = UserService.isReceptionist();
+        const isCollab = UserService.isCollaborator();
 
         var div = $('<div></div>', {
             'class': 'mistake-event mistake-event-' + schedule.branch.toLowerCase()
         });
 
-        if (isAdmin || isReceptionist) {
+        if (isAdmin || isCollab || isReceptionist) {
             div.attr('data-toggle', 'modal');
             div.attr('data-target', '#modal-manage');
             div.attr('data-id', event.id);
@@ -191,7 +192,7 @@ function CalendarManager() {
             .prepend($('<li>', { class: 'fa fa-calendar' }))
             .appendTo(infoDiv);
 
-        if ((isAdmin || isReceptionist)) {
+        if ((isAdmin || isCollab || isReceptionist)) {
             $('<span></span>', { class: 'mistake-event-info' })
                 .html(`&nbsp; ${event.totalRegistered}/20`)
                 .prepend($('<li>', { class: 'fa fa-user' }))
@@ -255,7 +256,8 @@ function CalendarManager() {
             });
 
             if (data && data.scheduleDetails) {
-                let timeSlotsTemplate = UserService.isAdmin() ? TIME_SLOTS.map(s => Object.assign({}, s)) : [];
+                var isAdminOrCollab = UserService.isAdmin() || UserService.isCollaborator();
+                let timeSlotsTemplate = isAdminOrCollab ? TIME_SLOTS.map(s => Object.assign({}, s)) : [];
                 timeSlotsTemplate.forEach(s => s.events = []);
 
                 _self.scheduleDetails = data.scheduleDetails;
@@ -385,7 +387,7 @@ function CalendarManager() {
         var $shownTds = $('#calendar td:nth-child(' + index + ')');
         $shownTds.show();
 
-        if (!UserService.isAdmin()) {
+        if (!UserService.isAdmin() && !UserService.isCollaborator()) {
             $('#calendarBody tr').hide();
             $shownTds.find('.mistake-event').closest('tr').show();
         }

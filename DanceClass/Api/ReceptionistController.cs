@@ -1,4 +1,5 @@
-﻿using Services.Receptionist;
+﻿using DanceClass.Utils;
+using Services.Receptionist;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ using System.Web.Http;
 
 namespace DanceClass.Api
 {
-    [Authorize(Roles = "Admin")]
+    [HierarchicalAuthorize(AuthorizationLevel = AuthorizationLevel.CollaboratorAndHigher)]
     [RoutePrefix("api/receptionist")]
     public class ReceptionistController : ApiBaseController
     {

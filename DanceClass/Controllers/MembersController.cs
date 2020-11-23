@@ -20,7 +20,7 @@ namespace DanceClass.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Admin, Receptionist")]
+        [Authorize(Roles = "Admin, Collaborator, Receptionist")]
         public ActionResult Search()
         {
             return View();

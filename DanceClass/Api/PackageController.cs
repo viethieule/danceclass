@@ -1,4 +1,5 @@
-﻿using Services.DefaultPackage;
+﻿using DanceClass.Utils;
+using Services.DefaultPackage;
 using Services.Package;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -26,7 +27,7 @@ namespace DanceClass.Api
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin, Receptionist")]
+        [HierarchicalAuthorize(AuthorizationLevel = AuthorizationLevel.ReceptionistAndHigher)]
         [Route("add")]
         public async Task<IHttpActionResult> AddForMember(CreatePackageRq rq)
         {
@@ -35,7 +36,7 @@ namespace DanceClass.Api
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [HierarchicalAuthorize(AuthorizationLevel = AuthorizationLevel.CollaboratorAndHigher)]
         [Route("edit")]
         public async Task<IHttpActionResult> Edit(EditPackageRq rq)
         {

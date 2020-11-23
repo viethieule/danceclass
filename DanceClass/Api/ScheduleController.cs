@@ -1,4 +1,5 @@
-﻿using Services.Schedule;
+﻿using DanceClass.Utils;
+using Services.Schedule;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -22,7 +23,7 @@ namespace DanceClass.Api
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [HierarchicalAuthorize(AuthorizationLevel = AuthorizationLevel.CollaboratorAndHigher)]
         [Route("create")]
         public async Task<IHttpActionResult> Create(CreateScheduleRq rq)
         {
@@ -32,7 +33,7 @@ namespace DanceClass.Api
 
         [HttpPost]
         [Route("update")]
-        [Authorize(Roles = "Admin")]
+        [HierarchicalAuthorize(AuthorizationLevel = AuthorizationLevel.CollaboratorAndHigher)]
         public async Task<IHttpActionResult> Update(UpdateScheduleRq rq)
         {
             var rs = await _scheduleService.Update(rq);
@@ -41,7 +42,7 @@ namespace DanceClass.Api
 
         [HttpDelete]
         [Route("delete/{id}")]
-        [Authorize(Roles = "Admin")]
+        [HierarchicalAuthorize(AuthorizationLevel = AuthorizationLevel.CollaboratorAndHigher)]
         public async Task<IHttpActionResult> Delete(int id)
         {
             var rs = await _scheduleService.Delete(id);
@@ -50,7 +51,7 @@ namespace DanceClass.Api
 
         [HttpDelete]
         [Route("deleteSession/{id}")]
-        [Authorize(Roles = "Admin")]
+        [HierarchicalAuthorize(AuthorizationLevel = AuthorizationLevel.CollaboratorAndHigher)]
         public async Task<IHttpActionResult> DeleteSession(int id)
         {
             var rs = await _scheduleService.DeleteSession(id);

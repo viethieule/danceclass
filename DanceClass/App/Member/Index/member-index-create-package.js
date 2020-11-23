@@ -29,7 +29,7 @@
     }
 
     function adjustInterfaceBasedOnRole() {
-        if (!UserService.isAdmin()) {
+        if (!UserService.isAdmin() && !UserService.isCollaborator()) {
             $('#addPackage').addClass('pull-right');
         }
     }

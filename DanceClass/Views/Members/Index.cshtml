@@ -87,7 +87,7 @@
                     <h4 class="modal-title">Thông tin các gói tập</h4>
                 </div>
                 <div class="modal-body">
-                    @if (Request.IsAuthenticated && User.IsInRole("Admin"))
+                    @if (Request.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("Collaborator")))
                     {
                         <div class="membership-container">
                             <form class="form-horizontal">
