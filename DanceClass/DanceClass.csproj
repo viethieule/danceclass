@@ -234,6 +234,7 @@
     <Compile Include="Api\ScheduleController.cs" />
     <Compile Include="Api\TrainerController.cs" />
     <Compile Include="Api\UserController.cs" />
+    <Compile Include="Api\WeeklyScheduleReportController.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />

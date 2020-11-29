@@ -366,6 +366,14 @@ function CalendarManager() {
             showHideDayByDayIndex(index);
             toggleSwitchViewLabel();
         });
+
+        $('.btn-export-excel').on('click', function (e) {
+            ApiService.fileDownload("api/weeklyschedulereport/run", {
+                start: _self.currentDaysOfWeek[0].toDate().toISOString()
+            }, function (err) {
+                $('.content-header').alert(true, 'danger', err);
+            });
+        })
     }
 
     function toggleDaySelector() {

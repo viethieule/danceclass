@@ -20,7 +20,15 @@
     background-color: #00a65a;
 }
 
-.header-calendar-control .calendar-create-schedule,
+.header-calendar-control {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-export-excel {
+    margin-right: 3px;
+}
+
 .header-calendar-control .calendar-remaining-sessions-area {
     float: right;
 }

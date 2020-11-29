@@ -90,7 +90,7 @@ function ScheduleCreate() {
                     'data-target': '#modal-create-schedule'
                 })
                     .append($('<i>', { class: 'fa fa-plus' }))
-                    .append($('<span>').html('&nbsp;&nbsp;Tạo lịch học'))
+                    .append($('<span>', { class: 'hidden-xs' }).html('&nbsp;&nbsp;Tạo lịch học'))
             );
         element.appendTo('.calendar-control, .header-calendar-control');
     }

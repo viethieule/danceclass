@@ -18,5 +18,8 @@ namespace Services.Schedule
         public int SessionNo { get; set; }
         public bool IsCurrentUserRegistered { get; set; }
         public RegistrationDTO CurrentUserRegistration { get; set; }
+
+        // Weekly schedule report
+        public bool IsAddedToSheet { get; set; }
     }
 }

@@ -24,6 +24,10 @@
             </h1>
         </div>
         <div class="col-xs-6 col-md-6 header-calendar-control">
+            @if (Request.IsAuthenticated && !User.IsInRole("Member"))
+            {
+                <div><button class="btn btn-primary btn-export-excel">Xuất excel</button></div>
+            }
             <div class="calendar-remaining-sessions-area">
                 <div class="calendar-remaining-sessions"></div>
                 <div class="calendar-remaining-sessions-desc"><p>Số buổi<br />còn lại</p></div>
