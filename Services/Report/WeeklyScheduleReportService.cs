@@ -100,24 +100,56 @@ namespace Services.Report
                         }
 
                         var sessionCell = timeRow.GetCell(i);
-                        string classBranch = session.Schedule.Class.Name + " - " + session.Schedule.Branch;
+                        string className = session.Schedule.Class.Name;
+                        string classBranch = className + " - " + session.Schedule.Branch;
                         string song = "♪ " + session.Schedule.Song;
                         string numberOfSessions = $"Buổi {session.SessionNo}/{session.Schedule.Sessions}";
 
-                        var font1 = workbook.CreateFont();
-                        font1.FontName = "Times New Roman";
-                        font1.FontHeightInPoints = 18;
-                        font1.IsBold = true;
+                        var classBranchFont = (XSSFFont)workbook.CreateFont();
+                        classBranchFont.FontName = "Times New Roman";
+                        classBranchFont.FontHeightInPoints = 18;
+                        classBranchFont.IsBold = true;
+                        if (session.SessionNo == 1)
+                        {
+                            classBranchFont.SetColor(new XSSFColor(new byte[] { 192, 0, 0 }));
+                        }
 
-                        var font2 = workbook.CreateFont();
-                        font2.FontName = "Times New Roman";
-                        font2.FontHeightInPoints = 18;
-                        font2.IsBold = false;
+                        var songFont = workbook.CreateFont();
+                        songFont.FontName = "Times New Roman";
+                        songFont.FontHeightInPoints = 18;
+                        songFont.IsBold = false;
 
-                        IRichTextString formattedCellContent = new XSSFRichTextString(classBranch + "\n" + song + "\n" + numberOfSessions);
-                        formattedCellContent.ApplyFont(0, classBranch.Length, font1);
-                        formattedCellContent.ApplyFont(classBranch.Length + 1, (classBranch + "\n" + song).Length, font2);
-                        formattedCellContent.ApplyFont((classBranch + "\n" + song).Length + 1, (classBranch + "\n" + song + "\n" + numberOfSessions).Length, font1);
+                        IRichTextString formattedCellContent;
+                        bool isYoga = string.Equals(className, "Yoga", StringComparison.CurrentCultureIgnoreCase);
+                        bool isCardioDance = string.Equals(className, "Cardio Dance", StringComparison.CurrentCultureIgnoreCase);
+                        if (isYoga || isCardioDance)
+                        {
+                            if (isYoga)
+                            {
+                                if (classBranch.Contains("Q3"))
+                                {
+                                    classBranch += ", LVS";
+                                }
+                                else if (classBranch.Contains("LVS"))
+                                {
+                                    classBranch += ", Q3";
+                                }
+                            }
+                            else
+                            {
+                                classBranch = className;
+                            }
+
+                            formattedCellContent = new XSSFRichTextString(classBranch);
+                            formattedCellContent.ApplyFont(0, classBranch.Length, classBranchFont);
+                        }
+                        else
+                        {
+                            formattedCellContent = new XSSFRichTextString(classBranch + "\n" + song + "\n" + numberOfSessions);
+                            formattedCellContent.ApplyFont(0, classBranch.Length, classBranchFont);
+                            formattedCellContent.ApplyFont(classBranch.Length + 1, (classBranch + "\n" + song).Length, songFont);
+                            formattedCellContent.ApplyFont((classBranch + "\n" + song).Length + 1, (classBranch + "\n" + song + "\n" + numberOfSessions).Length, classBranchFont);
+                        }
 
                         sessionCell.SetCellValue(formattedCellContent);
 
@@ -128,6 +160,10 @@ namespace Services.Report
                         cellStyle.VerticalAlignment = VerticalAlignment.Center;
                         cellStyle.FillForegroundXSSFColor = GetBackgroundColor(session.Schedule.Branch);
                         cellStyle.FillPattern = FillPattern.SolidForeground;
+                        cellStyle.BorderBottom = BorderStyle.Thin;
+                        cellStyle.BorderLeft = BorderStyle.Thin;
+                        cellStyle.BorderTop = BorderStyle.Thin;
+                        cellStyle.BorderRight = BorderStyle.Thin;
                        
                         sessionCell.CellStyle = cellStyle;
 
