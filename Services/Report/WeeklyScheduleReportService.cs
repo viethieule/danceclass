@@ -63,6 +63,33 @@ namespace Services.Report
                 }
 
                 var timeRowIndex = TIME_ROW_BEGIN;
+                List<TimeSpan> listStartTimes = new List<TimeSpan>(); 
+                while (true)
+                {
+                    var timeRow = sheet.GetRow(timeRowIndex);
+                    if (timeRow == null)
+                    {
+                        break;
+                    }
+
+                    var timeCell = timeRow.GetCell(0);
+                    if (timeCell == null)
+                    {
+                        break;
+                    }
+
+                    if (string.IsNullOrEmpty(timeCell.StringCellValue))
+                    {
+                        break;
+                    }
+
+                    TimeSpan startTime = TimeSpan.Parse(timeCell.StringCellValue.Split(new string[] { " - " }, StringSplitOptions.None)[0]);
+                    listStartTimes.Add(startTime);
+
+                    timeRowIndex++;
+                }
+
+                timeRowIndex = TIME_ROW_BEGIN;
                 while (true)
                 {
                     var timeRow = sheet.GetRow(timeRowIndex);
@@ -91,6 +118,16 @@ namespace Services.Report
                     }
 
                     List<ScheduleDetailDTO> sessions = sessionGroups[startTime].Where(s => s.IsAddedToSheet == false).ToList();
+                    
+                    if (startTime == new TimeSpan(18, 30, 00) && listStartTimes.Count(s => s == startTime) > 1)
+                    {
+                        List<ScheduleDetailDTO> lvsSessions = sessions.Where(s => s.Schedule.Branch == "LVS").ToList();
+                        if (lvsSessions.Count > 0)
+                        {
+                            sessions = lvsSessions;
+                        }
+                    }
+
                     for (int i = 1; i <= 7; i++)
                     {
                         var session = sessions.FirstOrDefault(s => (int)s.Date.DayOfWeek == i || (i == 7 && (int)s.Date.DayOfWeek == 0));
