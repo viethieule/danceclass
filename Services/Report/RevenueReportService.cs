@@ -28,6 +28,7 @@ namespace Services.Report
     {
         static string[] Scopes = { SheetsService.Scope.Spreadsheets };
         static string ApplicationName = "Mistake";
+        static string SpreadsheetId = "1z3Nglt-iVmeLPbDFhkid14-wmLPgxjlu0ki0Bhj5GXY";
 
         public RevenueReportService(DanceClassDbContext dbContext, IMapper mapper) : base(dbContext, mapper)
         {
@@ -62,20 +63,26 @@ namespace Services.Report
                 ApplicationName = ApplicationName,
             });
 
-            Spreadsheet spreadsheet = new Spreadsheet();
-            spreadsheet.Properties = new SpreadsheetProperties() { Title = "Revenue report" };
+            //Spreadsheet spreadsheet = new Spreadsheet();
+            //spreadsheet.Properties = new SpreadsheetProperties() { Title = "Revenue report" };
 
-            CreateRequest request = service.Spreadsheets.Create(spreadsheet);
-            request.Fields = "spreadsheetId";
-            spreadsheet = await request.ExecuteAsync();
+            //CreateRequest request = service.Spreadsheets.Create(spreadsheet);
+            //request.Fields = "spreadsheetId";
+            //spreadsheet = await request.ExecuteAsync();
+
+            int sheetId = GetSheetId(service, SpreadsheetId, "Sheet1");
 
             var requests = new BatchUpdateSpreadsheetRequest { Requests = new List<Request>() };
+
+            var clearAllRequest = new Request { UpdateCells = new UpdateCellsRequest { Range = new GridRange { SheetId = sheetId }, Fields = "userEnteredValue" } };
+
+            requests.Requests.Add(clearAllRequest);
             
             GridCoordinate gc = new GridCoordinate
             {
                 ColumnIndex = 0,
                 RowIndex = 0,
-                SheetId = GetSheetId(service, spreadsheet.SpreadsheetId, "Sheet1")
+                SheetId = sheetId
             };
 
             var updateRequest = new Request { UpdateCells = new UpdateCellsRequest { Start = gc, Fields = "*" } };
@@ -96,8 +103,11 @@ namespace Services.Report
             };
             listRowData.Add(header);
 
-            var packages = await _dbContext.Packages.ToListAsync();
-                //.Where(x => x.CreatedDate <= rq.End && x.CreatedDate >= rq.Start);
+            DateTime start = rq.Start.Date;
+            DateTime end = rq.End.Date.AddDays(1).AddSeconds(-1);
+            var packages = await _dbContext.Packages
+                .Where(x => x.CreatedDate >= start && x.CreatedDate <= end)
+                .ToListAsync();
 
             foreach (DataAccess.Entities.Package package in packages)
             {
@@ -133,11 +143,11 @@ namespace Services.Report
             updateRequest.UpdateCells.Rows = listRowData;
 
             requests.Requests.Add(updateRequest);
-            await service.Spreadsheets.BatchUpdate(requests, spreadsheet.SpreadsheetId).ExecuteAsync();
+            await service.Spreadsheets.BatchUpdate(requests, SpreadsheetId).ExecuteAsync();
 
             return new RevenueReportRs
             {
-                Url = $@"https://docs.google.com/spreadsheets/d/{spreadsheet.SpreadsheetId}/edit"
+                Url = $@"https://docs.google.com/spreadsheets/d/{SpreadsheetId}/edit"
             };
         }
 

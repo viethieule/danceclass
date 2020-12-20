@@ -10,7 +10,6 @@ using System.Web.Http;
 namespace DanceClass.Api
 {
     [RoutePrefix("api/report")]
-    [AllowAnonymous]
     public class ReportController : ApiBaseController
     {
         private readonly IRevenueReportService _revenueReportService;
@@ -22,6 +21,7 @@ namespace DanceClass.Api
 
         [HttpPost]
         [Route("RevenueReport")]
+        [Authorize(Roles = "Admin")]
         public async Task<IHttpActionResult> RevenueReport(RevenueReportRq rq)
         {
             var rs = await _revenueReportService.Run(rq);

@@ -1,0 +1,58 @@
+﻿
+@{
+    ViewBag.Title = "Revenue";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="content-header">
+    <h1>
+        Báo cáo doanh thu
+    </h1>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="col-md-9">
+            <div class="box box-primary">
+                <form id="revenueReport">
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label for="start">Từ ngày</label>
+                            <div class="input-group date">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input id="start" name="start" type="text" class="form-control pull-right">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="end">Đến ngày</label>
+                            <div class="input-group date">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input id="end" name="end" type="text" class="form-control pull-right">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-footer">
+                        <button type="submit" class="btn btn-primary">Xuất report</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/inputMask")
+    @Scripts.Render("~/bundles/moment")
+    @Scripts.Render("~/bundles/bootstrap-datepicker")
+    <script src="~/App/Common/js/formUtils.js"></script>
+    <script src="~/App/Report/Revenue/revenue.js"></script>
+    <script>
+        var revenueRptControlller = new RevenueReportController();
+        revenueRptControlller.initialize();
+    </script>
+}
+

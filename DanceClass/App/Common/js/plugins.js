@@ -84,4 +84,17 @@
             currentIcon.show();
         }
     }
+
+    $.fn.datePickerWithMask = function () {
+        this
+            .datepicker({
+                autoclose: true,
+                format: 'dd/mm/yyyy',
+            })
+            .inputmask('dd/mm/yyyy', {
+                'placeholder': 'dd/mm/yyyy'
+            });
+
+        return this;
+    }
 }(jQuery));

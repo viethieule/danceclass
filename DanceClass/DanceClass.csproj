@@ -246,6 +246,7 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MembersController.cs" />
     <Compile Include="Controllers\ReceptionistController.cs" />
+    <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\ScheduleController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -273,6 +274,7 @@
     <Content Include="App\Member\Index\member-index.js" />
     <Content Include="App\Member\Search\search.js" />
     <Content Include="App\Receptionist\Create\create.js" />
+    <Content Include="App\Report\Revenue\revenue.js" />
     <Content Include="App\Schedule\Index\calendar.js" />
     <Content Include="App\Schedule\Index\registration.js" />
     <Content Include="App\Schedule\Index\user-registration.js" />
@@ -400,6 +402,7 @@
     <Content Include="Views\Shared\_LoginLayout.cshtml" />
     <Content Include="Views\Receptionist\Create.cshtml" />
     <Content Include="Views\Members\Search.cshtml" />
+    <Content Include="Views\Report\Revenue.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

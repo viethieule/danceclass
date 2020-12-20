@@ -40,6 +40,7 @@
                             $('.content-header').alert(true, 'danger', 'Tạo không thành công.');
                         }
                     } catch (ex) {
+                        console.log(ex);
                         $('.content-header').alert(true, 'danger', ex);
                     } finally {
                         $btnSubmit.prop('disabled', false);

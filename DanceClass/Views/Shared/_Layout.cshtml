@@ -125,8 +125,23 @@ desired effect
                                 }
                             </ul>
                         </li>
+                        if (User.IsInRole("Admin"))
+                        {
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-bar-chart"></i>
+                                    <span>Báo cáo</span>
+                                    <span class="pull-right-container">
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li><a href="/report/revenue"><i class="fa fa-money" aria-hidden="true"></i> <span>Doanh thu</span></a></li>
+                                </ul>
+                            </li>
+                        }
                     }
-                    </ul>
+                </ul>
                 <!-- /.sidebar-menu -->
             </section>
             <!-- /.sidebar -->
