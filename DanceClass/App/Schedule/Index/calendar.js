@@ -374,13 +374,6 @@ function CalendarManager() {
                 $('.content-header').alert(true, 'danger', err);
             });
         });
-
-        $('.btn-export-revenue').on('click', async function (e) {
-            var rs = await ApiService.post('api/report/revenuereport', {});
-            if (rs && rs.url) {
-                window.open(rs.url, '_blank');
-            }
-        });
     }
 
     function toggleDaySelector() {

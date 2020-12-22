@@ -28,7 +28,7 @@ namespace Services.Report
     {
         static string[] Scopes = { SheetsService.Scope.Spreadsheets };
         static string ApplicationName = "Mistake";
-        static string SpreadsheetId = "1z3Nglt-iVmeLPbDFhkid14-wmLPgxjlu0ki0Bhj5GXY";
+        static string SpreadsheetId = "1D2ZqUtFElFmObNLAoie8gP_b8fLZlGliFsvcgm6RTPo";
 
         public RevenueReportService(DanceClassDbContext dbContext, IMapper mapper) : base(dbContext, mapper)
         {

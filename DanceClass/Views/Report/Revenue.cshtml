@@ -4,6 +4,11 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@section Styles {
+    @Styles.Render("~/Content/bootstrap-datepicker")
+    <link href="~/App/Common/css/form.css" rel="stylesheet" />
+}
+
 <section class="content-header">
     <h1>
         Báo cáo doanh thu
