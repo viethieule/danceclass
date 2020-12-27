@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Google.Apis.Auth.OAuth2;
+using System;
 
 namespace Services.Report
 {
@@ -6,5 +7,6 @@ namespace Services.Report
     {
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
+        public UserCredential Credential { get; set; }
     }
 }

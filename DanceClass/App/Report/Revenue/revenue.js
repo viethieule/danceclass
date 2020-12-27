@@ -34,9 +34,9 @@
                     var end = $('#end').getInputDateString();
 
                     try {
-                        var rs = await ApiService.post('/api/report/revenuereport', { start, end });
-                        if (rs && rs.url) {
-                            window.open(rs.url, '_blank');
+                        var rs = await ApiService.post('/report/revenue', { start, end });
+                        if (rs && rs.Url) {
+                            window.open(rs.Url, rs.IsRedirect ? '_self' : '_blank');
                         } else {
                             $('.content-header').alert(true, 'danger', 'An error has occurred');
                         }
