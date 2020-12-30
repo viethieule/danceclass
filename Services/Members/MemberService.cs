@@ -27,6 +27,7 @@ namespace Services.Members
         Task<GetMemberRs> GetCurrentUser();
         bool IsNeedToChangePassword(int userId);
         Task<SearchMemberRs> Search(SearchMemberRq rq);
+        Task<GetAllMemberRs> GetAll(GetAllMemberRq rq);
     }
 
     public class MemberService : UserService, IMemberService
@@ -186,6 +187,66 @@ namespace Services.Members
             return new SearchMemberRs
             {
                 Members = results
+            };
+        }
+
+        public async Task<GetAllMemberRs> GetAll(GetAllMemberRq rq)
+        {
+            var memberRole = await _dbContext.Roles.FirstOrDefaultAsync(r => r.Name == "Member");
+            var query = _dbContext.Users
+                .Where(u => u.Roles.Any(r => r.RoleId == memberRole.Id));
+
+            if (!string.IsNullOrEmpty(rq.Name))
+            {
+                query = query.Where(u => u.FullName.Contains(rq.Name) || u.UserName.Contains(rq.Name));
+            }
+
+            if (!string.IsNullOrEmpty(rq.PhoneNumber))
+            {
+                query = query.Where(u => u.PhoneNumber.Contains(rq.PhoneNumber));
+            }
+            
+            if (rq.DefaultPackageId.HasValue)
+            {
+                bool isOtherPackage = rq.DefaultPackageId == -1;
+                if (isOtherPackage)
+                {
+                    query = query.Where(u => u.Packages.Any(p => !p.DefaultPackageId.HasValue));
+                }
+                else
+                {
+                    query = query.Where(u => u.Packages.Any(p => p.DefaultPackageId.HasValue && p.DefaultPackageId == rq.DefaultPackageId));
+                }
+            }
+
+            if (rq.CreatedDateFrom.HasValue)
+            {
+                query = query.Where(u => u.CreatedDate >= rq.CreatedDateFrom);
+            }
+
+            if (rq.CreatedDateTo.HasValue)
+            {
+                DateTime createdDateTo = rq.CreatedDateTo.Value.Date.AddDays(1).AddSeconds(-1);
+                query = query.Where(u => u.CreatedDate <= createdDateTo);
+            }
+
+            if (rq.ExpiryDateFrom.HasValue)
+            {
+                query = query.Where(u => u.Membership.ExpiryDate >= rq.ExpiryDateFrom);
+            }
+
+            if (rq.ExpiryDateTo.HasValue)
+            {
+                DateTime expDateTo = rq.ExpiryDateTo.Value.Date.AddDays(1).AddSeconds(-1);
+                query = query.Where(u => u.Membership.ExpiryDate <= expDateTo);
+            }
+
+            var members = await query.ProjectTo<MemberDTO>(_mappingConfig, u => u.Membership)
+                .ToListAsync();
+
+            return new GetAllMemberRs
+            {
+                Members = members
             };
         }
     }

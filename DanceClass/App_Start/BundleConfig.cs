@@ -48,6 +48,9 @@ namespace DanceClass
 
             bundles.Add(new ScriptBundle("~/bundles/bootstrap-datepicker").Include(
                       "~/Scripts/bootstrap-datepicker.min.js"));
+            
+            bundles.Add(new ScriptBundle("~/bundles/bootstrap-daterangepicker").Include(
+                      "~/Scripts/daterangepicker.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/select2").Include(
                       "~/Scripts/select2.full.min.js"));
@@ -72,6 +75,9 @@ namespace DanceClass
 
             bundles.Add(new StyleBundle("~/Content/bootstrap-datepicker").Include(
                       "~/Content/bootstrap-datepicker.min.css"));
+
+            bundles.Add(new StyleBundle("~/Content/bootstrap-daterangepicker").Include(
+                      "~/Content/daterangepicker.css"));
 
             bundles.Add(new StyleBundle("~/Content/bootstrap-timepicker").Include(
                       "~/Content/bootstrap-timepicker.min.css"));

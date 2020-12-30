@@ -48,5 +48,14 @@ namespace DanceClass.Api
             SearchMemberRs rs = await _memberService.Search(rq);
             return ApiJson(rs);
         }
+
+        [HttpPost]
+        [HierarchicalAuthorize(AuthorizationLevel = AuthorizationLevel.CollaboratorAndHigher)]
+        [Route("getAllMember")]
+        public async Task<IHttpActionResult> GetAllMember(GetAllMemberRq rq)
+        {
+            GetAllMemberRs rs = await _memberService.GetAll(rq);
+            return ApiJson(rs);
+        }
     }
 }

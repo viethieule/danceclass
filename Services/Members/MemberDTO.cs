@@ -1,11 +1,12 @@
-﻿using Services.Membership;
+﻿using DataAccess.Interfaces;
+using Services.Membership;
 using Services.Package;
 using System;
 using System.Collections.Generic;
 
 namespace Services.Members
 {
-    public class MemberDTO
+    public class MemberDTO : IAuditable
     {
         public int Id { get; set; }
         public string FullName { get; set; }
@@ -18,5 +19,9 @@ namespace Services.Members
         public List<PackageDTO> Packages { get; set; }
         public PackageDTO ActivePackage { get; set; }
         public MembershipDTO Membership { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime UpdatedDate { get; set; }
+        public string CreatedBy { get; set; }
+        public string UpdatedBy { get; set; }
     }
 }

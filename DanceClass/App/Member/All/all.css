@@ -1,0 +1,15 @@
+﻿.search-container {
+    margin-bottom: 10px;
+}
+
+#search {
+    margin-top: 5px;
+}
+
+.content-header h1 {
+    display: inline-block;
+}
+
+.btn-toggle-search {
+    float: right;
+}

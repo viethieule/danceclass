@@ -25,5 +25,11 @@ namespace DanceClass.Controllers
         {
             return View();
         }
+
+        [Authorize(Roles = "Admin, Collaborator")]
+        public ActionResult All()
+        {
+            return View();
+        }
     }
 }

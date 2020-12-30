@@ -289,6 +289,8 @@
     <Content Include="App\Common\js\formUtils.js" />
     <Content Include="App\Common\js\plugins.js" />
     <Content Include="App\Common\js\utils.js" />
+    <Content Include="App\Member\All\all.css" />
+    <Content Include="App\Member\All\all.js" />
     <Content Include="App\Member\Index\member-index-create-package.js" />
     <Content Include="App\Member\Index\member-index-edit-package.js" />
     <Content Include="App\Member\Index\member-index-user-info.js" />
@@ -320,6 +322,7 @@
     <Content Include="Content\bootstrap-timepicker.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\daterangepicker.css" />
     <Content Include="Content\font-awesome.css" />
     <Content Include="Content\font-awesome.min.css" />
     <Content Include="Content\ionicons.css" />
@@ -355,6 +358,7 @@
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\dataTables.bootstrap.js" />
     <Content Include="Scripts\dataTables.bootstrap.min.js" />
+    <Content Include="Scripts\daterangepicker.js" />
     <Content Include="Scripts\fastclick.js" />
     <Content Include="Scripts\fullcalendar.js" />
     <Content Include="Scripts\fullcalendar.min.js" />
@@ -425,6 +429,7 @@
     <Content Include="Views\Receptionist\Create.cshtml" />
     <Content Include="Views\Members\Search.cshtml" />
     <Content Include="Views\Report\Revenue.cshtml" />
+    <Content Include="Views\Members\All.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

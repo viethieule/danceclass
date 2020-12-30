@@ -49,12 +49,4 @@
                 }
             }))
     }
-
-    $.fn.getInputDateString = function () {
-        let date = this.datepicker('getDate');
-        if (date) {
-            date = moment(date).format('MM-DD-YYYY');
-        }
-        return date;
-    }
 }

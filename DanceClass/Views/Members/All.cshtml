@@ -1,0 +1,133 @@
+﻿
+@{
+    ViewBag.Title = "GetAll";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    @Styles.Render("~/Content/dataTables")
+    @Styles.Render("~/Content/bootstrap-datepicker")
+    <link href="~/App/Member/All/all.css" rel="stylesheet" />
+}
+
+<section class="content-header">
+    <h1>Danh sách hội viên</h1>
+    <button class="btn btn-link btn-toggle-search">
+        Ẩn tìm kiếm
+    </button>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="search-container col-xs-12">
+            <div class="row">
+                <div class="col-xs-6 col-md-4">
+                    <div class="form-group">
+                        <label for="name">Tên / Username</label>
+                        <input id="name" name="name" type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="col-xs-6 col-md-4">
+                    <div class="form-group">
+                        <label for="phoneNumber">Số điện thoại</label>
+                        <input id="phoneNumber" name="phoneNumber" type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="col-xs-12 col-md-4">
+                    <div class="form-group">
+                        <label for="defaultPackageId">Gói tập</label>
+                        <select id="defaultPackageId" name="defaultPackageId" class="form-control"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-6 col-md-2">
+                    <div class="form-group">
+                        <label>Ngày tạo (from)</label>
+
+                        <div class="input-group date">
+                            <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            <input type="text" class="form-control pull-right" id="createdDateFrom">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-6 col-md-2">
+                    <div class="form-group">
+                        <label>Ngày tạo (to)</label>
+
+                        <div class="input-group date">
+                            <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            <input type="text" class="form-control pull-right" id="createdDateTo">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-6 col-md-2">
+                    <div class="form-group">
+                        <label>Ngày hết hạn (from)</label>
+
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            <input type="text" class="form-control pull-right" id="expiryDateFrom">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-6 col-md-2">
+                    <div class="form-group">
+                        <label>Ngày hết hạn (to)</label>
+
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            <input type="text" class="form-control pull-right" id="expiryDateTo">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-6 col-md-2">
+                    <div class="form-group">
+                        <label class="hidden-xs"></label>
+
+                        <div>
+                            <button id="search" class="btn btn-primary">Tìm kiếm</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12">
+            <div class="box box-primary">
+                <div class="box-body">
+                    <table style="width: 100%" id="members" class="table table-bordered table-hover"></table>
+                </div>
+                <div class="box-footer"></div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+        <div class="col-xs-12">
+            <div class="spinner">
+                <div class="bounce1"></div>
+                <div class="bounce2"></div>
+                <div class="bounce3"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/moment")
+    @Scripts.Render("~/bundles/bootstrap-datepicker")
+    @Scripts.Render("~/bundles/inputMask")
+    @Scripts.Render("~/bundles/dataTables")
+    <script src="~/App/Member/All/all.js"></script>
+    <script>
+        var ctrl = new GetAllController();
+        ctrl.initialize();
+    </script>
+}
