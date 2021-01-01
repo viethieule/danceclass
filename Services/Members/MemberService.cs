@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -28,6 +29,8 @@ namespace Services.Members
         bool IsNeedToChangePassword(int userId);
         Task<SearchMemberRs> Search(SearchMemberRq rq);
         Task<GetAllMemberRs> GetAll(GetAllMemberRq rq);
+        Task<EditMemberRs> Edit(EditMemberRq rq);
+        Task<DeleteMemberRs> Delete(int userId);
     }
 
     public class MemberService : UserService, IMemberService
@@ -247,6 +250,51 @@ namespace Services.Members
             return new GetAllMemberRs
             {
                 Members = members
+            };
+        }
+
+        public async Task<EditMemberRs> Edit(EditMemberRq rq)
+        {
+            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == rq.Id);
+            if (user == null)
+            {
+                throw new Exception("User không tồn tại");
+            }
+
+            user.FullName = rq.FullName.Trim();
+            user.UserName = rq.UserName.Trim();
+            user.PhoneNumber = rq.PhoneNumber.Trim();
+            user.Birthdate = rq.Birthdate;
+
+            await _dbContext.SaveChangesAsync();
+            _dbContext.Entry(user).State = EntityState.Detached;
+
+            return new EditMemberRs
+            {
+                Member = _mapper.Map<MemberDTO>(user)
+            };
+        }
+
+        public async Task<DeleteMemberRs> Delete(int userId)
+        {
+            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            if (user == null)
+            {
+                throw new Exception("User không tồn tại");
+            }
+
+            if (await _userManager.IsInRoleAsync(userId, "Admin"))
+            {
+                throw new Exception("Không thể xóa admin");
+            }
+
+            _dbContext.Memberships.Remove(user.Membership);
+            _dbContext.Users.Remove(user);
+            await _dbContext.SaveChangesAsync();
+
+            return new DeleteMemberRs
+            {
+                Success = true
             };
         }
     }

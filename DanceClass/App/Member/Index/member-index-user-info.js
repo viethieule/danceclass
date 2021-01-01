@@ -2,6 +2,8 @@
     var _self = this;
 
     this.initUserInfo = async function () {
+        initUi();
+        registerEvent();
         await _self.loadUser();
         loadUserRegistrations();
     }
@@ -12,11 +14,7 @@
         try {
             _self.member = _self.member || await UserService.get({ username });
             if (_self.member) {
-                const { userName, birthdate, fullName, phoneNumber, membership } = _self.member;
-                $('#username').text(userName);
-                $('#fullName').text(fullName);
-                $('#birthdate').text(birthdate ? moment(birthdate).format('DD/MM/YYYY') : '');
-                $('#phoneNumber').text(phoneNumber);
+                populateUserInfo(_self.member);
 
                 if (_self.member.id === _self.currentUser.id) {
                     $('#changePassword').attr('href', '/Manage/ChangePassword');
@@ -34,6 +32,101 @@
         } catch (ex) {
             $('.content-header').alert(true, 'danger', ex);
         }
+    }
+
+    function populateUserInfo(user) {
+        const { userName, birthdate, fullName, phoneNumber } = user;
+        $('#username').text(userName);
+        $('#fullName').text(fullName);
+        $('#birthdate').text(birthdate ? moment(birthdate).format('DD/MM/YYYY') : '');
+        $('#phoneNumber').text(phoneNumber);
+
+        $('#editFullName').val(fullName);
+        $('#editPhoneNumber').val(phoneNumber);
+        $('#editUserName').val(userName);
+        $('#editBirthdate').datepicker('setDate', new Date(birthdate));
+    }
+
+    function initUi() {
+        $('#editBirthdate').datePickerWithMask();
+    }
+
+    function registerEvent() {
+        $('#editUserInfo')
+            .submit(function (event) {
+                event.preventDefault();
+            })
+            .validate(Object.assign(jqueryValidateConfig, {
+                rules: {
+                    name: {
+                        required: true,
+                        noSpace: true,
+                    },
+                    username: {
+                        required: true,
+                        noSpace: true,
+                    },
+                    phone: {
+                        required: true,
+                        noSpace: true,
+                    }
+                },
+                submitHandler: async function (form) {
+                    $modal = $('#modal-edit-user-info');
+
+                    var formData = FormUtils.convertFormDataToDictionary($(form).serializeArray());
+                    let birthdate = $('#editBirthdate').getInputDateString()
+                    try {
+                        var userName = formData['username'] ? formData['username'].trim() : '';
+                        var isUsernameChanged = _self.member.userName !== userName;
+                        var rs = await ApiService.post('/api/user/edit', {
+                            id: _self.member.id,
+                            fullName: formData['name'],
+                            userName: userName,
+                            birthdate: birthdate,
+                            phoneNumber: formData['phone']
+                        });
+                        if (rs && rs.member) {
+                            populateUserInfo(rs.member);
+                            if (isUsernameChanged) {
+                                const fragments = window.location.pathname.split('/');
+                                fragments[fragments.length - 1] = userName;
+                                var newPathName = fragments.join('/');
+
+                                if (history.pushState) {
+                                    var newUrl = window.location.protocol + "//" + window.location.host + newPathName;
+                                    window.history.pushState({ path: newUrl }, '', newUrl);
+                                }
+                            }
+                            $('.content-header').alert(true, 'success', 'Sửa thành công', 2000);
+                        } else {
+                            $('.content-header').alert(true, 'danger', 'Đã có lỗi xảy ra');
+                        }
+                    } catch (ex) {
+                        console.log(ex);
+                        $('.content-header').alert(true, 'danger', ex);
+                    } finally {
+                        $modal.modal('hide');
+                    }
+                }
+            }));
+
+        $('#deleteUser').on('click', function () {
+            try {
+                _self.showAlert('Bạn có chắc chắn muốn xóa hội viên này?', async function () {
+                    var rs = await ApiService.del('/api/user/delete/' + _self.member.id);
+                    if (rs && rs.success) {
+                        $('.content-header').alert(true, 'success', 'Xóa thành công');
+                        setTimeout(function () {
+                            window.location = '/';
+                        }, 1500);
+                    }
+                });                
+            } catch (ex) {
+                console.log(ex);
+                $('.content-header').alert(true, 'danger', ex);
+            }
+        })
     }
 
     async function loadUserRegistrations() {

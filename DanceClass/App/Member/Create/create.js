@@ -113,10 +113,7 @@ function registerEvent() {
                 try {
                     var package = m_packages.find(p => p.id.toString() === formData['package']);
 
-                    let dob = $('#dob').datepicker('getDate');
-                    if (dob) {
-                        dob = moment(dob).format('MM-DD-YYYY');
-                    }
+                    var dob = $('#dob').getInputDateString();
 
                     const data = await createMember({
                         member: {

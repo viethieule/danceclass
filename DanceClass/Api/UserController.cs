@@ -1,5 +1,6 @@
 ﻿using DanceClass.Utils;
 using Services.Members;
+using System;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -55,6 +56,29 @@ namespace DanceClass.Api
         public async Task<IHttpActionResult> GetAllMember(GetAllMemberRq rq)
         {
             GetAllMemberRs rs = await _memberService.GetAll(rq);
+            return ApiJson(rs);
+        }
+
+        [HttpPost]
+        [HierarchicalAuthorize(AuthorizationLevel = AuthorizationLevel.AdminOnly)]
+        [Route("edit")]
+        public async Task<IHttpActionResult> Edit(EditMemberRq rq)
+        {
+            if (!ModelState.IsValid)
+            {
+                throw new Exception("Invalid request body");
+            }
+
+            EditMemberRs rs = await _memberService.Edit(rq);
+            return ApiJson(rs);
+        }
+
+        [HttpDelete]
+        [HierarchicalAuthorize(AuthorizationLevel = AuthorizationLevel.AdminOnly)]
+        [Route("delete/{id}")]
+        public async Task<IHttpActionResult> Delete(int id)
+        {
+            DeleteMemberRs rs = await _memberService.Delete(id);
             return ApiJson(rs);
         }
     }

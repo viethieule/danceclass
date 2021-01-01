@@ -105,4 +105,8 @@
         }
         return date;
     }
+
+    $.validator.addMethod("noSpace", function (value, element) {
+        return value.trim() !== '';
+    }, "This field is required")
 }(jQuery));

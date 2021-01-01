@@ -177,6 +177,9 @@
     <Compile Include="Membership\MembershipService.cs" />
     <Compile Include="Membership\UpdateMembershipRq.cs" />
     <Compile Include="Membership\UpdateMembershipRs.cs" />
+    <Compile Include="Members\DeleteMemberRs.cs" />
+    <Compile Include="Members\EditMemberRq.cs" />
+    <Compile Include="Members\EditMemberRs.cs" />
     <Compile Include="Members\GetAllMemberRq.cs" />
     <Compile Include="Members\GetAllMemberRs.cs" />
     <Compile Include="Members\SearchMemberRq.cs" />
