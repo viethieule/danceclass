@@ -44,7 +44,9 @@
         $('#editFullName').val(fullName);
         $('#editPhoneNumber').val(phoneNumber);
         $('#editUserName').val(userName);
-        $('#editBirthdate').datepicker('setDate', new Date(birthdate));
+        if (birthdate) {
+            $('#editBirthdate').datepicker('setDate', new Date(birthdate));
+        }
     }
 
     function initUi() {
@@ -88,6 +90,9 @@
                         });
                         if (rs && rs.member) {
                             populateUserInfo(rs.member);
+                            _self.member.userName = rs.member.userName;
+                            _self.member.fullName = rs.member.fullName;
+                            _self.member.phoneNumber = rs.member.phoneNumber;
                             if (isUsernameChanged) {
                                 const fragments = window.location.pathname.split('/');
                                 fragments[fragments.length - 1] = userName;
