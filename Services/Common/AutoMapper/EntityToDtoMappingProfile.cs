@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DataAccess.Enums;
+using Services.Branch;
 using Services.Class;
 using Services.DefaultPackage;
 using Services.Members;
@@ -31,6 +32,9 @@ namespace Services.Common.AutoMapper
 
             CreateMap<DataAccess.Entities.Class, ClassDTO>()
                 .ForMember(x => x.Schedules, opt => opt.ExplicitExpansion());
+
+            CreateMap<DataAccess.Entities.Branch, BranchDTO>()
+                .ForMember(x => x.RegisteredMembers, opt => opt.ExplicitExpansion());
 
             CreateMap<DataAccess.Entities.Registration, RegistrationDTO>()
                 .ForMember(x => x.ScheduleDetail, opt => opt.ExplicitExpansion())

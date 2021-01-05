@@ -19,6 +19,20 @@
 
         protected override void Seed(DataAccess.DanceClassDbContext context)
         {
+            if (!context.Branches.Any())
+            {
+                context.Branches.AddRange(new List<Branch>
+                {
+                    new Branch { Name = "Quận 3", Abbreviation = "Q3", Address = "Ngô Thời Nhiệm" },
+                    new Branch { Name = "Phú Nhuận", Abbreviation = "PN", Address = "Phùng Văn Cung" },
+                    new Branch { Name = "Lê Văn Sỹ", Abbreviation = "LVS", Address = "Lê Văn Sỹ" },
+                });
+
+                context.SaveChanges();
+            }
+
+            return;
+
             if (!context.Roles.Any(r => r.Name == "Collaborator"))
             {
                 context.Roles.Add(new Role { Name = "Collaborator" });
@@ -40,8 +54,6 @@
 
                 context.SaveChanges();
             }
-
-            return;
 
             if (!context.Roles.Any())
             {

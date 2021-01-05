@@ -35,11 +35,12 @@
     }
 
     function populateUserInfo(user) {
-        const { userName, birthdate, fullName, phoneNumber } = user;
+        const { userName, birthdate, fullName, phoneNumber, registeredBranch } = user;
         $('#username').text(userName);
         $('#fullName').text(fullName);
         $('#birthdate').text(birthdate ? moment(birthdate).format('DD/MM/YYYY') : '');
         $('#phoneNumber').text(phoneNumber);
+        $('#branch').text(registeredBranch ? registeredBranch.name : '');
 
         $('#editFullName').val(fullName);
         $('#editPhoneNumber').val(phoneNumber);

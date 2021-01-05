@@ -37,6 +37,9 @@ namespace DataAccess.Entities
         public virtual ICollection<Registration> Registrations { get; set; }
         public virtual ICollection<Package> Packages { get; set; }
         public bool IsNeedToChangePassword { get; set; }
+        public int? RegisteredBranchId { get; set; }
+        [ForeignKey("RegisteredBranchId")]
+        public virtual Branch RegisteredBranch { get; set; }
 
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }

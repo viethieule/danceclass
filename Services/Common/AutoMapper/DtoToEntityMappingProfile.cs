@@ -4,6 +4,7 @@ using Services.Members;
 using Services.Registration;
 using Services.Schedule;
 using Services.Membership;
+using Services.Branch;
 
 namespace Services.Common.AutoMapper
 {
@@ -16,6 +17,7 @@ namespace Services.Common.AutoMapper
             CreateMap<RegistrationDTO, DataAccess.Entities.Registration>();
             CreateMap<ScheduleDTO, DataAccess.Entities.Schedule>()
                 .ForMember(x => x.SessionsPerWeek, opt => opt.MapFrom(source => !string.IsNullOrEmpty(source.DaysPerWeek) ? source.DaysPerWeek.Length : default));
+            CreateMap<BranchDTO, DataAccess.Entities.Branch>();
         }
     }
 }

@@ -99,6 +99,7 @@
   <ItemGroup>
     <Compile Include="DanceClassDbContext.cs" />
     <Compile Include="Entities\ApplicationUser.cs" />
+    <Compile Include="Entities\Branch.cs" />
     <Compile Include="Entities\Class.cs" />
     <Compile Include="Entities\EntityBase.cs" />
     <Compile Include="Entities\Membership.cs" />
@@ -199,6 +200,10 @@
     <Compile Include="Migrations\202011141241570_NullableBirthdate.designer.cs">
       <DependentUpon>202011141241570_NullableBirthdate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202101051620484_AddBranch.cs" />
+    <Compile Include="Migrations\202101051620484_AddBranch.designer.cs">
+      <DependentUpon>202101051620484_AddBranch.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -270,6 +275,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202011141241570_NullableBirthdate.resx">
       <DependentUpon>202011141241570_NullableBirthdate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202101051620484_AddBranch.resx">
+      <DependentUpon>202101051620484_AddBranch.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

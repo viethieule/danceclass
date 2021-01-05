@@ -164,6 +164,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Branch\BranchDTO.cs" />
+    <Compile Include="Branch\BranchService.cs" />
+    <Compile Include="Branch\GetAllBranchRs.cs" />
     <Compile Include="Class\ClassDTO.cs" />
     <Compile Include="Class\ClassService.cs" />
     <Compile Include="Common\AutoMapper\ApplicationUserResolver\ApplicationUserRolesNameResolver.cs" />

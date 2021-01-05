@@ -119,7 +119,7 @@ namespace Services.Members
 
             GetMemberRs rs = new GetMemberRs();
 
-            var query = _dbContext.Users.ProjectTo<MemberDTO>(_mappingConfig, dest => dest.Membership);
+            var query = _dbContext.Users.ProjectTo<MemberDTO>(_mappingConfig, dest => dest.Membership, dest => dest.RegisteredBranch);
             if (!string.IsNullOrEmpty(rq.UserName))
             {
                 rs.Member = await query.FirstOrDefaultAsync(u => u.UserName == rq.UserName);

@@ -1,7 +1,9 @@
 ﻿var m_packages = [];
+var m_branches = [];
 
 $(async function () {
     initDatePicker();
+    populateBranches();
     await populatePackages();
     registerEvent();
 });
@@ -37,6 +39,18 @@ async function populatePackages() {
     }
 }
 
+async function populateBranches() {
+    try {
+        var rs = await ApiService.get('/api/branch/getAll');
+        if (rs && rs.branches) {
+            m_branches = rs.branches;
+            $('#branch').appendOptions(m_branches, 'id', 'name');
+        }
+    } catch (ex) {
+        console.log(ex);
+    }
+}
+
 async function getPackages() {
     return $.ajax({
         method: 'GET',
@@ -53,9 +67,14 @@ function registerEvent() {
         .validate({
             rules: {
                 name: {
-                    required: true
+                    required: true,
+                    noSpace: true
                 },
                 phone: {
+                    required: true,
+                    noSpace: true
+                },
+                branch: {
                     required: true
                 },
                 package: {
@@ -120,7 +139,8 @@ function registerEvent() {
                             fullName: formData['name'],
                             birthdate: dob,
                             phoneNumber: formData['phone'],
-                            email: formData['email']
+                            email: formData['email'],
+                            registeredBranchId: parseInt(formData['branch'])
                         },
                         package: package ? {
                             defaultPackageId: package.id
