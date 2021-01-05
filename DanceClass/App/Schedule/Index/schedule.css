@@ -302,6 +302,12 @@ button#prev {
     margin-bottom: 0px;
 }
 
+.btn-hide-search-result {
+    padding: 0px 8px;
+    margin-left: 4px;
+    display: none;
+}
+
 .session-registrations {
     padding-right: 5px;
 }

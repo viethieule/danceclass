@@ -52,12 +52,23 @@
         return null;
     }
 
+    async function search(query) {
+        const rs = await ApiService.post('/api/user/searchMember', { query });
+
+        if (rs && rs.members) {
+            return rs.members;
+        }
+
+        return [];
+    }
+
     return {
         getCurrentUser: getCurrentUser,
         isAdmin: isAdmin,
         isMember: isMember,
         isReceptionist: isReceptionist,
         isCollaborator: isCollaborator,
-        get: get
+        get: get,
+        search: search
     }
 })();

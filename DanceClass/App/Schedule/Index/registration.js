@@ -73,68 +73,72 @@
         renderRegistrationList(registrations);
 
         $('.session-user-search-result').hide();
+        $('.btn-hide-search-result').hide();
         $('.session-search-message').text('').hide();
         $('#session-user-search').val('');
 
         $('.session-add-registration button').off('click').on('click', async function (event) {
             let $addBtn = $(event.target);
             let $input = $addBtn.closest('div').find('input');
-            let phoneNumber = $input.val();
-            if (!phoneNumber) {
+            let query = $input.val();
+            if (!query) {
                 return;
             }
 
             $addBtn.find('i').removeClass('fa fa-plus').addClass('fa fa-circle-o-notch fa-spin').prop('disabled', true);
             try {
-                const user = await UserService.get({ phoneNumber });
+                const users = await UserService.search(query);
                 $('.session-user-search-result').show();
-                if (user) {
+                $('.btn-hide-search-result').show();
+                if (users && users.length) {
                     $('.session-search-message').empty();
-                    if (registrations.some(r => r.userId === user.id)) {
-                        $('.session-search-message').text('Học viên ' + user.fullName + ' đã đăng ký!').show();
-                        $('.session-user-search-result tbody').empty();
-                        return;
-                    }
+                    $('.session-user-search-result tbody').empty()
+                    users.forEach(function (user) {
+                        let userLink = $('<a>', { href: '/member/' + user.userName, target: '_blank' }).html(user.fullName);
+                        let searchResult = $('<tr>')
+                            .append($('<td>').append(userLink))
+                            .append($('<td>').text(user.userName))
+                            .append($('<td>').text(user.phoneNumber));
 
-                    let registerBtn = $('<button>', { class: 'btn btn-block btn-success btn-xs btn-label' })
-                        .html('Đăng ký')
-                        .on('click', { id: scheduleDetailId }, async function (event) {
-                            let $registerBtn = $(event.target);
-                            $registerBtn
-                                .prop('disabled', true)
-                                .empty()
-                                .append($('<i>', { class: 'fa fa-circle-o-notch fa-spin' }))
-                            try {
-                                const response = await _self.registerSchedule(event.data.id, user.id);
-                                if (response && response.registration) {
-                                    response.registration.isModified = true;
-                                    registrations.push(response.registration);
+                        if (!registrations.some(r => r.userId === user.id)) {
+                            let registerBtn = $('<button>', { class: 'btn btn-block btn-success btn-xs btn-label' })
+                                .html('Đăng ký')
+                                .on('click', { id: scheduleDetailId }, async function (event) {
+                                    let $registerBtn = $(event.target);
+                                    $registerBtn
+                                        .prop('disabled', true)
+                                        .empty()
+                                        .append($('<i>', { class: 'fa fa-circle-o-notch fa-spin' }))
+                                    try {
+                                        const response = await _self.registerSchedule(event.data.id, user.id);
+                                        if (response && response.registration) {
+                                            response.registration.isModified = true;
+                                            registrations.push(response.registration);
 
-                                    // rerender
-                                    renderRegistrationList(registrations);
+                                            // rerender
+                                            renderRegistrationList(registrations);
 
-                                    // hide search result
-                                    $('.session-user-search-result').hide();
-                                }
-                            } catch (ex) {
-                                console.log(ex);
-                                $('.session-search-message').text(ex.responseJSON ? ex.responseJSON.ExceptionMessage : ex).show();
-                            } finally {
-                                // empty search result
-                                $('.session-user-search-result tbody').empty();
-                            }
-                        });
+                                            // hide search result
+                                            $('.session-user-search-result').hide();
+                                            $('.btn-hide-search-result').hide();
+                                        }
+                                    } catch (ex) {
+                                        console.log(ex);
+                                        $('.session-search-message').text(ex.responseJSON ? ex.responseJSON.ExceptionMessage : ex).show();
+                                    } finally {
+                                        // empty search result
+                                        $('.session-user-search-result tbody').empty();
+                                    }
+                                });
+                            searchResult.append($('<td>').append(registerBtn));
+                        } else {
+                            searchResult.append($('<td>').append('Đã đăng ký'));
+                        }
 
-                    let userLink = $('<a>', { href: '/member/' + user.userName, target: '_blank' }).html(user.fullName);
-                    let searchResult = $('<tr>')
-                        .append($('<td>').append(userLink))
-                        .append($('<td>').text(user.userName))
-                        .append($('<td>').text(user.phoneNumber))
-                        .append($('<td>').append(registerBtn));
-
-                    $('.session-user-search-result tbody').empty().append(searchResult);
+                        $('.session-user-search-result tbody').append(searchResult);
+                    })
                 } else {
-                    $('.session-search-message').text('Không tìm thấy học viên!').show();
+                    $('.session-search-message').text('Không tìm thấy hoặc chuỗi tìm kiếm quá ngắn!').show();
                     $('.session-user-search-result tbody').empty();
                 }
             } catch (ex) {
@@ -199,6 +203,11 @@
                     $('#modal-manage .modal-body').alert(true, 'danger', ex);
                 }                
             })
+        });
+
+        $('.btn-hide-search-result').off('click').on('click', function (event) {
+            $('.session-user-search-result').toggle();
+            $(this).toggle();
         });
     }
 
