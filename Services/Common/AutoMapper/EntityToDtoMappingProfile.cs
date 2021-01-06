@@ -46,6 +46,7 @@ namespace Services.Common.AutoMapper
             CreateMap<DataAccess.Entities.ApplicationUser, MemberDTO>()
                 .ForMember(x => x.Packages, opt => opt.ExplicitExpansion())
                 .ForMember(x => x.Membership, opt => opt.ExplicitExpansion())
+                .ForMember(x => x.RegisteredBranch, opt => opt.ExplicitExpansion())
                 .ForMember(x => x.ActivePackage, opt => opt.MapFrom(x => x.Packages.FirstOrDefault(m => m.IsActive)));
 
             CreateMap<DataAccess.Entities.Package, PackageDTO>()

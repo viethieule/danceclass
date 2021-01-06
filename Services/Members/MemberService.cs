@@ -53,6 +53,9 @@ namespace Services.Members
                 ApplicationUser appUser = _mapper.Map<ApplicationUser>(member);
                 appUser.IsNeedToChangePassword = true;
 
+                // When using user manager Http context is null so set current user here
+                appUser.CreatedBy = HttpContext.Current.User.Identity.Name;
+
                 var result = await _userManager.CreateAsync(appUser, DEFAULT_PASSWORD);
                 if (!result.Succeeded)
                 {
@@ -267,11 +270,10 @@ namespace Services.Members
             user.Birthdate = rq.Birthdate;
 
             await _dbContext.SaveChangesAsync();
-            _dbContext.Entry(user).State = EntityState.Detached;
 
             return new EditMemberRs
             {
-                Member = _mapper.Map<MemberDTO>(user)
+                Member = await _dbContext.Users.ProjectTo<MemberDTO>(_mappingConfig, m => m.RegisteredBranch).FirstOrDefaultAsync(u => u.Id == user.Id)
             };
         }
 

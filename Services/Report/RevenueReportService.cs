@@ -71,6 +71,7 @@ namespace Services.Report
                         new CellData { UserEnteredValue = new ExtendedValue { StringValue = "Gói đăng ký (buổi)" }, UserEnteredFormat = new CellFormat { TextFormat = new TextFormat { Bold = true } } },
                         new CellData { UserEnteredValue = new ExtendedValue { StringValue = "Số buổi còn lại" }, UserEnteredFormat = new CellFormat { TextFormat = new TextFormat { Bold = true } } },
                         new CellData { UserEnteredValue = new ExtendedValue { StringValue = "Ngày đăng ký" }, UserEnteredFormat = new CellFormat { TextFormat = new TextFormat { Bold = true } } },
+                        new CellData { UserEnteredValue = new ExtendedValue { StringValue = "Chi nhánh đăng ký" }, UserEnteredFormat = new CellFormat { TextFormat = new TextFormat { Bold = true } } },
                         new CellData { UserEnteredValue = new ExtendedValue { StringValue = "Giá" }, UserEnteredFormat = new CellFormat { TextFormat = new TextFormat { Bold = true } } },
                     }
                 };
@@ -93,6 +94,7 @@ namespace Services.Report
                             new CellData { UserEnteredValue = new ExtendedValue { NumberValue = package.NumberOfSessions } },
                             new CellData { UserEnteredValue = new ExtendedValue { NumberValue = package.RemainingSessions } },
                             new CellData { UserEnteredValue = new ExtendedValue { NumberValue = package.CreatedDate.ToOADate() }, UserEnteredFormat = new CellFormat { NumberFormat = new NumberFormat { Type = "DATE", Pattern = "dd-MM-yyyy" } } },
+                            new CellData { UserEnteredValue = new ExtendedValue { StringValue = package.User.RegisteredBranch != null ? package.User.RegisteredBranch.Name : string.Empty } },
                             new CellData { UserEnteredValue = new ExtendedValue { NumberValue = package.Price }, UserEnteredFormat = new CellFormat { NumberFormat = new NumberFormat { Type = "CURRENCY", Pattern = "#,##" } } },
                         }
                     };
@@ -103,6 +105,7 @@ namespace Services.Report
                 {
                     Values = new List<CellData>
                     {
+                        new CellData { UserEnteredValue = new ExtendedValue { StringValue = string.Empty } },
                         new CellData { UserEnteredValue = new ExtendedValue { StringValue = string.Empty } },
                         new CellData { UserEnteredValue = new ExtendedValue { StringValue = string.Empty } },
                         new CellData { UserEnteredValue = new ExtendedValue { StringValue = string.Empty } },

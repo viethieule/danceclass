@@ -42,7 +42,7 @@ namespace DataAccess
             var currentUser = string.Empty;
             if (HttpContext.Current != null && HttpContext.Current.User != null && HttpContext.Current.User.Identity != null)
             {
-                currentUser = currentUser = HttpContext.Current.User.Identity.Name;
+                currentUser = HttpContext.Current.User.Identity.Name;
             }
 
             foreach (DbEntityEntry item in modifieds)
@@ -53,10 +53,20 @@ namespace DataAccess
                     if (item.State == EntityState.Added)
                     {
                         changedOrAddedItem.CreatedDate = DateTime.Now;
-                        changedOrAddedItem.CreatedBy = currentUser;
+
+                        // When using user manager Http context is null so not update the current user with string empty
+                        if (!string.IsNullOrEmpty(currentUser))
+                        {
+                            changedOrAddedItem.CreatedBy = currentUser;
+                        }
                     }
                     changedOrAddedItem.UpdatedDate = DateTime.Now;
-                    changedOrAddedItem.UpdatedBy = currentUser;
+
+                    // When using user manager Http context is null so not update the current user with string empty
+                    if (!string.IsNullOrEmpty(currentUser))
+                    {
+                        changedOrAddedItem.UpdatedBy = currentUser;
+                    }
                 }
             }
         }
