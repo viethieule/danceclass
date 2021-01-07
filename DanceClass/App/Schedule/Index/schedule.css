@@ -120,6 +120,10 @@
     text-align: center;
 }
 
+.calendar-session {
+    vertical-align: top;
+}
+
 .btn-switch-view {
     margin-left: auto;
 }

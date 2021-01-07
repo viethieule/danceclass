@@ -58,8 +58,13 @@ function CalendarManager() {
                 let targetedDate = date.clone();
                 targetedDate.hour(hours).minute(minutes);
 
-                let tdEvents = $('<td></td>');
+                let tdEvents = $('<td></td>', { 'class': 'calendar-session' });
                 let events = eventGroup.events.filter(e => (new Date(e.date)).getDay() === date.day());
+
+                if (date.isSame(new Date(), 'day')) {
+                    tdEvents.addClass('calendar-today');
+                }
+
                 if (events && events.length > 0) {
                     let isPast = targetedDate.isBefore(new Date(), 'second');
                     events
@@ -68,26 +73,20 @@ function CalendarManager() {
                             return jObject;
                         }, $())
                         .appendTo(tdEvents);
-                } else {
-                    if (date.isSame(new Date(), 'day')) {
-                        tdEvents.addClass('calendar-today');
-                    }
-
-                    if (UserService.isAdmin() || UserService.isCollaborator()) {
-                        tdEvents
-                            .attr('data-toggle', 'modal')
-                            .attr('data-target', '#modal-create-schedule')
-                            .data('date', targetedDate)
-                            .hover(function () {
-                                $(this)
-                                    .addClass('cell-admin-add-schedule')
-                                    .html('Tạo<br />lịch học')
-                            }, function () {
-                                $(this)
-                                    .removeClass('cell-admin-add-schedule')
-                                    .html('')
-                            })
-                    }
+                } else if (UserService.isAdmin() || UserService.isCollaborator()) {
+                    tdEvents
+                        .attr('data-toggle', 'modal')
+                        .attr('data-target', '#modal-create-schedule')
+                        .data('date', targetedDate)
+                        .hover(function () {
+                            $(this)
+                                .addClass('cell-admin-add-schedule')
+                                .html('Tạo<br />lịch học')
+                        }, function () {
+                            $(this)
+                                .removeClass('cell-admin-add-schedule')
+                                .html('')
+                        })
                 }
 
                 tdEvents.appendTo(tr);
