@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DanceClass.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -7,12 +8,13 @@ using System.Web.Mvc;
 namespace DanceClass.Controllers
 {
     [Authorize]
-    public class ScheduleController : Controller
+    public class ScheduleController : BaseController
     {
         // GET: Schedule
         public ActionResult Index()
         {
-            return View();
+            this.LayoutViewModel.SelectedLeftMenuItem = SelectedLeftMenuItem.Schedule;
+            return View(this.LayoutViewModel);
         }
     }
 }

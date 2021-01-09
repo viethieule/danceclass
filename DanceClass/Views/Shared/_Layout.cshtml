@@ -1,4 +1,12 @@
-﻿<!DOCTYPE html>
+﻿@model LayoutViewModel
+@using DanceClass.Models
+
+@{ 
+    ViewBag.SelectedLeftMenuItem = Model != null && Model.SelectedLeftMenuItem != null ? Model.SelectedLeftMenuItem.ToString().ToLower() : string.Empty;
+    ViewBag.SelectedLeftMenuSubItem = Model != null && Model.SelectedLeftMenuSubItem != null ? Model.SelectedLeftMenuSubItem.ToString().ToLower() : string.Empty;
+}
+
+<!DOCTYPE html>
 <!--
 This is a starter template page. Use this page to start your new project from
 scratch. This page gets rid of all links and provides the needed markup only.
@@ -106,14 +114,14 @@ desired effect
                 <!-- Sidebar Menu -->
                 <ul class="sidebar-menu" data-widget="tree">
                     <!-- Optionally, you can add icons to the links -->
-                    <li><a href="/"><i class="fa fa-calendar" aria-hidden="true"></i> <span>Lịch học</span></a></li>
+                    <li class="sidebar-menu-item sidebar-menu-schedule"><a href="/"><i class="fa fa-calendar" aria-hidden="true"></i> <span>Lịch học</span></a></li>
                     @if (Request.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("Collaborator") || User.IsInRole("Receptionist")))
                     {
                         if (User.IsInRole("Admin") || User.IsInRole("Collaborator"))
                         {
-                            <li><a href="/members/all"><i class="fa fa-users" aria-hidden="true"></i> <span>Hội viên</span></a></li>
+                            <li class="sidebar-menu-item sidebar-menu-members"><a href="/members/all"><i class="fa fa-users" aria-hidden="true"></i> <span>Hội viên</span></a></li>
                         }
-                        <li class="treeview">
+                        <li class="treeview sidebar-menu-item sidebar-menu-create">
                             <a href="#">
                                 <i class="fa fa-plus"></i>
                                 <span>Tạo</span>
@@ -122,16 +130,16 @@ desired effect
                                 </span>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="/members/create"><i class="fa fa-user" aria-hidden="true"></i> <span>Hội viên</span></a></li>
+                                <li class="sidebar-sub-menu-create_member"><a href="/members/create"><i class="fa fa-user" aria-hidden="true"></i> <span>Hội viên</span></a></li>
                                 @if (User.IsInRole("Admin") || User.IsInRole("Collaborator"))
                                 {
-                                    <li><a href="/receptionist/create"><i class="fa fa-user" aria-hidden="true"></i> <span>Lễ tân</span></a></li>
+                                    <li class="sidebar-sub-menu-create_receptionist"><a href="/receptionist/create"><i class="fa fa-user" aria-hidden="true"></i> <span>Lễ tân</span></a></li>
                                 }
                             </ul>
                         </li>
                         if (User.IsInRole("Admin"))
                         {
-                            <li class="treeview">
+                            <li class="treeview sidebar-menu-item sidebar-menu-report">
                                 <a href="#">
                                     <i class="fa fa-bar-chart"></i>
                                     <span>Báo cáo</span>
@@ -140,7 +148,7 @@ desired effect
                                     </span>
                                 </a>
                                 <ul class="treeview-menu">
-                                    <li><a href="/report/revenue"><i class="fa fa-money" aria-hidden="true"></i> <span>Doanh thu</span></a></li>
+                                    <li class="sidebar-sub-menu-report_revenue"><a href="/report/revenue"><i class="fa fa-money" aria-hidden="true"></i> <span>Doanh thu</span></a></li>
                                 </ul>
                             </li>
                         }
@@ -209,6 +217,21 @@ desired effect
     <script src="~/App/Common/js/base.js"></script>
     <script>
         $(document).ajaxStart(function () { Pace.restart(); });
+        $(document).ready(function () {
+            var selectedLeftMenuItem = '@ViewBag.SelectedLeftMenuItem';
+            if (selectedLeftMenuItem) {
+                var selectedMenu = $('li.sidebar-menu-item.sidebar-menu-' + selectedLeftMenuItem);
+                if (selectedMenu && selectedMenu.length) {
+                    selectedMenu.addClass('active');
+                    if (selectedMenu.hasClass('treeview')) {
+                        var selectedLeftMenuSubItem = '@ViewBag.SelectedLeftMenuSubItem';
+                        if (selectedLeftMenuSubItem) {
+                            selectedMenu.find('li.sidebar-sub-menu-' + selectedLeftMenuSubItem).addClass('active');
+                        }                        
+                    }
+                }
+            }
+        })
     </script>
 
     <script src="~/App/Common/js/apiService.js"></script>

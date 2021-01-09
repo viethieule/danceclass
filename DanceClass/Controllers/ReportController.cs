@@ -1,4 +1,5 @@
-﻿using DanceClass.Utils;
+﻿using DanceClass.Models;
+using DanceClass.Utils;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Mvc;
 using Services.Report;
@@ -13,7 +14,7 @@ using System.Web.Mvc;
 namespace DanceClass.Controllers
 {
 
-    public class ReportController : Controller
+    public class ReportController : BaseController
     {
         private readonly IRevenueReportService _revenueReportService;
         private static UserCredential _credential;
@@ -37,7 +38,9 @@ namespace DanceClass.Controllers
                 _credential = result.Credential;
             }
 
-            return View();
+            this.LayoutViewModel.SelectedLeftMenuItem = SelectedLeftMenuItem.Report;
+            this.LayoutViewModel.SelectedLeftMenuSubItem = SelectedLeftMenuSubItem.Report_Revenue;
+            return View(this.LayoutViewModel);
         }
 
         [HttpPost]

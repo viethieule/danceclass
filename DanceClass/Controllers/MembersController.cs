@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DanceClass.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -7,7 +8,7 @@ using System.Web.Mvc;
 namespace DanceClass.Controllers
 {
     [Authorize]
-    public class MembersController : Controller
+    public class MembersController : BaseController
     {
         // GET: Members
         public ActionResult Index(string username)
@@ -17,7 +18,9 @@ namespace DanceClass.Controllers
 
         public ActionResult Create()
         {
-            return View();
+            this.LayoutViewModel.SelectedLeftMenuItem = SelectedLeftMenuItem.Create;
+            this.LayoutViewModel.SelectedLeftMenuSubItem = SelectedLeftMenuSubItem.Create_Member;
+            return View(this.LayoutViewModel);
         }
 
         [Authorize(Roles = "Admin, Collaborator, Receptionist")]
@@ -29,7 +32,8 @@ namespace DanceClass.Controllers
         [Authorize(Roles = "Admin, Collaborator")]
         public ActionResult All()
         {
-            return View();
+            this.LayoutViewModel.SelectedLeftMenuItem = SelectedLeftMenuItem.Members;
+            return View(this.LayoutViewModel);
         }
     }
 }
