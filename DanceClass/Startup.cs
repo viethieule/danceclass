@@ -50,6 +50,8 @@ namespace DanceClass
                 .AsImplementedInterfaces()
                 .InstancePerRequest();
 
+            builder.Register(c => new AppFlowMetadata(c.Resolve<IMemberService>()));
+
             // Register filter with DI
             // builder.Register(c => new ChangePasswordPromptFilterAttribute(c.Resolve<IMemberService>())).AsActionFilterFor<Controller>().InstancePerRequest();
 

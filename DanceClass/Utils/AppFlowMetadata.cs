@@ -3,26 +3,30 @@ using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Mvc;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Util.Store;
+using Services.Members;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
 namespace DanceClass.Utils
 {
-    public class AppFlowMetadata : FlowMetadata
+    public interface IAppFlowMetadata
     {
-        private static readonly IAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer
+    }
+
+    public class AppFlowMetadata : FlowMetadata, IAppFlowMetadata
+    {
+        private readonly IMemberService _memberService;
+
+        public AppFlowMetadata(IMemberService memberService) : base()
         {
-            ClientSecrets = new ClientSecrets
-            {
-                ClientId = "1060276698310-el1ldkjpbeamioj8psru786isp60u3gp.apps.googleusercontent.com",
-                ClientSecret = "EKGK8KniA4GcO9Run2-PHqCE"
-            },
-            Scopes = new[] { SheetsService.Scope.Spreadsheets },
-            DataStore = new FileDataStore(@"C:\datastore", true)
-        });
+            _memberService = memberService;
+        }
+
+        private static IAuthorizationCodeFlow flow = null;
 
         public override string GetUserId(Controller controller)
         {
@@ -43,7 +47,25 @@ namespace DanceClass.Utils
 
         public override IAuthorizationCodeFlow Flow
         {
-            get { return flow; }
+            get
+            {
+                if (flow == null)
+                {
+                    var user = Task.Run(async () => await _memberService.GetAll(new GetAllMemberRq())).Result;
+                    flow = new GoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer
+                    {
+                        ClientSecrets = new ClientSecrets
+                        {
+                            ClientId = "1060276698310-el1ldkjpbeamioj8psru786isp60u3gp.apps.googleusercontent.com",
+                            ClientSecret = "EKGK8KniA4GcO9Run2-PHqCE"
+                        },
+                        Scopes = new[] { SheetsService.Scope.Spreadsheets },
+                        DataStore = new FileDataStore(@"C:\datastore", true)
+                    });
+                }
+
+                return flow;
+            }
         }
     }
 }

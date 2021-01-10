@@ -1,4 +1,5 @@
-﻿using DanceClass.Models;
+﻿using Autofac;
+using DanceClass.Models;
 using DanceClass.Utils;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Mvc;
@@ -17,18 +18,20 @@ namespace DanceClass.Controllers
     public class ReportController : BaseController
     {
         private readonly IRevenueReportService _revenueReportService;
+        private readonly AppFlowMetadata _appFlowMetadata;
         private static UserCredential _credential;
 
-        public ReportController(IRevenueReportService revenueReportService)
+        public ReportController(IRevenueReportService revenueReportService, AppFlowMetadata appFlowMetadata)
         {
             _revenueReportService = revenueReportService;
+            _appFlowMetadata = appFlowMetadata;
         }
 
         [Authorize(Roles = "Admin")]
         // GET: Report
         public async Task<ActionResult> Revenue()
         {
-            var result = await new AuthorizationCodeMvcApp(this, new AppFlowMetadata()).AuthorizeAsync(CancellationToken.None);
+            var result = await new AuthorizationCodeMvcApp(this, _appFlowMetadata).AuthorizeAsync(CancellationToken.None);
             if (result.Credential == null)
             {
                 return new RedirectResult(result.RedirectUri);
