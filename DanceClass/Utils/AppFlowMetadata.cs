@@ -5,6 +5,7 @@ using Google.Apis.Sheets.v4;
 using Google.Apis.Util.Store;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -13,12 +14,14 @@ namespace DanceClass.Utils
 {
     public class AppFlowMetadata : FlowMetadata
     {
-        private static readonly IAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer
+        private static readonly GoogleOAuthCredentialSettings _settings = (GoogleOAuthCredentialSettings)ConfigurationManager.GetSection("googleOAuthCredentialSettings");
+
+        private static readonly IAuthorizationCodeFlow _flow = new GoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer
         {
             ClientSecrets = new ClientSecrets
             {
-                ClientId = "1060276698310-el1ldkjpbeamioj8psru786isp60u3gp.apps.googleusercontent.com",
-                ClientSecret = "EKGK8KniA4GcO9Run2-PHqCE"
+                ClientId = _settings.ClientId,
+                ClientSecret = _settings.ClientSecret
             },
             Scopes = new[] { SheetsService.Scope.Spreadsheets },
             DataStore = new FileDataStore(@"C:\datastore", true)
@@ -43,7 +46,10 @@ namespace DanceClass.Utils
 
         public override IAuthorizationCodeFlow Flow
         {
-            get { return flow; }
+            get
+            {
+                return _flow; 
+            }
         }
     }
 }

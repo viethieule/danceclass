@@ -281,6 +281,7 @@
     <Compile Include="Utils\AppFlowMetadata.cs" />
     <Compile Include="Utils\ChangePasswordPromptFilterAttribute.cs" />
     <Compile Include="Utils\EnumToKeyValuePairConverter.cs" />
+    <Compile Include="Utils\GoogleOAuthCredentialSettings.cs" />
     <Compile Include="Utils\HierarchicalAuthorizeAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -356,6 +357,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="GoogleOAuthCredential.config" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\dataTables.bootstrap.js" />
