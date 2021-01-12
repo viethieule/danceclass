@@ -64,20 +64,27 @@ namespace Services.Package
 
             var membership = await _dbContext.Memberships.SingleAsync(x => x.UserId == rq.UserId);
             var addedMonths = package.Months;
-            if (membership.ExpiryDate > DateTime.Now && membership.RemainingSessions > 0)
+            if (membership.ExpiryDate >= DateTime.Now.Date && membership.RemainingSessions > 0)
             {
-                membership.ExpiryDate = membership.ExpiryDate.AddMonths(addedMonths);
+                var expiryDate = membership.ExpiryDate.AddMonths(addedMonths);
+                membership.ExpiryDate = expiryDate;
+                package.ExpiryDate = expiryDate;
             }
             else
             {
                 package.IsActive = true;
                 var currentPackage = await _dbContext.Packages.FirstOrDefaultAsync(m => m.UserId == rq.UserId && m.IsActive);
-                if (currentPackage == null)
+                if (currentPackage != null)
                 {
                     currentPackage.IsActive = false;
                 }
 
-                membership.ExpiryDate = DateTime.Now.AddMonths(addedMonths);
+                // Since it is expired, reset remaining session to 0
+                membership.RemainingSessions = 0;
+
+                var expiryDate = DateTime.Now.AddMonths(addedMonths);
+                membership.ExpiryDate = expiryDate;
+                package.ExpiryDate = expiryDate;
             }
 
             membership.RemainingSessions += package.NumberOfSessions;
