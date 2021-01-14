@@ -86,13 +86,8 @@ namespace Services.Registration
         public async Task<CreateRegistrationRs> Create(CreateRegistrationRq rq)
         {
             int userId = rq.Registration.UserId;
-            // Decrease remaining sessions of the user
-            var package = _dbContext.Packages.FirstOrDefault(x => x.UserId == userId && x.IsActive);
-            if (package == null)
-            {
-                throw new Exception("Học viên chưa đăng ký gói tập hoặc các gói hiện tại đã hết hạn");
-            }
 
+            // Decrease remaining sessions of the user
             var membership = await _dbContext.Memberships.FirstOrDefaultAsync(x => x.UserId == userId);
             if (membership == null)
             {
@@ -104,14 +99,34 @@ namespace Services.Registration
                 throw new Exception("Bạn đã dùng hết số buổi của gói tập hiện tại.");
             }
 
-            if (membership.ExpiryDate < DateTime.Now)
+            if (membership.ExpiryDate < DateTime.Now.Date)
             {
                 throw new Exception("Gói tập của bạn đã hết hạn.");
             }
 
-            package.RemainingSessions--;
-
             membership.RemainingSessions--;
+
+            // Keep track of what package is being used
+            var activePackage = _dbContext.Packages.FirstOrDefault(x => x.UserId == userId && x.IsActive);
+            if (activePackage == null)
+            {
+                throw new Exception("Học viên chưa đăng ký gói tập hoặc có gì đó không đúng! Vui lòng liên hệ admin tại 0943619526");
+            }
+
+            if (activePackage.RemainingSessions > 0)
+            {
+                activePackage.RemainingSessions--;
+            }
+            else
+            {
+                var nextActivePackage = _dbContext.Packages.FirstOrDefault(p => p.UserId == userId && p.Id > activePackage.Id && p.RemainingSessions > 0);
+                if (nextActivePackage != null)
+                {
+                    activePackage.IsActive = false;
+                    nextActivePackage.IsActive = true;
+                    nextActivePackage.RemainingSessions--;
+                }
+            }
 
             // Add registration
             DataAccess.Entities.Registration registration = _mapper.Map<DataAccess.Entities.Registration>(rq.Registration);
