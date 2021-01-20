@@ -46,6 +46,109 @@ namespace Services.Report
                 .GroupBy(s => s.Schedule.StartTime)
                 .ToDictionary(g => g.Key, g => g.OrderBy(s => s.Schedule.Branch, new BranchComparer()).ToList());
 
+            var dtos = new List<WeeklyScheduleDTO>();
+            foreach (var kv in sessionGroups)
+            {
+                var dayGroups = kv.Value.GroupBy(s => s.Date.DayOfWeek).Select(g => new { Day = g.Key, Sessions = g.OrderBy(s => s.Schedule.Branch, new BranchComparer()) });
+                if (dayGroups.Any(g => g.Sessions.Count() > 1))
+                {
+                    int numberSessions = kv.Value.Count();
+                    int count = 0;
+                    while (true)
+                    {
+                        var sessions = new List<ScheduleDetailDTO>();
+
+                        foreach (var dayGroup in dayGroups)
+                        {
+                            var session = dayGroup.Sessions.FirstOrDefault(d => d.IsAdded == false);
+                            if (session != null)
+                            {
+                                sessions.Add(session);
+                                session.IsAdded = true;
+                            }
+                        }
+
+                        WeeklyScheduleDTO dto = new WeeklyScheduleDTO
+                        {
+                            TimeStart = kv.Key, Sessions = sessions
+                        };
+
+                        dtos.Add(dto);
+
+                        count += sessions.Count();
+                        if (count == numberSessions)
+                        {
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    WeeklyScheduleDTO dto = new WeeklyScheduleDTO
+                    {
+                        TimeStart = kv.Key,
+                        Sessions = kv.Value
+                    };
+
+                    dtos.Add(dto);
+                }
+            }
+
+            //var test2 = dtos
+            //    .GroupBy(
+            //        d => d.TimeStart, 
+            //        d => d, 
+            //        (key, dto) => new WeeklyScheduleDTOWrapper
+            //        {
+            //            FirstTimeStartOccurence = key,
+            //            Data = dto
+            //                .GroupBy(s => s.TimeStart)
+            //                .Select(s => new AnotherWeeklyScheduleDTO
+            //                {
+            //                    Time = s.Key,
+            //                    Count = s.Count(),
+            //                    Sessions = s.ToList()
+            //                })
+            //                .OrderBy(s => s.Time)
+            //                .ToList()
+            //        },
+            //        new TimeStartEqualityComparer())
+            //    .OrderBy(d => d.FirstTimeStartOccurence)
+            //    .ToList();
+
+            //var list = new List<WeeklyScheduleDTO>();
+            //foreach (WeeklyScheduleDTOWrapper group in test2)
+            //{
+            //    int totalWs = group.Data.Sum(d => d.Count);
+            //    var subList = new List<WeeklyScheduleDTO>();
+            //    int skip = 0;
+            //    while (true)
+            //    {
+            //        foreach (AnotherWeeklyScheduleDTO item in group.Data)
+            //        {
+            //            if (skip < item.Sessions.Count)
+            //            {
+            //                WeeklyScheduleDTO ws = item.Sessions.Skip(skip).FirstOrDefault();
+            //                if (ws != null)
+            //                {
+            //                    subList.Add(ws);
+            //                }
+            //            }
+            //        }
+
+            //        if (subList.Count == totalWs)
+            //        {
+            //            break;
+            //        }
+
+            //        skip++;
+            //    }
+
+            //    list.AddRange(subList);
+            //}
+
+            var list = dtos.OrderBy(d => d.TimeStart).ToList();
+
             Assembly reportAssembly = Assembly.Load("Services");
             string fullAssemblyPath = string.Format("Services.Report.Template.WeeklySchedule.xlsx");
 
@@ -61,81 +164,28 @@ namespace Services.Report
                     dateRow.Cells[i].SetCellValue(rq.Start.AddDays(i - 1).ToString("dd/MM/yyyy"));
                 }
 
-                var timeRowIndex = TIME_ROW_BEGIN;
-                List<TimeSpan> listStartTimes = new List<TimeSpan>(); 
-                while (true)
+                for (int i = 1; i < list.Count; i++)
                 {
-                    var timeRow = sheet.GetRow(timeRowIndex);
-                    if (timeRow == null)
-                    {
-                        break;
-                    }
-
-                    var timeCell = timeRow.GetCell(0);
-                    if (timeCell == null)
-                    {
-                        break;
-                    }
-
-                    if (string.IsNullOrEmpty(timeCell.StringCellValue))
-                    {
-                        break;
-                    }
-
-                    TimeSpan startTime = TimeSpan.Parse(timeCell.StringCellValue.Split(new string[] { " - " }, StringSplitOptions.None)[0]);
-                    listStartTimes.Add(startTime);
-
-                    timeRowIndex++;
+                    sheet.CopyRow(TIME_ROW_BEGIN, TIME_ROW_BEGIN + i);
                 }
 
-                timeRowIndex = TIME_ROW_BEGIN;
-                while (true)
+                for (int i = 0; i < list.Count; i++)
                 {
-                    var timeRow = sheet.GetRow(timeRowIndex);
-                    if (timeRow == null)
+                    WeeklyScheduleDTO dto = list[i];
+
+                    IRow row = sheet.GetRow(TIME_ROW_BEGIN + i);
+                    if (row == null) break;
+
+                    ICell timeCell = row.GetCell(0);
+                    timeCell.SetCellValue(dto.TimeStart.ToString(@"hh\:mm") + " - " + dto.TimeEnd.ToString(@"hh\:mm"));
+
+                    foreach (ScheduleDetailDTO session in dto.Sessions)
                     {
-                        break;
-                    }
+                        DayOfWeek dayOfWeek = session.Date.DayOfWeek;
+                        int cellIndex = dayOfWeek != DayOfWeek.Sunday ? (int)dayOfWeek : 7;
 
-                    var timeCell = timeRow.GetCell(0);
-                    if (timeCell == null)
-                    {
-                        break;
-                    }
+                        ICell sessionCell = row.GetCell(cellIndex);
 
-                    if (string.IsNullOrEmpty(timeCell.StringCellValue))
-                    {
-                        break;
-                    }
-
-                    TimeSpan startTime = TimeSpan.Parse(timeCell.StringCellValue.Split(new string[] { " - " }, StringSplitOptions.None)[0]);
-
-                    timeRowIndex++;
-                    if (!sessionGroups.ContainsKey(startTime))
-                    {
-                        continue;
-                    }
-
-                    List<ScheduleDetailDTO> sessions = sessionGroups[startTime].Where(s => s.IsAddedToSheet == false).ToList();
-                    
-                    if (startTime == new TimeSpan(18, 30, 00) && listStartTimes.Count(s => s == startTime) > 1)
-                    {
-                        List<ScheduleDetailDTO> lvsSessions = sessions.Where(s => s.Schedule.Branch == "LVS").ToList();
-                        if (lvsSessions.Count > 0)
-                        {
-                            sessions = lvsSessions;
-                        }
-                    }
-
-                    for (int i = 1; i <= 7; i++)
-                    {
-                        var session = sessions.FirstOrDefault(s => (int)s.Date.DayOfWeek == i || (i == 7 && (int)s.Date.DayOfWeek == 0));
-                        if (session == null)
-                        {
-                            continue;
-                        }
-
-                        var sessionCell = timeRow.GetCell(i);
                         string className = session.Schedule.Class.Name;
                         string classBranch = className + " - " + session.Schedule.Branch;
                         string song = "♪ " + session.Schedule.Song;
@@ -200,10 +250,8 @@ namespace Services.Report
                         cellStyle.BorderLeft = BorderStyle.Thin;
                         cellStyle.BorderTop = BorderStyle.Thin;
                         cellStyle.BorderRight = BorderStyle.Thin;
-                       
-                        sessionCell.CellStyle = cellStyle;
 
-                        session.IsAddedToSheet = true;
+                        sessionCell.CellStyle = cellStyle;
                     }
                 }
 
@@ -236,21 +284,80 @@ namespace Services.Report
             }
             return new XSSFColor(rgb);
         }
-    }
 
-    public class BranchComparer : IComparer<string>
-    {
-        public int Compare(string x, string y)
+        class WeeklyScheduleDTO
         {
-            if (x == y) return 0;
+            public TimeSpan TimeStart { get; set; }
+            public TimeSpan TimeEnd
+            {
+                get
+                {
+                    return TimeStart.Add(new TimeSpan(1, 0, 0));
+                }
+            }
+            public List<ScheduleDetailDTO> Sessions { get; set; }
+        }
 
-            if (x == "LVS") return -1;
-            if (y == "LVS") return 1;
+        class AnotherWeeklyScheduleDTO
+        {
+            public TimeSpan Time { get; set; }
+            public int Count { get; set; }
+            public List<WeeklyScheduleDTO> Sessions { get; set; }
+        }
 
-            if (x == "Q3") return -1;
-            if (y == "Q3") return 1;
+        class WeeklyScheduleDTOWrapper
+        {
+            public TimeSpan FirstTimeStartOccurence { get; set; }
+            public List<AnotherWeeklyScheduleDTO> Data { get; set; }
+        }
 
-            return 1;
+        class BranchComparer : IComparer<string>
+        {
+            public int Compare(string x, string y)
+            {
+                if (x == y) return 0;
+
+                if (x == "LVS") return -1;
+                if (y == "LVS") return 1;
+
+                if (x == "Q3") return -1;
+                if (y == "Q3") return 1;
+
+                return 1;
+            }
+        }
+
+        class TimeStartEqualityComparer : IEqualityComparer<TimeSpan>
+        {
+            public bool Equals(TimeSpan x, TimeSpan y)
+            {
+                return (x.Hours < 12 && y.Hours < 12) ||
+                    (x.Hours == 12 && y.Hours == 12) ||
+                    (x.Hours > 12 && y.Hours > 12 && x.Hours < 17 && y.Hours < 17) ||
+                    (x.Hours >= 17 && y.Hours >= 17);
+            }
+
+            public int GetHashCode(TimeSpan time)
+            {
+                if (time == null) return 0;
+
+                int hash = 17;
+                int hours = time.Hours;
+                if (hours < 12) hash = hash * 23 + TimesOfDay.Beforenoon.GetHashCode();
+                else if (hours == 12) hash = hash * 23 + TimesOfDay.Noon.GetHashCode();
+                else if (hours > 12 && hours < 17) hash = hash * 23 + TimesOfDay.Afternoon.GetHashCode();
+                else if (hours >= 17) hash = hash * 23 + TimesOfDay.Evening.GetHashCode();
+
+                return hash;
+            }
+        }
+
+        enum TimesOfDay
+        {
+            Beforenoon = 8,
+            Noon = 12,
+            Afternoon = 13,
+            Evening = 17
         }
     }
 }

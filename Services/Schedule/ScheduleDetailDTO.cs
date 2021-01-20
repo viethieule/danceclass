@@ -21,5 +21,6 @@ namespace Services.Schedule
 
         // Weekly schedule report
         public bool IsAddedToSheet { get; set; }
+        public bool IsAdded { get; set; }
     }
 }
