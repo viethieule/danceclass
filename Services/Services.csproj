@@ -220,6 +220,7 @@
     <Compile Include="Report\RevenueReportRq.cs" />
     <Compile Include="Report\RevenueReportRs.cs" />
     <Compile Include="Report\RevenueReportService.cs" />
+    <Compile Include="Report\WeeklyScheduleDTO.cs" />
     <Compile Include="Report\WeeklyScheduleReportRq.cs" />
     <Compile Include="Report\WeeklyScheduleReportRs.cs" />
     <Compile Include="Report\WeeklyScheduleReportService.cs" />
