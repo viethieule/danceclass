@@ -175,6 +175,7 @@
     <Compile Include="Common\AutoMapper\EntityToDtoMappingProfile.cs" />
     <Compile Include="Common\AutoMapper\EntityToEntityMappingProfile.cs" />
     <Compile Include="Common\BaseService.cs" />
+    <Compile Include="Common\Enums\TimesOfDay.cs" />
     <Compile Include="Common\GetEntityRequestBase.cs" />
     <Compile Include="Common\UserService.cs" />
     <Compile Include="Membership\MembershipService.cs" />
