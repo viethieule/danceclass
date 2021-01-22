@@ -36,91 +36,18 @@ namespace Services.Report
 
         public async Task<WeeklyScheduleReportRs> Run(WeeklyScheduleReportRq rq)
         {
-            DateTime start = rq.Start;
-            DateTime end = rq.End;
-
-            var listSession2 = (await _dbContext.ScheduleDetails
+            List<ScheduleDetailDTO> dtos = await _dbContext.ScheduleDetails
                 .Where(x => x.Date <= rq.End && x.Date >= rq.Start)
                 .ProjectTo<ScheduleDetailDTO>(_mappingConfig, dest => dest.Schedule.Class, dest => dest.Schedule.Trainer)
-                .ToListAsync())
-                .GroupBy(s => s.TimeOfDay)
+                .ToListAsync();
+
+            List<WeeklyScheduleDTO> listSession = dtos
+                .GroupBy(s => new { s.TimeOfDay, s.Schedule.Branch, s.Schedule.StartTime })
                 .Aggregate(new List<WeeklyScheduleDTO>(), (result, group) =>
                 {
-                    var branchGroup = group
-                        .GroupBy(s => s.Schedule.Branch)
-                        .Aggregate(new List<WeeklyScheduleDTO>(), (subResult1, subGroup1) =>
-                        {
-                            var timeGroup = subGroup1
-                                .GroupBy(s => s.Schedule.StartTime)
-                                .Aggregate(new List<WeeklyScheduleDTO>(), (subResult2, subGroup2) =>
-                                {
-                                    var dayGroups = subGroup2
-                                        .GroupBy(s => s.Date.DayOfWeek)
-                                        .Select(g => new { Day = g.Key, Sessions = g.OrderBy(s => s.Schedule.Branch, new BranchComparer()) });
+                    var dayGroups = group.GroupBy(s => s.Date.DayOfWeek);
 
-                                    if (dayGroups.Any(g => g.Sessions.Count() > 1))
-                                    {
-                                        int numberSessions = group.Count();
-                                        int count = 0;
-                                        int skip = 0;
-
-                                        while (true)
-                                        {
-                                            var sessions = new List<ScheduleDetailDTO>();
-
-                                            foreach (var dayGroup in dayGroups)
-                                            {
-                                                if (skip >= dayGroup.Sessions.Count())
-                                                {
-                                                    continue;
-                                                }
-
-                                                var session = dayGroup.Sessions.Skip(skip).FirstOrDefault();
-                                                if (session != null)
-                                                {
-                                                    sessions.Add(session);
-                                                }
-                                            }
-
-                                            subResult2.Add(new WeeklyScheduleDTO { TimeStart = subGroup2.Key, Sessions = sessions });
-
-                                            count += sessions.Count();
-                                            if (count == numberSessions)
-                                            {
-                                                break;
-                                            }
-
-                                            skip++;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        subResult2.Add(new WeeklyScheduleDTO { TimeStart = subGroup2.Key, Sessions = group.ToList() });
-                                    }
-
-                                    return subResult2;
-                                });
-
-                            subResult1.AddRange(timeGroup);
-                            return subResult1;
-                        });
-
-                    result.AddRange(branchGroup);
-                    return result;
-                });
-
-            var listSession = (await _dbContext.ScheduleDetails
-                .Where(x => x.Date <= rq.End && x.Date >= rq.Start)
-                .ProjectTo<ScheduleDetailDTO>(_mappingConfig, dest => dest.Schedule.Class, dest => dest.Schedule.Trainer)
-                .ToListAsync())
-                .GroupBy(s => s.Schedule.StartTime)
-                .Aggregate(new List<WeeklyScheduleDTO>(), (result, group) =>
-                {
-                    var dayGroups = group
-                        .GroupBy(s => s.Date.DayOfWeek)
-                        .Select(g => new { Day = g.Key, Sessions = g.OrderBy(s => s.Schedule.Branch, new BranchComparer()) });
-
-                    if (dayGroups.Any(g => g.Sessions.Count() > 1))
+                    if (dayGroups.Any(g => g.Count() > 1))
                     {
                         int numberSessions = group.Count();
                         int count = 0;
@@ -130,21 +57,24 @@ namespace Services.Report
                         {
                             var sessions = new List<ScheduleDetailDTO>();
 
-                            foreach (var dayGroup in dayGroups)
+                            foreach (IGrouping<DayOfWeek, ScheduleDetailDTO> dayGroup in dayGroups)
                             {
-                                if (skip >= dayGroup.Sessions.Count())
+                                if (skip >= dayGroup.Count())
                                 {
                                     continue;
                                 }
 
-                                var session = dayGroup.Sessions.Skip(skip).FirstOrDefault();
+                                ScheduleDetailDTO session = dayGroup.Skip(skip).FirstOrDefault();
                                 if (session != null)
                                 {
                                     sessions.Add(session);
                                 }
                             }
 
-                            result.Add(new WeeklyScheduleDTO { TimeStart = group.Key, Sessions = sessions });
+                            result.Add(new WeeklyScheduleDTO 
+                            {
+                                Branch = group.Key.Branch, TimeOfDay = group.Key.TimeOfDay, TimeStart = group.Key.StartTime, Sessions = sessions 
+                            });
 
                             count += sessions.Count();
                             if (count == numberSessions)
@@ -157,12 +87,17 @@ namespace Services.Report
                     }
                     else
                     {
-                        result.Add(new WeeklyScheduleDTO { TimeStart = group.Key, Sessions = group.ToList() });
+                        result.Add(new WeeklyScheduleDTO
+                        {
+                            Branch = group.Key.Branch, TimeOfDay = group.Key.TimeOfDay, TimeStart = group.Key.StartTime, Sessions = group.ToList() 
+                        });
                     }
 
                     return result;
                 })
-                .OrderBy(d => d.TimeStart)
+                .OrderBy(dto => dto.TimeOfDay)
+                    .ThenBy(dto => dto.Branch, new BranchComparer())
+                    .ThenBy(dto => dto.TimeStart)
                 .ToList();
 
             Assembly reportAssembly = Assembly.Load("Services");
