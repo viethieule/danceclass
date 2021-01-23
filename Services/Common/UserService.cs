@@ -35,7 +35,7 @@ namespace Services.Common
                 return string.Empty;
             }
 
-            fullName = StringHelper.ConverToUnsignedString(fullName.Trim());
+            fullName = fullName.Trim().NormalizeVietnameseDiacritics();
             string[] names = Regex.Split(fullName.ToLower(), @"\s+");
 
             if (names.Length == 1)

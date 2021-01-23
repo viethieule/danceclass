@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Services.Utils
 {
-    public class StringHelper
+    public static class StringHelper
     {
-        public static string ConverToUnsignedString(string s)
+        public static string NormalizeVietnameseDiacritics(this string s)
         {
             Regex regex = new Regex("\\p{IsCombiningDiacriticalMarks}+");
             string temp = s.Normalize(NormalizationForm.FormD);

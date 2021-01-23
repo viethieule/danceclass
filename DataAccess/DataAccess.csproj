@@ -204,6 +204,10 @@
     <Compile Include="Migrations\202101051620484_AddBranch.designer.cs">
       <DependentUpon>202101051620484_AddBranch.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202101230330413_AddNormalizedFullName.cs" />
+    <Compile Include="Migrations\202101230330413_AddNormalizedFullName.designer.cs">
+      <DependentUpon>202101230330413_AddNormalizedFullName.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -278,6 +282,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202101051620484_AddBranch.resx">
       <DependentUpon>202101051620484_AddBranch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202101230330413_AddNormalizedFullName.resx">
+      <DependentUpon>202101230330413_AddNormalizedFullName.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

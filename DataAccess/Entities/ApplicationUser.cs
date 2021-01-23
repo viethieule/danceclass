@@ -3,6 +3,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Security.Claims;
@@ -31,6 +32,8 @@ namespace DataAccess.Entities
 
     public class ApplicationUser : IdentityUser<int, UserLogin, UserRole, UserClaim>, IAuditable
     {
+        [Index]
+        [MaxLength(100)]
         public string FullName { get; set; }
         public DateTime? Birthdate { get; set; }
         public virtual Membership Membership { get; set; }
@@ -40,6 +43,10 @@ namespace DataAccess.Entities
         public int? RegisteredBranchId { get; set; }
         [ForeignKey("RegisteredBranchId")]
         public virtual Branch RegisteredBranch { get; set; }
+
+        [Index]
+        [MaxLength(100)]
+        public string NormalizedFullName { get; set; }
 
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }

@@ -8,6 +8,8 @@
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
+    using System.Text;
+    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
 
     internal sealed class Configuration : DbMigrationsConfiguration<DataAccess.DanceClassDbContext>
@@ -17,8 +19,25 @@
             AutomaticMigrationsEnabled = false;
         }
 
+        public string ConvertToUnsignedString(string s)
+        {
+            Regex regex = new Regex("\\p{IsCombiningDiacriticalMarks}+");
+            string temp = s.Normalize(NormalizationForm.FormD);
+            return regex.Replace(temp, string.Empty).Replace('\u0111', 'd').Replace('\u0110', 'D');
+        }
+
         protected override void Seed(DataAccess.DanceClassDbContext context)
         {
+            var unnormalizedUsers = context.Users.Where(u => !string.IsNullOrEmpty(u.FullName) && string.IsNullOrEmpty(u.NormalizedFullName));
+            foreach (ApplicationUser user in unnormalizedUsers)
+            {
+                user.NormalizedFullName = ConvertToUnsignedString(user.FullName);
+            }
+
+            context.SaveChanges();
+
+            return;
+
             if (!context.Branches.Any())
             {
                 context.Branches.AddRange(new List<Branch>
@@ -30,8 +49,6 @@
 
                 context.SaveChanges();
             }
-
-            return;
 
             if (!context.Roles.Any(r => r.Name == "Collaborator"))
             {

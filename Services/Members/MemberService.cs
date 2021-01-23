@@ -185,8 +185,10 @@ namespace Services.Members
                 };
             }
 
+            query = query.NormalizeVietnameseDiacritics();
+
             var results = await _dbContext.Users
-                .Where(u => u.FullName.Contains(query) || u.PhoneNumber.Contains(query) || u.UserName.Contains(query))
+                .Where(u => u.NormalizedFullName.Contains(query) || u.PhoneNumber.Contains(query) || u.UserName.Contains(query))
                 .ProjectTo<MemberDTO>(_mappingConfig, u => u.Membership)
                 .ToListAsync();
 
