@@ -129,6 +129,7 @@ namespace Services.Package
                 package.Price = defaultPackage.Price;
                 package.Months = defaultPackage.Months;
                 package.RemainingSessions += deltaNumberSession;
+                package.ExpiryDate = package.ExpiryDate.HasValue ? (DateTime?)package.ExpiryDate.Value.AddMonths(deltaMonths) : null;
 
                 membership.RemainingSessions += deltaNumberSession;
                 membership.ExpiryDate = membership.ExpiryDate.AddMonths(deltaMonths);
@@ -143,6 +144,7 @@ namespace Services.Package
                 package.Price = rq.Price;
                 package.Months = rq.Months;
                 package.RemainingSessions += deltaNumberSession;
+                package.ExpiryDate = package.ExpiryDate.HasValue ? (DateTime?)package.ExpiryDate.Value.AddMonths(deltaMonths) : null;
 
                 membership.RemainingSessions += deltaNumberSession;
                 membership.ExpiryDate = membership.ExpiryDate.AddMonths(deltaMonths);

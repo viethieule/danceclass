@@ -93,11 +93,14 @@ namespace Services.Members
                     package.RemainingSessions = rq.Package.NumberOfSessions;
                 }
 
+                DateTime expiryDate = DateTime.Now.AddMonths(package.Months);
+                package.ExpiryDate = expiryDate;
+
                 _dbContext.Packages.Add(package);
                 _dbContext.Memberships.Add(new DataAccess.Entities.Membership
                 {
                     UserId = user.Id,
-                    ExpiryDate = DateTime.Now.AddMonths(package.Months),
+                    ExpiryDate = expiryDate,
                     RemainingSessions = package.NumberOfSessions
                 });
 
