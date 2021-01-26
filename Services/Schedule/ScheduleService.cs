@@ -365,7 +365,9 @@ namespace Services.Schedule
         {
             var rs = new DeleteScheduleSessionRs();
 
-            var schedule = await _dbContext.Schedules.FirstOrDefaultAsync(s => s.Id == id);
+            var schedule = await _dbContext.Schedules
+                .Include(s => s.ScheduleDetails.Select(sd => sd.Registrations))
+                .FirstOrDefaultAsync(s => s.Id == id);
             if (schedule == null)
             {
                 throw new Exception("Lịch học không tồn tại");
@@ -405,6 +407,7 @@ namespace Services.Schedule
             schedule.Sessions = session.SessionNo - 1;
 
             var deletedSessions = _dbContext.ScheduleDetails
+                .Include(s => s.Registrations)
                 .Where(x => x.ScheduleId == session.ScheduleId && x.SessionNo >= session.SessionNo);
 
             var userAndCountRegistrationMap = await deletedSessions
