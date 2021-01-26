@@ -79,7 +79,6 @@ namespace Services.Schedule
 
             _dbContext.Schedules.Add(schedule);
             await _dbContext.SaveChangesAsync();
-            _dbContext.Entry(schedule).State = EntityState.Detached;
 
             return new CreateScheduleRs
             {
@@ -192,7 +191,23 @@ namespace Services.Schedule
             var scheduleDto = rq.Schedule;
             var updatedSchedule = _mapper.Map<DataAccess.Entities.Schedule>(scheduleDto);
 
-            var currentSchedule = await _dbContext.Schedules.FirstOrDefaultAsync(s => s.Id == scheduleDto.Id);
+            bool newTrainerCreate = !string.IsNullOrEmpty(scheduleDto.TrainerName);
+            bool newClassCreate = !string.IsNullOrEmpty(scheduleDto.ClassName);
+
+            var query = _dbContext.Schedules.AsQueryable();
+
+            if (newTrainerCreate)
+            {
+                query = query.Include(s => s.Trainer.Schedules);
+            }
+
+            if (newClassCreate)
+            {
+                query = query.Include(s => s.Class.Schedules);
+            }
+
+            var currentSchedule = await query.FirstOrDefaultAsync(s => s.Id == scheduleDto.Id);
+
             if (currentSchedule == null)
             {
                 throw new Exception("Lịch học không tồn tại");
@@ -206,7 +221,7 @@ namespace Services.Schedule
                 }
             }
 
-            if (!string.IsNullOrEmpty(scheduleDto.TrainerName))
+            if (newTrainerCreate)
             {
                 currentSchedule.Trainer.Schedules.Remove(currentSchedule);
                 currentSchedule.Trainer = new DataAccess.Entities.Trainer
@@ -219,7 +234,7 @@ namespace Services.Schedule
                 currentSchedule.TrainerId = updatedSchedule.TrainerId;
             }
 
-            if (!string.IsNullOrEmpty(scheduleDto.ClassName))
+            if (newClassCreate)
             {
                 currentSchedule.Class.Schedules.Remove(currentSchedule);
                 currentSchedule.Class = new DataAccess.Entities.Class
@@ -242,7 +257,10 @@ namespace Services.Schedule
                 updatedSchedule.Sessions != currentSchedule.Sessions)
             {
                 var updatedScheduleDetails = GenerateScheduleDetails(updatedSchedule);
-                var currentScheduleDetails = await _dbContext.ScheduleDetails.Where(s => s.ScheduleId == updatedSchedule.Id).ToListAsync();
+                var currentScheduleDetails = await _dbContext.ScheduleDetails
+                    .Where(s => s.ScheduleId == updatedSchedule.Id)
+                    .Include(s => s.Registrations)
+                    .ToListAsync();
                 var changedSessionWithRegistrationNumbers = new List<int>();
 
                 foreach (var updatedSession in updatedScheduleDetails)

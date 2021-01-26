@@ -279,7 +279,6 @@ namespace Services.Members
 
             return new EditMemberRs
             {
-                //Member = await _dbContext.Users.ProjectTo<MemberDTO>(_mappingConfig, m => m.RegisteredBranch).FirstOrDefaultAsync(u => u.Id == user.Id)
                 Member = dto
             };
         }

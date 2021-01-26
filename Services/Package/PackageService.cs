@@ -91,10 +91,12 @@ namespace Services.Package
 
             _dbContext.Packages.Add(package);
             await _dbContext.SaveChangesAsync();
-            _dbContext.Entry(membership).State = EntityState.Detached;
 
-            var rs = new CreatePackageRs();
-            rs.Membership = _mapper.Map<MembershipDTO>(membership);
+            var rs = new CreatePackageRs
+            {
+                Membership = _mapper.Map<MembershipDTO>(membership)
+            };
+
             return rs;
         }
 
@@ -151,14 +153,13 @@ namespace Services.Package
             }
 
             await _dbContext.SaveChangesAsync();
-            _dbContext.Entry(package).State = EntityState.Detached;
-            _dbContext.Entry(membership).State = EntityState.Detached;
 
             var rs = new EditPackageRs
             {
                 Membership = _mapper.Map<MembershipDTO>(membership),
                 Package = _mapper.Map<PackageDTO>(package)
             };
+
             return rs;
         }
 
