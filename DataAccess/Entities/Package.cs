@@ -9,7 +9,7 @@ namespace DataAccess.Entities
 
         public int UserId { get; set; }
         [ForeignKey("UserId")]
-        public virtual ApplicationUser User { get; set; }
+        public ApplicationUser User { get; set; }
 
         public int NumberOfSessions { get; set; }
         public double Price { get; set; }
@@ -21,7 +21,7 @@ namespace DataAccess.Entities
         public int? DefaultPackageId { get; set; }
 
         [ForeignKey("DefaultPackageId")]
-        public virtual DefaultPackage DefaultPackage { get; set; }
+        public DefaultPackage DefaultPackage { get; set; }
 
         public bool IsActive { get; set; }
     }

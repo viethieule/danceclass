@@ -12,6 +12,6 @@ namespace DataAccess.Entities
         public string Name { get; set; }
         public string Abbreviation { get; set; }
         public string Address { get; set; }
-        public virtual ICollection<ApplicationUser> RegisteredMembers { get; set; }
+        public ICollection<ApplicationUser> RegisteredMembers { get; set; }
     }
 }

@@ -15,7 +15,7 @@ namespace DataAccess
         public DanceClassDbContext()
             : base("DefaultConnection")
         {
-            //this.Configuration.LazyLoadingEnabled = false;
+            this.Configuration.LazyLoadingEnabled = false;
             //this.Configuration.ProxyCreationEnabled = false;
         }
 

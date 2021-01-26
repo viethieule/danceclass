@@ -22,9 +22,9 @@ namespace DataAccess.Entities
         [Index]
         public int ScheduleId { get; set; }
         [ForeignKey("ScheduleId")]
-        public virtual Schedule Schedule { get; set; }
+        public Schedule Schedule { get; set; }
 
-        public virtual ICollection<Registration> Registrations { get; set; }
+        public ICollection<Registration> Registrations { get; set; }
 
         public int SessionNo { get; set; }
         public DateTime? DateBeforeUpdated { get; set; }

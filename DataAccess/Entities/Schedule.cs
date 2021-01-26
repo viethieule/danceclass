@@ -23,13 +23,13 @@ namespace DataAccess.Entities
         [Index]
         public int? ClassId { get; set; }
         [ForeignKey("ClassId")]
-        public virtual Class Class { get; set; }
+        public Class Class { get; set; }
 
         [Index]
         public int? TrainerId { get; set; }
         [ForeignKey("TrainerId")]
-        public virtual Trainer Trainer { get; set; }
+        public Trainer Trainer { get; set; }
 
-        public virtual ICollection<ScheduleDetail> ScheduleDetails { get; set; }
+        public ICollection<ScheduleDetail> ScheduleDetails { get; set; }
     }
 }

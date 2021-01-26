@@ -14,12 +14,12 @@ namespace DataAccess.Entities
         [Index]
         public int ScheduleDetailId { get; set; }
         [ForeignKey("ScheduleDetailId")]
-        public virtual ScheduleDetail ScheduleDetail { get; set; }
+        public ScheduleDetail ScheduleDetail { get; set; }
 
         [Index]
         public int UserId { get; set; }
         [ForeignKey("UserId")]
-        public virtual ApplicationUser User { get; set; }
+        public ApplicationUser User { get; set; }
 
         public DateTime DateRegistered { get; set; }
         public RegistrationStatus Status { get; set; }

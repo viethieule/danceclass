@@ -13,6 +13,6 @@ namespace DataAccess.Entities
         public int RemainingSessions { get; set; }
         public DateTime ExpiryDate { get; set; }
 
-        public virtual ApplicationUser User { get; set; }
+        public ApplicationUser User { get; set; }
     }
 }

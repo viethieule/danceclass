@@ -36,13 +36,13 @@ namespace DataAccess.Entities
         [MaxLength(100)]
         public string FullName { get; set; }
         public DateTime? Birthdate { get; set; }
-        public virtual Membership Membership { get; set; }
-        public virtual ICollection<Registration> Registrations { get; set; }
-        public virtual ICollection<Package> Packages { get; set; }
+        public Membership Membership { get; set; }
+        public ICollection<Registration> Registrations { get; set; }
+        public ICollection<Package> Packages { get; set; }
         public bool IsNeedToChangePassword { get; set; }
         public int? RegisteredBranchId { get; set; }
         [ForeignKey("RegisteredBranchId")]
-        public virtual Branch RegisteredBranch { get; set; }
+        public Branch RegisteredBranch { get; set; }
 
         [Index]
         [MaxLength(100)]

@@ -263,7 +263,7 @@ namespace Services.Members
 
         public async Task<EditMemberRs> Edit(EditMemberRq rq)
         {
-            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == rq.Id);
+            var user = await _dbContext.Users.Include(u => u.Membership).FirstOrDefaultAsync(u => u.Id == rq.Id);
             if (user == null)
             {
                 throw new Exception("User không tồn tại");
@@ -275,10 +275,12 @@ namespace Services.Members
             user.Birthdate = rq.Birthdate;
 
             await _dbContext.SaveChangesAsync();
+            var dto = _mapper.Map<MemberDTO>(user);
 
             return new EditMemberRs
             {
-                Member = await _dbContext.Users.ProjectTo<MemberDTO>(_mappingConfig, m => m.RegisteredBranch).FirstOrDefaultAsync(u => u.Id == user.Id)
+                //Member = await _dbContext.Users.ProjectTo<MemberDTO>(_mappingConfig, m => m.RegisteredBranch).FirstOrDefaultAsync(u => u.Id == user.Id)
+                Member = dto
             };
         }
 

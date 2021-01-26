@@ -12,6 +12,6 @@ namespace DataAccess.Entities
         public int NumberOfSessions { get; set; }
         public double Price { get; set; }
         public int Months { get; set; }
-        public virtual ICollection<Package> Packages { get; set; }
+        public ICollection<Package> Packages { get; set; }
     }
 }
