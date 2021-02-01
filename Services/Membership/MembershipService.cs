@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DataAccess;
+using DataAccess.Interfaces;
 using Services.Common;
 using System;
 using System.Collections.Generic;
@@ -38,6 +39,8 @@ namespace Services.Membership
             {
                 membership.RemainingSessions = rq.RemainingSessions.Value;
             }
+
+            LogLatestAction(new List<IFieldChangeLog> { membership });
 
             await _dbContext.SaveChangesAsync();
             _dbContext.Entry(membership).State = EntityState.Detached;

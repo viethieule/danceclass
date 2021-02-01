@@ -1,9 +1,10 @@
-﻿using System;
+﻿using DataAccess.Interfaces;
+using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataAccess.Entities
 {
-    public class Package : EntityBase
+    public class Package : EntityBase, IFieldChangeLog
     {
         public int Id { get; set; }
 
@@ -24,5 +25,6 @@ namespace DataAccess.Entities
         public virtual DefaultPackage DefaultPackage { get; set; }
 
         public bool IsActive { get; set; }
+        public string LatestAction { get; set; }
     }
 }

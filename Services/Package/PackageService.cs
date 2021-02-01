@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using DataAccess;
+using DataAccess.Interfaces;
 using Microsoft.AspNet.Identity;
 using Services.Common;
 using Services.Membership;
@@ -89,6 +90,7 @@ namespace Services.Package
 
             membership.RemainingSessions += package.NumberOfSessions;
 
+            LogLatestAction(new List<IFieldChangeLog> { membership });
             _dbContext.Packages.Add(package);
             await _dbContext.SaveChangesAsync();
             _dbContext.Entry(membership).State = EntityState.Detached;
@@ -149,6 +151,8 @@ namespace Services.Package
                 membership.RemainingSessions += deltaNumberSession;
                 membership.ExpiryDate = membership.ExpiryDate.AddMonths(deltaMonths);
             }
+
+            LogLatestAction(new List<IFieldChangeLog> { package, membership });
 
             await _dbContext.SaveChangesAsync();
             _dbContext.Entry(package).State = EntityState.Detached;

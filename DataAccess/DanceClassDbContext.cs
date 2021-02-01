@@ -1,8 +1,11 @@
 ﻿using DataAccess.Entities;
 using DataAccess.Interfaces;
 using Microsoft.AspNet.Identity.EntityFramework;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Core.Objects;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
@@ -45,14 +48,14 @@ namespace DataAccess
                 currentUser = HttpContext.Current.User.Identity.Name;
             }
 
+            DateTime now = DateTime.Now;
             foreach (DbEntityEntry item in modifieds)
             {
-                var changedOrAddedItem = item.Entity as IAuditable;
-                if (changedOrAddedItem != null)
+                if (item.Entity is IAuditable changedOrAddedItem)
                 {
                     if (item.State == EntityState.Added)
                     {
-                        changedOrAddedItem.CreatedDate = DateTime.Now;
+                        changedOrAddedItem.CreatedDate = now;
 
                         // When using user manager Http context is null so not update the current user with string empty
                         if (!string.IsNullOrEmpty(currentUser))
@@ -60,12 +63,47 @@ namespace DataAccess
                             changedOrAddedItem.CreatedBy = currentUser;
                         }
                     }
-                    changedOrAddedItem.UpdatedDate = DateTime.Now;
+                    changedOrAddedItem.UpdatedDate = now;
 
                     // When using user manager Http context is null so not update the current user with string empty
                     if (!string.IsNullOrEmpty(currentUser))
                     {
                         changedOrAddedItem.UpdatedBy = currentUser;
+                    }
+
+                    if (item.State == EntityState.Modified && item.Entity is IFieldChangeLog logItem)
+                    {
+                        ObjectContext objContext = ((IObjectContextAdapter)this).ObjectContext;
+                        ObjectStateEntry objState = objContext.ObjectStateManager.GetObjectStateEntry(item.Entity);
+                        string primaryKeyName = objState.EntitySet.ElementType.KeyMembers.Select(k => k.Name).FirstOrDefault();
+                        string id = !string.IsNullOrEmpty(primaryKeyName) ? item.CurrentValues[primaryKeyName].ToString() : string.Empty;
+
+                        List<FieldChangeLogDetail> changeLogs = new List<FieldChangeLogDetail>();
+
+                        IEnumerable<string> modifiedProperties = objState.GetModifiedProperties();
+                        foreach (var propName in modifiedProperties)
+                        {
+                            changeLogs.Add(new FieldChangeLogDetail
+                            {
+                                Field = propName,
+                                PreviousValue = objState.OriginalValues[propName].ToString(),
+                                UpdatedValue = objState.CurrentValues[propName].ToString()
+                            });
+                        }
+
+                        string changeLog = JsonConvert.SerializeObject(changeLogs);
+
+                        this.FieldChangeLogs.Add(new FieldChangeLog
+                        {
+                            Entity = ObjectContext.GetObjectType(item.Entity.GetType()).Name,
+                            EntityId = id,
+                            ChangeLog = changeLog,
+                            Action = logItem.LatestAction,
+                            CreatedBy = currentUser,
+                            CreatedDate = now,
+                            UpdatedBy = currentUser,
+                            UpdatedDate = now
+                        });
                     }
                 }
             }
@@ -81,5 +119,6 @@ namespace DataAccess
         public DbSet<Package> Packages { get; set; }
         public DbSet<Membership> Memberships { get; set; }
         public DbSet<Branch> Branches { get; set; }
+        public DbSet<FieldChangeLog> FieldChangeLogs { get; set; }
     }
 }

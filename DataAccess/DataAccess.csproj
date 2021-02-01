@@ -99,6 +99,7 @@
   <ItemGroup>
     <Compile Include="DanceClassDbContext.cs" />
     <Compile Include="Entities\ApplicationUser.cs" />
+    <Compile Include="Entities\FieldChangeLog.cs" />
     <Compile Include="Entities\Branch.cs" />
     <Compile Include="Entities\Class.cs" />
     <Compile Include="Entities\EntityBase.cs" />
@@ -116,6 +117,7 @@
     <Compile Include="IdentityAccessor\ApplicationUserManager.cs" />
     <Compile Include="IdentityAccessor\ApplicationUserStore.cs" />
     <Compile Include="Interfaces\IAuditable.cs" />
+    <Compile Include="Interfaces\IFieldChangeLog.cs" />
     <Compile Include="Migrations\202006071554165_InitialCreate.cs" />
     <Compile Include="Migrations\202006071554165_InitialCreate.designer.cs">
       <DependentUpon>202006071554165_InitialCreate.cs</DependentUpon>
@@ -208,6 +210,14 @@
     <Compile Include="Migrations\202101230330413_AddNormalizedFullName.designer.cs">
       <DependentUpon>202101230330413_AddNormalizedFullName.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202101311613163_AddFieldChangeLogs.cs" />
+    <Compile Include="Migrations\202101311613163_AddFieldChangeLogs.designer.cs">
+      <DependentUpon>202101311613163_AddFieldChangeLogs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202102011544507_AddEntityIdChangeLog.cs" />
+    <Compile Include="Migrations\202102011544507_AddEntityIdChangeLog.designer.cs">
+      <DependentUpon>202102011544507_AddEntityIdChangeLog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -285,6 +295,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202101230330413_AddNormalizedFullName.resx">
       <DependentUpon>202101230330413_AddNormalizedFullName.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202101311613163_AddFieldChangeLogs.resx">
+      <DependentUpon>202101311613163_AddFieldChangeLogs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202102011544507_AddEntityIdChangeLog.resx">
+      <DependentUpon>202102011544507_AddEntityIdChangeLog.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
