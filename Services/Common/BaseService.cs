@@ -27,10 +27,11 @@ namespace Services.Common
             [CallerFilePath] string sourceFilePath = "",
             [CallerLineNumber] int sourceLineNumber = 0)
         {
+            string fileName = sourceFilePath.Split('\\').LastOrDefault() ?? string.Empty;
+            string action = string.Format("{0}/{1}/Line {2}", memberName, fileName, sourceLineNumber);
             foreach (var entity in entities)
             {
-                string fileName = sourceFilePath.Split('\\').LastOrDefault() ?? string.Empty;
-                entity.LatestAction = string.Format("{0}/{1}/Line {2}", memberName, fileName, sourceLineNumber);
+                entity.LatestAction = action;
             }
         }
     }

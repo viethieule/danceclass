@@ -2,6 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using DataAccess;
 using DataAccess.Enums;
+using DataAccess.Interfaces;
 using Microsoft.AspNet.Identity;
 using Services.Common;
 using System;
@@ -80,6 +81,8 @@ namespace Services.Registration
 
             membership.RemainingSessions++;
 
+            LogLatestAction(new List<IFieldChangeLog> { membership, activePackage });
+
             return await _dbContext.SaveChangesAsync();
         }
 
@@ -113,13 +116,14 @@ namespace Services.Registration
                 throw new Exception("Học viên chưa đăng ký gói tập hoặc có gì đó không đúng! Vui lòng liên hệ admin tại 0943619526");
             }
 
+            DataAccess.Entities.Package nextActivePackage = null;
             if (activePackage.RemainingSessions > 0)
             {
                 activePackage.RemainingSessions--;
             }
             else
             {
-                var nextActivePackage = _dbContext.Packages.FirstOrDefault(p => p.UserId == userId && p.Id > activePackage.Id && p.RemainingSessions > 0);
+                nextActivePackage = _dbContext.Packages.FirstOrDefault(p => p.UserId == userId && p.Id > activePackage.Id && p.RemainingSessions > 0);
                 if (nextActivePackage != null)
                 {
                     activePackage.IsActive = false;
@@ -127,6 +131,10 @@ namespace Services.Registration
                     nextActivePackage.RemainingSessions--;
                 }
             }
+
+            var logs = new List<IFieldChangeLog> { membership, activePackage };
+            if (nextActivePackage != null) logs.Add(nextActivePackage);
+            LogLatestAction(logs);
 
             // Add registration
             DataAccess.Entities.Registration registration = _mapper.Map<DataAccess.Entities.Registration>(rq.Registration);

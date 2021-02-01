@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using DataAccess;
+using DataAccess.Interfaces;
 using Microsoft.AspNet.Identity;
 using Services.Common;
 using Services.Registration;
@@ -307,6 +308,11 @@ namespace Services.Schedule
                                 membership.RemainingSessions++;
                             }
 
+                            List<IFieldChangeLog> logs = new List<IFieldChangeLog>();
+                            logs.AddRange(relatedMemberships);
+                            logs.AddRange(relatedPackages);
+                            LogLatestAction(logs);
+
                             deletedSessionWithRegistrationNumbers.Add(deletedSession.SessionNo);
                         }
 
@@ -411,18 +417,27 @@ namespace Services.Schedule
                 return false;
             }
 
+            List<IFieldChangeLog> logs = new List<IFieldChangeLog>();
+
             var registeredUserIds = userAndCountRegistrationMap.Keys;
             var memberPackages = _dbContext.Packages.Where(x => registeredUserIds.Contains(x.UserId) && x.IsActive);
             foreach (var memberPackage in memberPackages)
             {
                 memberPackage.RemainingSessions += userAndCountRegistrationMap[memberPackage.UserId];
+                logs.Add(memberPackage);
             }
 
             var memberships = _dbContext.Memberships.Where(x => registeredUserIds.Contains(x.UserId));
             foreach (var membership in memberships)
             {
                 membership.RemainingSessions += userAndCountRegistrationMap[membership.UserId];
+                logs.Add(membership);
             }
+
+            if (logs.Count > 0)
+            {
+                LogLatestAction(logs);
+            }            
 
             return true;
         }
