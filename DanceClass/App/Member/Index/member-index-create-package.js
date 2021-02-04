@@ -3,9 +3,21 @@
     var _packages = [];
 
     this.initCreatePackage = async function () {
+        initSelectBranches()
         await initSelectPackages();
         adjustInterfaceBasedOnRole();
         registerEvent();
+    }
+
+    async function initSelectBranches() {
+        try {
+            var rs = await ApiService.get('/api/branch/getAll');
+            if (rs && rs.branches) {
+                $('#addedRegisteredBranch').appendOptions(rs.branches, 'id', 'name').val('');
+            }
+        } catch (ex) {
+            console.log(ex);
+        }
     }
 
     async function initSelectPackages() {
@@ -65,16 +77,20 @@
                             }
                         }
                     },
+                    addedRegisteredBranch: {
+                        required: true
+                    },
                 },
                 submitHandler: async function (form) {
                     $('#modal-create-package .modal-body').alert(false);
                     $('#btn-create-package').prop('disabled', true);
 
                     var $form = $(form);
-                    var { package: defaultPackageId, sessions, price, expired } = FormUtils.convertFormDataToDictionary($form.serializeArray());
+                    var { package: defaultPackageId, sessions, price, expired, addedRegisteredBranch } = FormUtils.convertFormDataToDictionary($form.serializeArray());
 
                     var data = {
-                        userId: _self.member.id
+                        userId: _self.member.id,
+                        registeredBranchId: parseInt(addedRegisteredBranch)
                     };
 
                     if (defaultPackageId !== "-1") {

@@ -218,6 +218,10 @@
     <Compile Include="Migrations\202102011544507_AddEntityIdChangeLog.designer.cs">
       <DependentUpon>202102011544507_AddEntityIdChangeLog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202102031658491_AddBranchInPackage.cs" />
+    <Compile Include="Migrations\202102031658491_AddBranchInPackage.designer.cs">
+      <DependentUpon>202102031658491_AddBranchInPackage.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -301,6 +305,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202102011544507_AddEntityIdChangeLog.resx">
       <DependentUpon>202102011544507_AddEntityIdChangeLog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202102031658491_AddBranchInPackage.resx">
+      <DependentUpon>202102031658491_AddBranchInPackage.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

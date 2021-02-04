@@ -40,7 +40,8 @@ namespace Services.Package
 
             var package = new DataAccess.Entities.Package
             {
-                UserId = rq.UserId
+                UserId = rq.UserId,
+                RegisteredBranchId = rq.RegisteredBranchId
             };
 
             if (rq.DefaultPackageId.HasValue)

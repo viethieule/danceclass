@@ -44,7 +44,7 @@ async function populateBranches() {
         var rs = await ApiService.get('/api/branch/getAll');
         if (rs && rs.branches) {
             m_branches = rs.branches;
-            $('#branch').appendOptions(m_branches, 'id', 'name');
+            $('#branch').appendOptions(m_branches, 'id', 'name').val('');
         }
     } catch (ex) {
         console.log(ex);

@@ -68,7 +68,8 @@ namespace Services.Members
                 var package = new DataAccess.Entities.Package
                 {
                     UserId = user.Id,
-                    IsActive = true
+                    IsActive = true,
+                    RegisteredBranchId = appUser.RegisteredBranchId
                 };
 
                 if (rq.Package.DefaultPackageId.HasValue)

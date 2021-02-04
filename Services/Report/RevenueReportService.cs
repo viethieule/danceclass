@@ -85,6 +85,16 @@ namespace Services.Report
 
                 foreach (DataAccess.Entities.Package package in packages)
                 {
+                    string registeredBranch = string.Empty;
+                    if (package.RegisteredBranch != null)
+                    {
+                        registeredBranch = package.RegisteredBranch.Name;
+                    }
+                    else if (package.User != null && package.User.RegisteredBranch != null)
+                    {
+                        registeredBranch = package.User.RegisteredBranch.Name;
+                    }
+
                     var rowData = new RowData
                     {
                         Values = new List<CellData>
@@ -94,7 +104,7 @@ namespace Services.Report
                             new CellData { UserEnteredValue = new ExtendedValue { NumberValue = package.NumberOfSessions } },
                             new CellData { UserEnteredValue = new ExtendedValue { NumberValue = package.RemainingSessions } },
                             new CellData { UserEnteredValue = new ExtendedValue { NumberValue = package.CreatedDate.ToOADate() }, UserEnteredFormat = new CellFormat { NumberFormat = new NumberFormat { Type = "DATE", Pattern = "dd-MM-yyyy" } } },
-                            new CellData { UserEnteredValue = new ExtendedValue { StringValue = package.User.RegisteredBranch != null ? package.User.RegisteredBranch.Name : string.Empty } },
+                            new CellData { UserEnteredValue = new ExtendedValue { StringValue = registeredBranch } },
                             new CellData { UserEnteredValue = new ExtendedValue { NumberValue = package.Price }, UserEnteredFormat = new CellFormat { NumberFormat = new NumberFormat { Type = "CURRENCY", Pattern = "#,##" } } },
                         }
                     };
