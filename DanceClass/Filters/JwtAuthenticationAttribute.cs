@@ -72,7 +72,8 @@ namespace DanceClass.Filters
                 // based on username to get more information from database in order to build local identity
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, username)
+                    new Claim(ClaimTypes.Name, username),
+                    new Claim(ClaimTypes.Role, "Admin"),
                     // Add more claims if needed: Roles, ...
                 };
 
