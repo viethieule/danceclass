@@ -77,9 +77,14 @@
         if (loading) {
             this.prop('disabled', true);
             currentIcon.hide();
-            this.prepend($('<i>', { class: 'fa fa-circle-o-notch fa-spin' }));
+
+            var icon = $('<i>', { class: 'fa fa-circle-o-notch fa-spin' });
+            if (currentIcon.length === 0) {
+                icon.addClass('fa-loading-icon');
+            }
+            this.prepend(icon);
         } else {
-            this.prop('disbled', false);
+            this.prop('disabled', false);
             this.find('.fa.fa-circle-o-notch.fa-spin').remove();
             currentIcon.show();
         }

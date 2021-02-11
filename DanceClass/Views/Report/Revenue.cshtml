@@ -22,6 +22,30 @@
                 <form id="revenueReport">
                     <div class="box-body">
                         <div class="form-group">
+                            <label for="branches">Chi nhánh</label>
+                            <div class="branches">
+                                <label class="checkbox-inline">
+                                    <input class="allBranch" type="checkbox" value="0"> Tất cả
+                                </label>
+                                @*<label class="checkbox-inline">
+                                    <input type="checkbox" value="1"> Quận 3
+                                </label>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" value="2"> Phú Nhuận
+                                </label>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" value="3"> Lê Văn Sỹ
+                                </label>*@
+                            </div>
+                        </div>
+                        <div class="form-group form-group-order-by">
+                            <label for="orderBy">Sắp xếp theo</label>
+                            <select id="orderBy" name="orderBy" class="form-control">
+                                <option selected="selected" value="0">Không sắp xếp</option>
+                                <option value="1">Chi nhánh</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label for="start">Từ ngày</label>
                             <div class="input-group date">
                                 <div class="input-group-addon">

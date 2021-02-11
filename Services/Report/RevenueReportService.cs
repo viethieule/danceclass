@@ -79,9 +79,17 @@ namespace Services.Report
 
                 DateTime start = rq.Start.Date;
                 DateTime end = rq.End.Date.AddDays(1).AddSeconds(-1);
-                var packages = await _dbContext.Packages
-                    .Where(x => x.CreatedDate >= start && x.CreatedDate <= end)
-                    .ToListAsync();
+
+                var query = _dbContext.Packages.Where(x => x.CreatedDate >= start && x.CreatedDate <= end);
+                if (rq.BranchIds != null && rq.BranchIds.Count > 0)
+                {
+                    query = query
+                        .Where(x =>
+                            (x.RegisteredBranch != null && rq.BranchIds.Contains(x.RegisteredBranch.Id)) ||
+                            (x.User != null && x.User.RegisteredBranch != null && rq.BranchIds.Contains(x.User.RegisteredBranch.Id)));
+                }
+
+                var packages = await query.ToListAsync();
 
                 foreach (DataAccess.Entities.Package package in packages)
                 {
@@ -104,7 +112,7 @@ namespace Services.Report
                             new CellData { UserEnteredValue = new ExtendedValue { NumberValue = package.NumberOfSessions } },
                             new CellData { UserEnteredValue = new ExtendedValue { NumberValue = package.RemainingSessions } },
                             new CellData { UserEnteredValue = new ExtendedValue { NumberValue = package.CreatedDate.ToOADate() }, UserEnteredFormat = new CellFormat { NumberFormat = new NumberFormat { Type = "DATE", Pattern = "dd-MM-yyyy" } } },
-                            new CellData { UserEnteredValue = new ExtendedValue { StringValue = registeredBranch } },
+                            new CellData { UserEnteredValue = new ExtendedValue { StringValue = registeredBranch }, UserEnteredFormat = new CellFormat { TextFormat = new TextFormat { ForegroundColor = GenerateBranchTextColor(registeredBranch) } } },
                             new CellData { UserEnteredValue = new ExtendedValue { NumberValue = package.Price }, UserEnteredFormat = new CellFormat { NumberFormat = new NumberFormat { Type = "CURRENCY", Pattern = "#,##" } } },
                         }
                     };
@@ -129,6 +137,29 @@ namespace Services.Report
                 updateRequest.UpdateCells.Rows = listRowData;
 
                 requests.Requests.Add(updateRequest);
+
+                if (rq.OrderBy == (int)RevenueReportRq.OrderByValues.Branch &&
+                    (rq.BranchIds == null || (rq.BranchIds != null && rq.BranchIds.Count > 1)))
+                {
+                    var sortRequest = new Request
+                    {
+                        SortRange = new SortRangeRequest
+                        {
+                            Range = new GridRange { StartRowIndex = 1, EndRowIndex = packages.Count + 1, SheetId = sheetId },
+                            SortSpecs = new List<SortSpec>
+                            {
+                                new SortSpec
+                                {
+                                    DimensionIndex = 5,
+                                    SortOrder = "ASCENDING"
+                                }
+                            }
+                        },
+                    };
+
+                    requests.Requests.Add(sortRequest);
+                }
+
                 await service.Spreadsheets.BatchUpdate(requests, SpreadsheetId).ExecuteAsync();
 
                 return new RevenueReportRs
@@ -136,6 +167,31 @@ namespace Services.Report
                     Url = $@"https://docs.google.com/spreadsheets/d/{SpreadsheetId}/edit"
                 };
             }
+        }
+
+        private Color GenerateBranchTextColor(string registeredBranch)
+        {
+            registeredBranch = registeredBranch.ToLower();
+            if (registeredBranch == "Lê Văn Sỹ".ToLower())
+            {
+                // Green
+                return new Color() { Red = 52, Green = 168, Blue = 83 };
+            }
+
+            if (registeredBranch == "Quận 3".ToLower())
+            {
+                // Orange
+                return new Color() { Red = 255, Green = 109, Blue = 1 };
+            }
+
+            if (registeredBranch == "Phú Nhuận".ToLower())
+            {
+                // Blue
+                return new Color() { Red = 66, Green = 133, Blue = 244 };
+            }
+
+            // Black
+            return new Color() { Red = 0, Green = 0, Blue = 0 };
         }
 
         private int GetSheetId(SheetsService service, string spreadSheetId, string spreadSheetName)
