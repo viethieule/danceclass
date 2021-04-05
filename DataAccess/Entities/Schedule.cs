@@ -19,6 +19,7 @@ namespace DataAccess.Entities
         public int? SessionsPerWeek { get; set; }
         public string DaysPerWeek { get; set; }
         public string Branch { get; set; }
+        public bool IsPrivate { get; set; }
 
         [Index]
         public int? ClassId { get; set; }

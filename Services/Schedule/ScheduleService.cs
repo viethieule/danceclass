@@ -295,23 +295,36 @@ namespace Services.Schedule
                         if (deletedSession.Registrations.Any())
                         {
                             var registeredUserIds = deletedSession.Registrations.Select(r => r.UserId).ToList();
-                            var relatedPackages = await _dbContext.Packages.Where(p => p.IsActive && registeredUserIds.Contains(p.UserId)).ToListAsync();
-                            var relatedMemberships = await _dbContext.Memberships.Where(m => registeredUserIds.Contains(m.UserId)).ToListAsync();
-
-                            foreach (var package in relatedPackages)
+                            if (currentSchedule.IsPrivate)
                             {
-                                package.RemainingSessions++;
+                                // Get the latest private package
+                                // Assuming that when there are more than 2 private packages, the old ones are expired according to common use cases
+                                var relatedPrivatePackage = await _dbContext.Packages.Where(p => p.IsPrivate && registeredUserIds.Contains(p.UserId) && p.ExpiryDate >= DateTime.Now.Date).OrderByDescending(p => p.Id).FirstOrDefaultAsync();
+                                if (relatedPrivatePackage != null)
+                                {
+                                    relatedPrivatePackage.RemainingSessions++;
+                                }
                             }
-
-                            foreach (var membership in relatedMemberships)
+                            else
                             {
-                                membership.RemainingSessions++;
-                            }
+                                var relatedPackages = await _dbContext.Packages.Where(p => p.IsActive && registeredUserIds.Contains(p.UserId)).ToListAsync();
+                                var relatedMemberships = await _dbContext.Memberships.Where(m => registeredUserIds.Contains(m.UserId)).ToListAsync();
 
-                            List<IFieldChangeLog> logs = new List<IFieldChangeLog>();
-                            logs.AddRange(relatedMemberships);
-                            logs.AddRange(relatedPackages);
-                            LogLatestAction(logs);
+                                foreach (var package in relatedPackages)
+                                {
+                                    package.RemainingSessions++;
+                                }
+
+                                foreach (var membership in relatedMemberships)
+                                {
+                                    membership.RemainingSessions++;
+                                }
+
+                                List<IFieldChangeLog> logs = new List<IFieldChangeLog>();
+                                logs.AddRange(relatedMemberships);
+                                logs.AddRange(relatedPackages);
+                                LogLatestAction(logs);
+                            }
 
                             deletedSessionWithRegistrationNumbers.Add(deletedSession.SessionNo);
                         }

@@ -19,6 +19,7 @@ namespace Services.Package
     {
         Task<CreatePackageRs> AddForMember(CreatePackageRq rq);
         Task<EditPackageRs> Edit(EditPackageRq rq);
+        Task<EditPackageRs> EditPrivate(EditPackageRq rq);
         Task<GetPackagesRs> GetByUserId(GetPackagesRq rq);
     }
 
@@ -44,6 +45,7 @@ namespace Services.Package
                 RegisteredBranchId = rq.RegisteredBranchId
             };
 
+            bool isPrivatePackage = false;
             if (rq.DefaultPackageId.HasValue)
             {
                 int defaultPackageId = rq.DefaultPackageId.Value;
@@ -53,8 +55,10 @@ namespace Services.Package
                 package.DefaultPackage = defaultPackage ?? throw new Exception("Gói tập đang chọn không tồn tại");
                 package.RemainingSessions = defaultPackage.NumberOfSessions;
                 package.NumberOfSessions = defaultPackage.NumberOfSessions;
-                package.Price = defaultPackage.Price;
+                package.Price = defaultPackage.IsPrivate ? rq.Price : defaultPackage.Price;
                 package.Months = defaultPackage.Months;
+
+                isPrivatePackage = defaultPackage.IsPrivate;
             }
             else
             {
@@ -64,40 +68,53 @@ namespace Services.Package
                 package.Months = rq.Months;
             }
 
-            var membership = await _dbContext.Memberships.SingleAsync(x => x.UserId == rq.UserId);
-            var addedMonths = package.Months;
-            if (membership.ExpiryDate >= DateTime.Now.Date && membership.RemainingSessions > 0)
+            CreatePackageRs rs = new CreatePackageRs();
+            if (!isPrivatePackage)
             {
-                var expiryDate = membership.ExpiryDate.AddMonths(addedMonths);
-                membership.ExpiryDate = expiryDate;
-                package.ExpiryDate = expiryDate;
+                var membership = await _dbContext.Memberships.SingleAsync(x => x.UserId == rq.UserId);
+                var addedMonths = package.Months;
+                if (membership.ExpiryDate >= DateTime.Now.Date && membership.RemainingSessions > 0)
+                {
+                    var expiryDate = membership.ExpiryDate.AddMonths(addedMonths);
+                    membership.ExpiryDate = expiryDate;
+                    package.ExpiryDate = expiryDate;
+                }
+                else
+                {
+                    package.IsActive = true;
+                    var currentPackage = await _dbContext.Packages.FirstOrDefaultAsync(m => m.UserId == rq.UserId && m.IsActive);
+                    if (currentPackage != null)
+                    {
+                        currentPackage.IsActive = false;
+                    }
+
+                    // Since it is expired, reset remaining session to 0
+                    membership.RemainingSessions = 0;
+
+                    var expiryDate = DateTime.Now.AddMonths(addedMonths);
+                    membership.ExpiryDate = expiryDate;
+                    package.ExpiryDate = expiryDate;
+                }
+
+                membership.RemainingSessions += package.NumberOfSessions;
+
+                LogLatestAction(new List<IFieldChangeLog> { membership });
+
+                _dbContext.Packages.Add(package);
+                await _dbContext.SaveChangesAsync();
+                _dbContext.Entry(membership).State = EntityState.Detached;
+
+                rs.Membership = _mapper.Map<MembershipDTO>(membership);
             }
             else
             {
-                package.IsActive = true;
-                var currentPackage = await _dbContext.Packages.FirstOrDefaultAsync(m => m.UserId == rq.UserId && m.IsActive);
-                if (currentPackage != null)
-                {
-                    currentPackage.IsActive = false;
-                }
+                _dbContext.Packages.Add(package);
+                await _dbContext.SaveChangesAsync();
+                _dbContext.Entry(package).State = EntityState.Detached;
 
-                // Since it is expired, reset remaining session to 0
-                membership.RemainingSessions = 0;
-
-                var expiryDate = DateTime.Now.AddMonths(addedMonths);
-                membership.ExpiryDate = expiryDate;
-                package.ExpiryDate = expiryDate;
+                rs.PrivatePackage = _mapper.Map<PackageDTO>(package);
             }
-
-            membership.RemainingSessions += package.NumberOfSessions;
-
-            LogLatestAction(new List<IFieldChangeLog> { membership });
-            _dbContext.Packages.Add(package);
-            await _dbContext.SaveChangesAsync();
-            _dbContext.Entry(membership).State = EntityState.Detached;
-
-            var rs = new CreatePackageRs();
-            rs.Membership = _mapper.Map<MembershipDTO>(membership);
+            
             return rs;
         }
 
@@ -165,6 +182,27 @@ namespace Services.Package
                 Package = _mapper.Map<PackageDTO>(package)
             };
             return rs;
+        }
+
+        public async Task<EditPackageRs> EditPrivate(EditPackageRq rq)
+        {
+            DataAccess.Entities.Package privatePackage = await _dbContext.Packages.FirstOrDefaultAsync(p => p.Id == rq.PackageId);
+            if (privatePackage == null)
+            {
+                throw new Exception("Gói tập không tồn tại");
+            }
+
+            privatePackage.NumberOfSessions = rq.NumberOfSessions;
+            privatePackage.Price = rq.Price;
+            privatePackage.Months = rq.Months;
+
+            await _dbContext.SaveChangesAsync();
+            _dbContext.Entry(privatePackage).State = EntityState.Detached;
+
+            return new EditPackageRs
+            {
+                Package = _mapper.Map<PackageDTO>(privatePackage)
+            };
         }
 
         public async Task<GetPackagesRs> GetByUserId(GetPackagesRq rq)

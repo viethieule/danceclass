@@ -28,6 +28,8 @@ namespace DataAccess.Entities
         [ForeignKey("RegisteredBranchId")]
         public virtual Branch RegisteredBranch { get; set; }
 
+        public bool IsPrivate { get; set; }
+
         public bool IsActive { get; set; }
         public string LatestAction { get; set; }
     }

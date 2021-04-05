@@ -45,6 +45,15 @@ namespace DanceClass.Api
         }
 
         [HttpPost]
+        [HierarchicalAuthorize(AuthorizationLevel = AuthorizationLevel.CollaboratorAndHigher)]
+        [Route("editPrivate")]
+        public async Task<IHttpActionResult> EditPrivate(EditPackageRq rq)
+        {
+            var rs = await _packageService.EditPrivate(rq);
+            return ApiJson(rs);
+        }
+
+        [HttpPost]
         [Authorize]
         [Route("getByUserId")]
         public async Task<IHttpActionResult> GetByUserId(GetPackagesRq rq)

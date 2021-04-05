@@ -22,6 +22,8 @@ namespace Services.Package
 
         public DefaultPackageDTO DefaultPackage { get; set; }
 
+        public bool IsPrivate { get; set; }
+
         public bool IsActive { get; set; }
         public string Status
         {

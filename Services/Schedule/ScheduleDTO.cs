@@ -48,5 +48,6 @@ namespace Services.Schedule
         public string TrainerName { get; set; }
 
         public List<ScheduleDetailDTO> ScheduleDetails { get; set; }
+        public bool IsPrivate { get; set; }
     }
 }

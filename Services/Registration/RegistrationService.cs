@@ -64,93 +64,128 @@ namespace Services.Registration
             
             _dbContext.Registrations.Remove(registration);
 
-            // Increase remaining sessions of the user
-            var activePackage = _dbContext.Packages.FirstOrDefault(x => x.UserId == registration.UserId && x.IsActive);
-            if (activePackage == null)
+            if (scheduleDetail.Schedule.IsPrivate)
             {
-                throw new Exception("Học viên chưa đăng ký gói tập hoặc các gói đã hết hạn");
+                // Get the latest private package
+                // Assuming that when there are more than 2 private packages, the old ones are expired according to common use cases
+                var privatePackage = await _dbContext.Packages
+                    .Where(p => p.UserId == registration.UserId && p.IsPrivate && p.ExpiryDate >= DateTime.Now.Date)
+                    .OrderByDescending(p => p.Id)
+                    .FirstOrDefaultAsync();
+
+                if (privatePackage == null)
+                {
+                    throw new Exception("Hội viên không có thẻ tập cá nhân hoặc đã hết hạn");
+                }
+
+                privatePackage.RemainingSessions++;
+
+                LogLatestAction(new List<IFieldChangeLog> { privatePackage });
             }
-
-            activePackage.RemainingSessions++;
-
-            var membership = await _dbContext.Memberships.FirstOrDefaultAsync(x => x.UserId == registration.UserId);
-            if (membership == null)
+            else
             {
-                throw new Exception("Học viên chưa đăng ký gói tập");
+                // Increase remaining sessions of the user
+                var activePackage = _dbContext.Packages.FirstOrDefault(x => x.UserId == registration.UserId && x.IsActive);
+                if (activePackage == null)
+                {
+                    throw new Exception("Học viên chưa đăng ký gói tập hoặc các gói đã hết hạn");
+                }
+
+                activePackage.RemainingSessions++;
+
+                var membership = await _dbContext.Memberships.FirstOrDefaultAsync(x => x.UserId == registration.UserId);
+                if (membership == null)
+                {
+                    throw new Exception("Học viên chưa đăng ký gói tập");
+                }
+
+                membership.RemainingSessions++;
+
+                LogLatestAction(new List<IFieldChangeLog> { membership, activePackage });
             }
-
-            membership.RemainingSessions++;
-
-            LogLatestAction(new List<IFieldChangeLog> { membership, activePackage });
 
             return await _dbContext.SaveChangesAsync();
         }
 
         public async Task<CreateRegistrationRs> Create(CreateRegistrationRq rq)
         {
-            int userId = rq.Registration.UserId;
-
-            // Decrease remaining sessions of the user
-            var membership = await _dbContext.Memberships.FirstOrDefaultAsync(x => x.UserId == userId);
-            if (membership == null)
-            {
-                throw new Exception("Học viên chưa đăng ký gói tập");
-            }
-
-            if (membership.RemainingSessions <= 0)
-            {
-                throw new Exception("Bạn đã dùng hết số buổi của gói tập hiện tại.");
-            }
-
-            if (membership.ExpiryDate < DateTime.Now.Date)
-            {
-                throw new Exception("Gói tập của bạn đã hết hạn.");
-            }
-
-            membership.RemainingSessions--;
-
-            // Keep track of what package is being used
-            var activePackage = _dbContext.Packages.FirstOrDefault(x => x.UserId == userId && x.IsActive);
-            if (activePackage == null)
-            {
-                throw new Exception("Học viên chưa đăng ký gói tập hoặc có gì đó không đúng! Vui lòng liên hệ admin tại 0943619526");
-            }
-
-            DataAccess.Entities.Package nextActivePackage = null;
-            if (activePackage.RemainingSessions > 0)
-            {
-                activePackage.RemainingSessions--;
-            }
-            else
-            {
-                nextActivePackage = _dbContext.Packages.FirstOrDefault(p => p.UserId == userId && p.Id > activePackage.Id && p.RemainingSessions > 0);
-                if (nextActivePackage != null)
-                {
-                    activePackage.IsActive = false;
-                    nextActivePackage.IsActive = true;
-                    nextActivePackage.RemainingSessions--;
-                }
-            }
-
-            var logs = new List<IFieldChangeLog> { membership, activePackage };
-            if (nextActivePackage != null) logs.Add(nextActivePackage);
-            LogLatestAction(logs);
-
-            // Add registration
-            DataAccess.Entities.Registration registration = _mapper.Map<DataAccess.Entities.Registration>(rq.Registration);
-
-            var session = await _dbContext.ScheduleDetails.FirstOrDefaultAsync(x => x.Id == registration.ScheduleDetailId);
-
+            var session = await _dbContext.ScheduleDetails.FirstOrDefaultAsync(x => x.Id == rq.Registration.ScheduleDetailId);
             if (session == null)
             {
                 throw new Exception("Buổi học không tồn tại");
             }
 
-            bool isAdmin = HttpContext.Current.User.IsInRole("Admin");
-            if (!isAdmin && session.Registrations.Count() == MAX_MEMBERS_PER_SESSION)
+            int userId = rq.Registration.UserId;
+
+            if (session.Schedule.IsPrivate)
             {
-                throw new Exception("Buổi học đã đủ số lượng người đăng ký rồi.<br />Bạn có thể liên hệ với admin qua facebook: <a href=\"https://www.facebook.com/mistake.dance\" target=\"_blank\">Mistake Dance Studio</a> hoặc số điện thoại 0943619526 để được xem xét đăng ký buổi học");
+                // Get the latest private package
+                // Assuming that when there are more than 2 private packages, the old ones are expired according to common use cases
+                var privatePackage = await _dbContext.Packages
+                    .Where(p => p.UserId == userId && p.IsPrivate && p.ExpiryDate >= DateTime.Now.Date && p.RemainingSessions != 0)
+                    .OrderByDescending(p => p.Id)
+                    .FirstOrDefaultAsync();
+
+                if (privatePackage == null)
+                {
+                    throw new Exception("Hội viên không có thẻ tập cá nhân hoặc đã hết hạn");
+                }
+
+                privatePackage.RemainingSessions--;
+
+                LogLatestAction(new List<IFieldChangeLog> { privatePackage });
             }
+            else
+            {
+                var membership = await _dbContext.Memberships.FirstOrDefaultAsync(x => x.UserId == userId);
+                if (membership == null)
+                {
+                    throw new Exception("Học viên chưa đăng ký gói tập");
+                }
+
+                if (membership.RemainingSessions <= 0)
+                {
+                    throw new Exception("Bạn đã dùng hết số buổi của gói tập hiện tại.");
+                }
+
+                if (membership.ExpiryDate < DateTime.Now.Date)
+                {
+                    throw new Exception("Gói tập của bạn đã hết hạn.");
+                }
+
+                // Decrease remaining sessions of the user
+                membership.RemainingSessions--;
+
+                // Keep track of what package is being used
+                var activePackage = _dbContext.Packages.FirstOrDefault(x => x.UserId == userId && x.IsActive);
+                if (activePackage == null)
+                {
+                    throw new Exception("Học viên chưa đăng ký gói tập hoặc có gì đó không đúng! Vui lòng liên hệ admin tại 0943619526");
+                }
+
+                DataAccess.Entities.Package nextActivePackage = null;
+                if (activePackage.RemainingSessions > 0)
+                {
+                    activePackage.RemainingSessions--;
+                }
+                else
+                {
+                    nextActivePackage = _dbContext.Packages.FirstOrDefault(p => p.UserId == userId && p.Id > activePackage.Id && p.RemainingSessions > 0);
+                    if (nextActivePackage != null)
+                    {
+                        activePackage.IsActive = false;
+                        nextActivePackage.IsActive = true;
+                        nextActivePackage.RemainingSessions--;
+                    }
+                }
+
+                var logs = new List<IFieldChangeLog> { membership, activePackage };
+                if (nextActivePackage != null) logs.Add(nextActivePackage);
+                LogLatestAction(logs);
+            }
+
+            // Add registration
+            DataAccess.Entities.Registration registration = _mapper.Map<DataAccess.Entities.Registration>(rq.Registration);
 
             registration.Status = RegistrationStatus.Registered;
             registration.DateRegistered = DateTime.Now;

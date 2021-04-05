@@ -80,10 +80,12 @@ namespace Services.Members
                     {
                         throw new Exception("Gói tập đang chọn không tồn tại");
                     }
+
                     package.DefaultPackageId = defaultPackageId;
                     package.NumberOfSessions = defaultPackage.NumberOfSessions;
                     package.Months = defaultPackage.Months;
-                    package.Price = defaultPackage.Price;
+                    // Allow modify price of private package
+                    package.Price = defaultPackage.IsPrivate ? rq.Package.Price : defaultPackage.Price;
                     package.RemainingSessions = defaultPackage.NumberOfSessions;
                 }
                 else
