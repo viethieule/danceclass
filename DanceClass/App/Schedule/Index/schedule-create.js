@@ -208,6 +208,7 @@ function ScheduleCreate() {
                     $('#modal-create-schedule .modal-body').alert(false);
                     $('.btn-exit, .btn-action').prop('disabled', true);
                     let $form = $(form);
+                    debugger;
                     let { song, sessions, branch, class: cls, trainer, startTime } = FormUtils.convertFormDataToDictionary($form.serializeArray());
 
                     let daysPerWeek = $('.days-per-week input:checkbox:checked')

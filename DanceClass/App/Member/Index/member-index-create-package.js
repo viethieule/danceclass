@@ -27,7 +27,7 @@
             var select = $('#package');
             _packages.forEach(package => {
                 $('<option></option>', { value: package.id })
-                    .text(package.numberOfSessions)
+                    .text(package.isPrivate ? 'Private' : package.numberOfSessions)
                     .appendTo(select);
             });
 
@@ -95,6 +95,10 @@
 
                     if (defaultPackageId !== "-1") {
                         data.defaultPackageId = defaultPackageId;
+                        var defaultPackage = _packages.find(p => p.id.toString() === defaultPackageId);
+                        if (defaultPackage && defaultPackage.isPrivate) {
+                            data.price = price;
+                        }
                     } else {
                         data.numberOfSessions = sessions;
                         data.price = price;
@@ -121,8 +125,16 @@
         $('select#package')
             .on('change', function (e) {
                 manipulateFieldsOnOtherPackage(['expired', 'sessions', 'price'], this.value);
+                enablePriceForPrivatePackage(this.value);
             })
             .trigger('change');
+    }
+
+    function enablePriceForPrivatePackage(packageId) {
+        var package = _packages.find(p => p.id.toString() === packageId);
+        if (package && package.isPrivate) {
+            $('#price').prop('disabled', false);
+        }
     }
 
     function manipulateFieldsOnOtherPackage(fieldIds, packageId) {

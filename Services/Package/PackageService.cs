@@ -82,7 +82,7 @@ namespace Services.Package
                 else
                 {
                     package.IsActive = true;
-                    var currentPackage = await _dbContext.Packages.FirstOrDefaultAsync(m => m.UserId == rq.UserId && m.IsActive);
+                    var currentPackage = await _dbContext.Packages.FirstOrDefaultAsync(m => m.UserId == rq.UserId && m.IsActive && !m.IsPrivate);
                     if (currentPackage != null)
                     {
                         currentPackage.IsActive = false;
@@ -186,7 +186,7 @@ namespace Services.Package
 
         public async Task<EditPackageRs> EditPrivate(EditPackageRq rq)
         {
-            DataAccess.Entities.Package privatePackage = await _dbContext.Packages.FirstOrDefaultAsync(p => p.Id == rq.PackageId);
+            DataAccess.Entities.Package privatePackage = await _dbContext.Packages.FirstOrDefaultAsync(p => p.Id == rq.PackageId && p.IsPrivate);
             if (privatePackage == null)
             {
                 throw new Exception("Gói tập không tồn tại");

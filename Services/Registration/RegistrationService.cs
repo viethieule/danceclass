@@ -170,7 +170,7 @@ namespace Services.Registration
                 }
                 else
                 {
-                    nextActivePackage = _dbContext.Packages.FirstOrDefault(p => p.UserId == userId && p.Id > activePackage.Id && p.RemainingSessions > 0);
+                    nextActivePackage = _dbContext.Packages.FirstOrDefault(p => p.UserId == userId && p.Id > activePackage.Id && p.RemainingSessions > 0 && !p.IsPrivate);
                     if (nextActivePackage != null)
                     {
                         activePackage.IsActive = false;
