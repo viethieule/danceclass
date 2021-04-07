@@ -28,6 +28,21 @@
 
         protected override void Seed(DataAccess.DanceClassDbContext context)
         {
+            if (!context.DefaultPackages.Any(p => p.IsPrivate))
+            {
+                context.DefaultPackages.Add(new DefaultPackage
+                {
+                    NumberOfSessions = 8,
+                    Months = 1,
+                    Price = 1450000,
+                    IsPrivate = true
+                });
+
+                context.SaveChanges();
+            }
+
+            return;
+
             var unnormalizedUsers = context.Users.Where(u => !string.IsNullOrEmpty(u.FullName) && string.IsNullOrEmpty(u.NormalizedFullName));
             foreach (ApplicationUser user in unnormalizedUsers)
             {
@@ -35,8 +50,6 @@
             }
 
             context.SaveChanges();
-
-            return;
 
             if (!context.Branches.Any())
             {

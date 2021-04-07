@@ -72,6 +72,8 @@ namespace Services.Members
                     RegisteredBranchId = appUser.RegisteredBranchId
                 };
 
+                bool isPrivate = false;
+
                 if (rq.Package.DefaultPackageId.HasValue)
                 {
                     var defaultPackageId = rq.Package.DefaultPackageId.Value;
@@ -84,9 +86,12 @@ namespace Services.Members
                     package.DefaultPackageId = defaultPackageId;
                     package.NumberOfSessions = defaultPackage.NumberOfSessions;
                     package.Months = defaultPackage.Months;
+
+                    isPrivate = defaultPackage.IsPrivate;
                     // Allow modify price of private package
-                    package.Price = defaultPackage.IsPrivate ? rq.Package.Price : defaultPackage.Price;
+                    package.Price = isPrivate ? rq.Package.Price : defaultPackage.Price;
                     package.RemainingSessions = defaultPackage.NumberOfSessions;
+                    package.IsPrivate = isPrivate;
                 }
                 else
                 {
@@ -100,12 +105,16 @@ namespace Services.Members
                 package.ExpiryDate = expiryDate;
 
                 _dbContext.Packages.Add(package);
-                _dbContext.Memberships.Add(new DataAccess.Entities.Membership
+
+                if (!isPrivate)
                 {
-                    UserId = user.Id,
-                    ExpiryDate = expiryDate,
-                    RemainingSessions = package.NumberOfSessions
-                });
+                    _dbContext.Memberships.Add(new DataAccess.Entities.Membership
+                    {
+                        UserId = user.Id,
+                        ExpiryDate = expiryDate,
+                        RemainingSessions = package.NumberOfSessions
+                    });
+                }
 
                 await _dbContext.SaveChangesAsync();
                 scope.Complete();

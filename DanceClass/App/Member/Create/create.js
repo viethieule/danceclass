@@ -26,7 +26,7 @@ async function populatePackages() {
         var select = $('#package');
         m_packages.forEach(package => {
             $('<option></option>', { value: package.id })
-                .text(package.numberOfSessions)
+                .text(package.isPrivate ? 'Private' : package.numberOfSessions)
                 .appendTo(select);
         });
 
@@ -143,7 +143,8 @@ function registerEvent() {
                             registeredBranchId: parseInt(formData['branch'])
                         },
                         package: package ? {
-                            defaultPackageId: package.id
+                            defaultPackageId: package.id,
+                            price: package.isPrivate ? formData['price'] : package.price
                         } : {
                             months: formData['expired'],
                             numberOfSessions: formData['sessions'],
@@ -165,8 +166,16 @@ function registerEvent() {
     $('select#package')
         .on('change', function (e) {
             manipulateFieldsOnOtherPackage(['expired', 'sessions', 'price'], this.value);
+            enablePriceForPrivatePackage(this.value);
         })
         .trigger('change');
+}
+
+function enablePriceForPrivatePackage(packageId) {
+    var package = m_packages.find(p => p.id.toString() === packageId);
+    if (package && package.isPrivate) {
+        $('#price').prop('disabled', false);
+    }
 }
 
 function manipulateFieldsOnOtherPackage(fieldIds, packageId) {
