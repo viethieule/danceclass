@@ -179,7 +179,7 @@ namespace Services.Report
         private IRichTextString BuildFormattedSessionCellContent(XSSFWorkbook workbook, ScheduleDetailDTO session)
         {
             string className = session.Schedule.Class.Name;
-            string classBranch = className + " - " + session.Schedule.Branch;
+            string classBranch = className + " - " + GetDisplayBranchName(session.Schedule.Branch);
             string song = "♪ " + session.Schedule.Song;
             string numberOfSessions = $"Buổi {session.SessionNo}/{session.Schedule.Sessions}";
 
@@ -204,13 +204,13 @@ namespace Services.Report
             {
                 if (isYoga)
                 {
-                    if (classBranch.Contains("Q3"))
+                    if (session.Schedule.Branch.Contains("Q3"))
                     {
                         classBranch += ", LVS";
                     }
-                    else if (classBranch.Contains("LVS"))
+                    else if (session.Schedule.Branch.Contains("LVS"))
                     {
-                        classBranch += ", Q3";
+                        classBranch += ", NTN";
                     }
                 }
                 else
@@ -230,6 +230,20 @@ namespace Services.Report
             }
 
             return formattedCellContent;
+        }
+
+        private string GetDisplayBranchName(string branch)
+        {
+            if (branch == "Q3")
+            {
+                return "NTN";
+            }
+            else if (branch == "PN")
+            {
+                return "PVC";
+            }
+
+            return branch;
         }
 
         public XSSFColor GetBackgroundColor(string branch)
