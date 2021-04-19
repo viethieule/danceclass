@@ -208,8 +208,8 @@ function ScheduleCreate() {
                     $('#modal-create-schedule .modal-body').alert(false);
                     $('.btn-exit, .btn-action').prop('disabled', true);
                     let $form = $(form);
-                    debugger;
-                    let { song, sessions, branch, class: cls, trainer, startTime } = FormUtils.convertFormDataToDictionary($form.serializeArray());
+
+                    let { song, sessions, branch, class: cls, trainer, startTime, isPrivate } = FormUtils.convertFormDataToDictionary($form.serializeArray());
 
                     let daysPerWeek = $('.days-per-week input:checkbox:checked')
                         .map(function () { return this.value }).get().sort().join('');
@@ -226,7 +226,7 @@ function ScheduleCreate() {
                         startTime = hour + ':' + minute;
                     }
 
-                    let schedule = { song, openingDate, startTime, sessions, daysPerWeek, branch }
+                    let schedule = { song, openingDate, startTime, sessions, daysPerWeek, branch, isPrivate: isPrivate === 'true' }
 
                     let isRerenderClass = false;
                     let isRerenderTrainer = false;
