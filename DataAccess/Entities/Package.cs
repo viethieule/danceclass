@@ -30,5 +30,9 @@ namespace DataAccess.Entities
 
         public bool IsActive { get; set; }
         public string LatestAction { get; set; }
+
+        public int MembershipEdition { get; set; }
+        public DateTime? MembershipEditedOn { get; set; }
+        public string MembershipEditedBy { get; set; }
     }
 }

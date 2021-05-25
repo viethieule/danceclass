@@ -222,6 +222,10 @@
     <Compile Include="Migrations\202102031658491_AddBranchInPackage.designer.cs">
       <DependentUpon>202102031658491_AddBranchInPackage.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202105250945103_AddMembershipEdition.cs" />
+    <Compile Include="Migrations\202105250945103_AddMembershipEdition.designer.cs">
+      <DependentUpon>202105250945103_AddMembershipEdition.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -308,6 +312,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202102031658491_AddBranchInPackage.resx">
       <DependentUpon>202102031658491_AddBranchInPackage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202105250945103_AddMembershipEdition.resx">
+      <DependentUpon>202105250945103_AddMembershipEdition.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

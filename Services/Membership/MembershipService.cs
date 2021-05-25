@@ -8,6 +8,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Services.Membership
 {
@@ -38,6 +39,34 @@ namespace Services.Membership
             if (rq.RemainingSessions.HasValue)
             {
                 membership.RemainingSessions = rq.RemainingSessions.Value;
+            }
+
+            var activePackage = await _dbContext.Packages.OrderBy(x => x.CreatedDate).FirstOrDefaultAsync(x => x.UserId == membership.UserId && x.IsActive);
+            if (activePackage != null)
+            {
+                bool isActivePackageExpired = activePackage.RemainingSessions < 0 || activePackage.ExpiryDate < DateTime.Now;
+                if (activePackage.MembershipEdition > 0)
+                {
+                    var nextActivePackage = await _dbContext.Packages.FirstOrDefaultAsync(x => x.UserId == membership.UserId && x.Id > activePackage.Id && x.RemainingSessions > 0);
+                    if (nextActivePackage != null && nextActivePackage.MembershipEdition > 0)
+                    {
+                        throw new Exception("");
+                    }
+                    else if (nextActivePackage == null)
+                    {
+
+                    }
+                }
+                else
+                {
+                    activePackage.MembershipEdition++;
+                    activePackage.MembershipEditedBy = HttpContext.Current.User.Identity.Name;
+                    activePackage.MembershipEditedOn = DateTime.Now;
+                }
+            }
+            else
+            {
+                throw new Exception("Hội viên không có gói tập đang sử dụng. Vui lòng liên hệ ngay admin.");
             }
 
             LogLatestAction(new List<IFieldChangeLog> { membership });
